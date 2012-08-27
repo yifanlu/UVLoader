@@ -7,7 +7,7 @@
 // 1110 0001 0010 111111111111 0001 1100 // BX R12
 // 1110 0001 0010 111111111111 0001 1110 // BX LR
 
-#define BIT_SET(i, b) (i & (0x1 << b) == 0)
+#define BIT_SET(i, b) (i & (0x1 << b))
 resolve_entry_t *RESOLVE_TABLE = 0x85000000;
 int RESOLVE_ENTRIES = 0;
 
@@ -415,5 +415,29 @@ int uvl_resolve_all_unresolved ()
         }
         // we failed :(
         LOG ("Failed to resolve function NID: 0x%08X, continuing", stub->nid);
+    }
+}
+
+int uvl_resolve_all_loaded_modules ()
+{
+    loaded_module_info_t mod_info;
+    u32_t mod_list[MAX_LOADED_MODS];
+    u32_t num_loaded = MAX_LOADED_MODS;
+    int i;
+
+    if (sceKernelGetModuleList (0xFF, mod_list, &num_loaded) < 0)
+    {
+        LOG ("Failed to get module list.");
+        return -1;
+    }
+    for (i = 0; i < num_loaded; i++)
+    {
+        mod_info.size = sizeof (loaded_module_info_t); // should be 440
+        if (sceKernelGetModuleInfo (mod_list[i], &mod_info) < 0)
+        {
+            LOG ("Error getting info for mod 0x%08X, continuing", mod_list[i]);
+            continue;
+        }
+        // TODO: Get more info about sceKernelGetModuleInfo and finish this function
     }
 }

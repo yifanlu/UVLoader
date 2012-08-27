@@ -1,10 +1,13 @@
 #include "scefuncs.h"
 #include "strings.h"
-#include "elf.h"
+#include "resolve.h"
+#include "load.h"
 
-int uvl_load_exe (const char *filename)
+int uvl_load_exe (const char *filename, void **entry)
 {
     char magic[4];
+
+    *entry = NULL;
     SceUID fd = sceIoOpen (filename, SCE_O_RDONLY, SCE_STM_RU);
     if (fd < 0)
     {
@@ -22,7 +25,7 @@ int uvl_load_exe (const char *filename)
     {
         if (magic[1] == ELFMAG1 && magic[2] == ELFMAG2 && magic[3] == ELFMAG3)
         {
-            return uvl_load_elf (fd, 0);
+            return uvl_load_elf (fd, 0, entry);
         }
     }
     else if (magic[0] == SCEMAG0)
@@ -34,7 +37,7 @@ int uvl_load_exe (const char *filename)
                 LOG ("Cannot skip SCE header.");
                 return -1;
             }
-            return uvl_load_elf (fd, SCEHDR_LEN);
+            return uvl_load_elf (fd, SCEHDR_LEN, entry);
         }
     }
 
@@ -42,11 +45,16 @@ int uvl_load_exe (const char *filename)
     return -1;
 }
 
-int uvl_load_elf (SceUID fd, SceOff start_offset)
+int uvl_load_elf (SceUID fd, SceOff start_offset, void **entry)
 {
     Elf32_Ehdr_t elf_hdr;
     module_info_t mod_info;
+    Elf32_Phdr_t prog_hdr;
+    u32_t base_address = (u32_t)-1;
+    module_imports_t *import;
     int i;
+
+    *entry = NULL;
     // get headers
     if (sceIoRead (fd, &elf_hdr, sizeof (Elf32_Ehdr_t)) < sizeof (Elf32_Ehdr_t))
     {
@@ -64,6 +72,66 @@ int uvl_load_elf (SceUID fd, SceOff start_offset)
         LOG ("Cannot find module info section.");
         return -1;
     }
+    // actually load the ELF
+    for (i = 0; i < elf_hdr.e_phnum; i++)
+    {
+        if (sceIoLseek (fd, start_offset + elf_hdr.e_phoff + i * elf_hdr.e_phentsize, SCE_SEEK_SET) < 0)
+        {
+            LOG ("Error seeking program header.");
+            return -1;
+        }
+        if (sceIoRead (fd, &prog_hdr, elf_hdr.e_phentsize) < elf_hdr.e_phentsize)
+        {
+            LOG ("Error reading program header.");
+            return -1;
+        }
+        if (prog_hdr.p_vaddr < base_address) // lowest number is base address
+        {
+            base_address = prog_hdr.p_vaddr;
+        }
+        // TODO: Alloc memory to load and set permissions
+        if (sceIoLseek (fd, start_offset + prog_hdr.p_offset, SCE_SEEK_SET) < 0)
+        {
+            LOG ("Error seeking to section %d.", i);
+            return -1;
+        }
+        if (sceIoRead (fd, (void*)prog_hdr.p_vaddr, prog_hdr.p_filesz)) < 0)
+        {
+            LOG ("Error reading program section %d.", i);
+            return -1;
+        }
+        if (prog_hdr.p_memsz > prog_hdr.p_filesz)
+        {
+            // specs say we have to zero out extra bytes
+            memset ((void*)(prog_hdr.p_vaddr + prog_hdr.p_filesz), 0, prog_hdr.p_memsz - prog_hdr.p_filesz);
+        }
+    }
+    // resolve NIDs
+    for (import = (module_imports_t*)(base_address + mod_info.stub_top); import < mod_info.stub_end; import++)
+    {
+        if (uvl_load_module (import->lib_name) < 0)
+        {
+            LOG ("Error loading required module: %s", import->lib_name);
+            return -1;
+        }
+        if (uvl_add_unresolved_imports (import) < 0)
+        {
+            LOG ("Failed to add imports for module: %s", import->lib_name);
+            return -1;
+        }
+    }
+    if (uvl_resolve_all_loaded_modules () < 0)
+    {
+        LOG ("Failed to resolve module exports.");
+        return -1;
+    }
+    if (uvl_resolve_all_unresolved () < 0)
+    {
+        LOG ("Failed to resolve app imports.");
+        return -1;
+    }
+    *entry = (void*)(base_address + elf_hdr.e_entry);
+    return 0;
 }
 
 int uvl_check_elf_header (Elf32_Ehdr_t *hdr)
@@ -187,4 +255,9 @@ int uvl_get_module_info (SceUID off, SceOff start_offset, Elf32_Ehdr_t *elf_hdr,
         }
     }
     return -1;
+}
+
+int uvl_load_module (char *name)
+{
+    // TODO: Get filename for mod name and load module
 }
