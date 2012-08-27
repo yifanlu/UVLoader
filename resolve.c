@@ -18,13 +18,18 @@ int uvl_resolve_table_add (resolve_entry_t *entry) // TODO: remove?
     return;
 }
 
-resolve_entry_t *uvl_resolve_table_get (u32_t nid)
+resolve_entry_t *uvl_resolve_table_get (u32_t nid, int forced_resolved)
 {
     int i;
     for (i = 0; i < RESOLVE_ENTRIES; i++)
     {
         if (RESOLVE_TABLE[i].nid == nid)
         {
+            // entries could be placeholders for resolving later
+            if (forced_resolved && RESOLVE_TABLE[i].type == RESOLVE_TYPE_STUB)
+            {
+                continue;
+            }
             return &RESOLVE_TABLE[i];
         }
     }
@@ -167,5 +172,33 @@ u32_t uvl_decode_arm_inst (u32_t cur_inst, u8_t *type)
     {
         // Unsupported instruction.
         return -1;
+    }
+}
+
+u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg)
+{
+    switch(type)
+    {
+        case INSTRUCTION_MOV:
+            // 1110 0011 0000 XXXX YYYY XXXXXXXXXXXX
+            // where X is the immediate and Y is the register
+            // Upper bits == 0xE30
+            return ((u32_t)0xE30 << 20) | ((u32_t)((immed >> 12) << 12) << 4) | ((immed << 4) >> 4) | (reg << 12);
+        case INSTRUCTION_MOVT:
+            // 1110 0011 0100 XXXX YYYY XXXXXXXXXXXX
+            // where X is the immediate and Y is the register
+            // Upper bits == 0xE34
+            return ((u32_t)0xE34 << 20) | ((u32_t)((immed >> 12) << 12) << 4) | ((immed << 4) >> 4) | (reg << 12);
+        case INSTRUCTION_SYSCALL:
+            // Syscall does not have any immediate value, the number should
+            // already be in R12
+            return (u32_t)0xEF000000;
+        case INSTRUCTION_BRANCH:
+            // 1110 0001 0010 111111111111 0001 YYYY
+            // BX Rn has 0xE12FFF1 as top bytes
+            return ((u32_t)0xE12FFF1 << 4) | reg;
+        case INSTRUCTION_UNKNOWN:
+        default:
+            return 0;
     }
 }
