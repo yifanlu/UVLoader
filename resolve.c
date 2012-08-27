@@ -26,22 +26,14 @@ resolve_entry_t *uvl_resolve_table_get (u32_t nid, int forced_resolved)
         if (RESOLVE_TABLE[i].nid == nid)
         {
             // entries could be placeholders for resolving later
-            if (forced_resolved && RESOLVE_TABLE[i].type == RESOLVE_TYPE_STUB)
+            if (forced_resolved && !RESOLVE_TABLE[i].resolved)
             {
                 continue;
             }
             return &RESOLVE_TABLE[i];
         }
     }
-    return NULL;
-}
-
-int uvl_export_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry)
-{
-    entry->nid = nid;
-    entry->type = RESOLVE_TYPE_FUNCTION; // exports are always functions
-    entry->value.function_ptr = func;
-    return 0;
+    return NULL
 }
 
 int uvl_import_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry)
@@ -49,7 +41,7 @@ int uvl_import_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry)
     u32_t val = 0;
     u8_t inst_type = 0;
     int read = 0;
-    entry->type = RESOLVE_TYPE_UNRESOLVED;
+    entry->type = RESOLVE_TYPE_UNKNOWN;
     for (;;)
     {
         val = uvl_decode_arm_inst (func, &inst_type);
@@ -82,13 +74,14 @@ int uvl_import_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry)
             default:
                 break;
         }
-        if (entry->type != RESOLVE_TYPE_UNRESOLVED)
+        if (entry->type != RESOLVE_TYPE_UNKNOWN && entry->value.value > 0)
         {
             // we resolved it, get out before something weird happens
+            entry->resolved = 1;
             break;
         }
     }
-    if (entry->type = RESOLVE_TYPE_UNRESOLVED || entry->value.value == 0) // we failed :(
+    if (!entry->resolved) // we failed :(
     {
         LOG ("Failed to resolve import NID: 0x%08X", nid);
         return -1;
@@ -227,11 +220,12 @@ int uvl_add_resolved_imports (module_imports_t *imp_table)
         }
     }
     // get variables
+    res_entry.type = RESOLVE_TYPE_VARIABLE;
+    res_entry.resolved = 1;
     for(i = 0; i < imp_table->num_vars; i++)
     {
-        res_entry->nid = imp_table->var_nid_table[i];
-        res_entry->type = RESOLVE_TYPE_VARIABLE;
-        res_entry->value.value = *(u32_t*)imp_table->var_entry_table[i];
+        res_entry.nid = imp_table->var_nid_table[i];
+        res_entry.value.value = *(u32_t*)imp_table->var_entry_table[i];
         if (uvl_resolve_table_add (&entry) < 0)
         {
             LOG ("Error adding entry to table.");
@@ -240,11 +234,106 @@ int uvl_add_resolved_imports (module_imports_t *imp_table)
     }
     // get TLS
     // TODO: Find out how this works
+    res_entry.type = RESOLVE_TYPE_VARIABLE;
+    res_entry.resolved = 1;
     for(i = 0; i < imp_table->num_tls_vars; i++)
     {
-        res_entry->nid = imp_table->tls_nid_table[i];
-        res_entry->type = RESOLVE_TYPE_VARIABLE;
-        res_entry->value.value = *(u32_t*)imp_table->tls_entry_table[i];
+        res_entry.nid = imp_table->tls_nid_table[i];
+        res_entry.value.value = *(u32_t*)imp_table->tls_entry_table[i];
+        if (uvl_resolve_table_add (&entry) < 0)
+        {
+            LOG ("Error adding entry to table.");
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int uvl_add_unresolved_imports (module_imports_t *imp_table)
+{
+    resolve_entry_t res_entry;
+    int i;
+    res_entry.resolved = 0;
+
+
+    // get functions first
+    res_entry.type = RESOLVE_TYPE_FUNCTION;
+    for(i = 0; i < imp_table->num_functions; i++)
+    {
+        res_entry.nid = imp_table->func_nid_table[i];
+        res_entry.value.func_ptr = imp_table->func_entry_table[i];
+        if (uvl_resolve_table_add (&entry) < 0)
+        {
+            LOG ("Error adding entry to table.");
+            return -1;
+        }
+    }
+    // get variables
+    res_entry.type = RESOLVE_TYPE_VARIABLE;
+    for(i = 0; i < imp_table->num_vars; i++)
+    {
+        res_entry.nid = imp_table->var_nid_table[i];
+        res_entry.value.value = *(u32_t*)imp_table->var_entry_table[i];
+        if (uvl_resolve_table_add (&entry) < 0)
+        {
+            LOG ("Error adding entry to table.");
+            return -1;
+        }
+    }
+    // get TLS
+    // TODO: Find out how this works
+    res_entry.type = RESOLVE_TYPE_VARIABLE;
+    for(i = 0; i < imp_table->num_tls_vars; i++)
+    {
+        res_entry.nid = imp_table->tls_nid_table[i];
+        res_entry.value.value = *(u32_t*)imp_table->tls_entry_table[i];
+        if (uvl_resolve_table_add (&entry) < 0)
+        {
+            LOG ("Error adding entry to table.");
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int uvl_add_resolved_exports (module_exports_t *exp_table)
+{
+    resolve_entry_t res_entry;
+    int i;
+    int offset = 0;
+    res_entry.resolved = 1;
+
+    // get functions first
+    res_entry.type = RESOLVE_TYPE_FUNCTION;
+    for(i = 0; i < exp_table->num_functions; i++, offset++)
+    {
+        res_entry.nid = exp_table->nid_table[offset];
+        res_entry.value.func_ptr = exp_table->entry_table[offset];
+        if (uvl_resolve_table_add (&entry) < 0)
+        {
+            LOG ("Error adding entry to table.");
+            return -1;
+        }
+    }
+    // get variables
+    res_entry.type = RESOLVE_TYPE_VARIABLE;
+    for(i = 0; i < exp_table->num_vars; i++, offset++)
+    {
+        res_entry.nid = exp_table->nid_table[offset];
+        res_entry.value.value = *(u32_t*)exp_table->entry_table[offset];
+        if (uvl_resolve_table_add (&entry) < 0)
+        {
+            LOG ("Error adding entry to table.");
+            return -1;
+        }
+    }
+    // get TLS
+    // TODO: Find out how this works
+    res_entry.type = RESOLVE_TYPE_VARIABLE;
+    for(i = 0; i < exp_table->num_tls_vars; i++, offset++)
+    {
+        res_entry.nid = exp_table->nid_table[offset];
+        res_entry.value.value = *(u32_t*)exp_table->entry_table[offset];
         if (uvl_resolve_table_add (&entry) < 0)
         {
             LOG ("Error adding entry to table.");

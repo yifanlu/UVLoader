@@ -148,6 +148,6 @@ typedef union module_ports
     u16_t           size;
     module_imports  imports;
     module_exports  exports;
-}
+} module_ports_t;
 
 #endif
