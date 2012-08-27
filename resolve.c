@@ -202,3 +202,54 @@ u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg)
             return 0;
     }
 }
+
+int uvl_add_resolved_imports (module_imports_t *imp_table)
+{
+    // this should be called BEFORE cleanup
+    resolve_entry_t res_entry;
+    u32_t *memory;
+    u32_t nid;
+    int i;
+    // get functions first
+    for(i = 0; i < imp_table->num_functions; i++)
+    {
+        nid = imp_table->func_nid_table[i];
+        memory = imp_table->func_entry_table[i];
+        if (uvl_import_stub_to_entry (memory, nid, &res_entry) < 0)
+        {
+            LOG ("Error generating entry from import stub.");
+            return -1;
+        }
+        if (uvl_resolve_table_add (&entry) < 0)
+        {
+            LOG ("Error adding entry to table.");
+            return -1;
+        }
+    }
+    // get variables
+    for(i = 0; i < imp_table->num_vars; i++)
+    {
+        res_entry->nid = imp_table->var_nid_table[i];
+        res_entry->type = RESOLVE_TYPE_VARIABLE;
+        res_entry->value.value = *(u32_t*)imp_table->var_entry_table[i];
+        if (uvl_resolve_table_add (&entry) < 0)
+        {
+            LOG ("Error adding entry to table.");
+            return -1;
+        }
+    }
+    // get TLS
+    // TODO: Find out how this works
+    for(i = 0; i < imp_table->num_tls_vars; i++)
+    {
+        res_entry->nid = imp_table->tls_nid_table[i];
+        res_entry->type = RESOLVE_TYPE_VARIABLE;
+        res_entry->value.value = *(u32_t*)imp_table->tls_entry_table[i];
+        if (uvl_resolve_table_add (&entry) < 0)
+        {
+            LOG ("Error adding entry to table.");
+            return -1;
+        }
+    }
+    return 0;
+}
