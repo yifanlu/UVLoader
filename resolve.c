@@ -5,6 +5,7 @@
 // 1110 0011 0000 0101 1100 011100101001 // 0x5729
 // 1110 0011 0100 1000 1100 000100110110 // 0x8136
 // 1110 0001 0010 111111111111 0001 1100 // BX R12
+// 1110 0001 0010 111111111111 0001 1110 // BX LR
 
 #define BIT_SET(i, b) (i & (0x1 << b) == 0)
 resolve_entry_t *RESOLVE_TABLE = 0x85000000;
@@ -34,6 +35,12 @@ resolve_entry_t *uvl_resolve_table_get (u32_t nid, int forced_resolved)
         }
     }
     return NULL
+}
+
+// TODO: Implement this
+resolve_entry_t *uvl_estimate_syscall (u32_t nid)
+{
+    return NULL;
 }
 
 int uvl_import_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry)
@@ -273,7 +280,7 @@ int uvl_add_unresolved_imports (module_imports_t *imp_table)
     for(i = 0; i < imp_table->num_vars; i++)
     {
         res_entry.nid = imp_table->var_nid_table[i];
-        res_entry.value.value = *(u32_t*)imp_table->var_entry_table[i];
+        res_entry.value.ptr = imp_table->var_entry_table[i];
         if (uvl_resolve_table_add (&entry) < 0)
         {
             LOG ("Error adding entry to table.");
@@ -286,7 +293,7 @@ int uvl_add_unresolved_imports (module_imports_t *imp_table)
     for(i = 0; i < imp_table->num_tls_vars; i++)
     {
         res_entry.nid = imp_table->tls_nid_table[i];
-        res_entry.value.value = *(u32_t*)imp_table->tls_entry_table[i];
+        res_entry.value.ptr = imp_table->tls_entry_table[i];
         if (uvl_resolve_table_add (&entry) < 0)
         {
             LOG ("Error adding entry to table.");
@@ -341,4 +348,72 @@ int uvl_add_resolved_exports (module_exports_t *exp_table)
         }
     }
     return 0;
+}
+
+int uvl_resolve_all_unresolved ()
+{
+    resolve_entry_t *stub;
+    resolve_entry_t *entry;
+    u32_t *memloc;
+    int i;
+    for (i = 0; i < RESOLVE_ENTRIES; i++)
+    {
+        if (RESOLVE_TABLE[i].resolved)
+        {
+            continue;
+        }
+        stub = &RESOLVE_TABLE[i];
+        // first attempt, look up in table
+        if ((entry = uvl_resolve_table_get (stub->nid, 1)) != NULL)
+        {
+            stub->type = entry->type;
+            switch (entry->type)
+            {
+                case RESOLVE_TYPE_FUNCTION:
+                    /*
+                    MOV  R12, (u16_t)entry->value.func_ptr
+                    MOVT R12, (u16_t)(entry->value.func_ptr >> 16)
+                    BX   R12
+                    */
+                    memloc = stub->value.func_ptr;
+                    memloc[0] = uvl_encode_arm_inst (INSTRUCTION_MOV, (u16_t)entry->value.func_ptr, 12);
+                    memloc[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)(entry->value.func_ptr >> 16), 12);
+                    memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 12);
+                    break;
+                case RESOLVE_TYPE_SYSCALL:
+                    /*
+                    MOV  R12, (u16_t)entry->value.value
+                    SVC  0
+                    BX   LR
+                    */
+                    memloc = stub->value.func_ptr;
+                    memloc[0] = uvl_encode_arm_inst (INSTRUCTION_MOV, (u16_t)entry->value.value, 12);
+                    memloc[1] = uvl_encode_arm_inst (INSTRUCTION_SYSCALL, 0, 0);
+                    memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 14);
+                    break;
+                case RESOLVE_TYPE_VARIABLE:
+                    *stub->value.ptr = entry->value.value;
+                    break;
+            }
+            stub->resolved = 1;
+            continue;
+        }
+        // second attempt, estimate syscall
+        if ((entry = uvl_estimate_syscall (stub->nid)) != NULL)
+        {
+            /*
+            MOV  R12, (u16_t)entry->value.value
+            SVC  0
+            BX   LR
+            */
+            memloc = stub->value.func_ptr;
+            memloc[0] = uvl_encode_arm_inst (INSTRUCTION_MOV, (u16_t)entry->value.value, 12);
+            memloc[1] = uvl_encode_arm_inst (INSTRUCTION_SYSCALL, 0, 0);
+            memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 14);
+            stub->resolved = 1;
+            continue;
+        }
+        // we failed :(
+        LOG ("Failed to resolve function NID: 0x%08X, continuing", stub->nid);
+    }
 }

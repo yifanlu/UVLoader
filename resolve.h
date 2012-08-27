@@ -21,6 +21,7 @@ typedef struct resolve_entry
     union value
     {
         u32_t   value;
+        u32_t   ptr;
         u32_t   func_ptr;
         u32_t   syscall;
     };
