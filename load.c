@@ -120,7 +120,7 @@ int uvl_load_elf (SceUID fd, SceOff start_offset, void **entry)
             return -1;
         }
     }
-    if (uvl_resolve_all_loaded_modules () < 0)
+    if (uvl_resolve_all_loaded_modules (RESOLVE_MOD_EXPS) < 0)
     {
         LOG ("Failed to resolve module exports.");
         return -1;
