@@ -93,24 +93,36 @@ typedef union module_ports
     module_exports  exports;
 } module_ports_t;
 
-#pragma pack(push, 1)
-typedef struct loaded_module_info // again, thanks roxfan
+typedef struct segment_info
 {
-    u32_t   size;              //  0x1B8 for Vita 1.x
-    u8_t    unknown[8];
-    char    module_name[40];        // probably smaller
-    void    (*exit_proc)(void);
-    u32_t   exidx_start;
-    u32_t   exidx_end;
-    u8_t    unknown1[8];
-    void    *tls_init_data;
-    u32_t   tls_init_size;
-    u32_t   tls_area_size;
-    u8_t    unknown2[264];
-    u32_t   module_base;
-    u8_t    unknown3[84];
-    u32_t   type;       // 6 = user-mode PRX?
+    u32_t           size;  // this structure size (0x18)
+    u32_t           perms; // probably rwx in low bits
+    u32_t           vaddr; // address in memory
+    u32_t           memsz; // size in memory
+    u32_t           flags; // meanig unknown
+    u32_t           res;   // unused?
+} segment_info_t;
+
+typedef struct loaded_module_info
+{
+    u32_t           size;               // 0x1B8 for Vita 1.x
+    u32_t           handle;             // kernel module handle?
+    u32_t           flags;              // some bits. could be priority or whatnot
+    char            module_name[28];
+    u32_t           unkn_28;
+    void            *module_start;
+    u32_t           unkn_30;
+    void            *module_stop;
+    void            *exidx_start;
+    void            *exidx_end;
+    u32_t           unkn_40;
+    u32_t           unkn_40;
+    void            *tls_init_data;
+    u32_t           tls_init_size;
+    u32_t           tls_area_size;
+    char            file_path[256];         // 
+    segment_info_t  segments[4];
+    u32_t           type;       // 6 = user-mode PRX?
 } loaded_module_info_t;
-#pragma pack(pop)
 
 #endif

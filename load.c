@@ -107,7 +107,7 @@ int uvl_load_elf (SceUID fd, SceOff start_offset, void **entry)
         }
     }
     // resolve NIDs
-    for (import = (module_imports_t*)(base_address + mod_info.stub_top); import < mod_info.stub_end; import++)
+    for (import = (module_imports_t*)(base_address + mod_info.stub_top); import < (base_address + mod_info.stub_end); import++)
     {
         if (uvl_load_module (import->lib_name) < 0)
         {

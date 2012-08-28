@@ -418,12 +418,17 @@ int uvl_resolve_all_unresolved ()
     }
 }
 
-int uvl_resolve_all_loaded_modules ()
+int uvl_resolve_all_loaded_modules (int type)
 {
-    loaded_module_info_t mod_info;
+    loaded_module_info_t m_mod_info;
+    module_info_t *mod_info;
+    void *result;
+    u32_t segment_size;
     u32_t mod_list[MAX_LOADED_MODS];
     u32_t num_loaded = MAX_LOADED_MODS;
     int i;
+    module_exports_t *exports;
+    module_imports_t *imports;
 
     if (sceKernelGetModuleList (0xFF, mod_list, &num_loaded) < 0)
     {
@@ -432,12 +437,62 @@ int uvl_resolve_all_loaded_modules ()
     }
     for (i = 0; i < num_loaded; i++)
     {
-        mod_info.size = sizeof (loaded_module_info_t); // should be 440
-        if (sceKernelGetModuleInfo (mod_list[i], &mod_info) < 0)
+        m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
+        if (sceKernelGetModuleInfo (mod_list[i], &m_mod_info) < 0)
         {
             LOG ("Error getting info for mod 0x%08X, continuing", mod_list[i]);
             continue;
         }
-        // TODO: Get more info about sceKernelGetModuleInfo and finish this function
+        mod_info = NULL;
+        result = m_mod_info.segments[0].vaddr;
+        segment_size = m_mod_info.segments[0].memsz;
+        for (;;)
+        {
+            result = memfind (m_mod_info.module_name, result, segment_size);
+            if (result == NULL)
+            {
+                break; // not found
+            }
+            // try making this the one
+            mod_info = (module_info_t*)(result - 4);
+            if (ptr_valid (mod_info->ent_top) && ptr_valid (mod_info->stub_top))
+            {
+                break; // we found it
+            }
+            else // that string just happened to appear
+            {
+                segment_size -= result - m_mod_info.segments[0].vaddr;
+                continue;
+            }
+        }
+        if (mod_info == NULL)
+        {
+            LOG ("Can't get module information for %s.", m_mod_info.module_name);
+            return -1;
+        }
+        if (BIT_SET (type, RESOLVE_MOD_EXPS))
+        {
+            for (exports = (module_exports_t*)(m_mod_info.segments[0].vaddr + mod_info->ent_top); 
+                exports < (m_mod_info.segments[0].vaddr + mod_info->ent_end); exports++)
+            {
+                if (uvl_add_resolved_exports (exports) < 0)
+                {
+                    LOG ("Unable to resolve exports at %p. Continuing.", exports);
+                    continue;
+                }
+            }
+        }
+        if (BIT_SET (type, RESOLVE_MOD_IMPS))
+        {
+            for (imports = (module_exports_t*)(m_mod_info.segments[0].vaddr + mod_info->stub_top); 
+                imports < (m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
+            {
+                if (uvl_add_resolved_imports (imports) < 0)
+                {
+                    LOG ("Unable to resolve imports at %p. Continuing.", imports);
+                    continue;
+                }
+            }
+        }
     }
 }
