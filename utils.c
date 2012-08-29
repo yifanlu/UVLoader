@@ -315,3 +315,109 @@ char* memstr (char *needle, int n_length, char *haystack, int h_length)
 {
     return boyer_moore (haystack, h_length, needle, n_length);
 }
+
+// thanks naehrwert for the tiny printf
+
+static void _putn(u32 x, s32 base, s8 fill, s32 fcnt)
+{
+    s8 buf[65];
+    s8 *digits = "0123456789abcdefghijklmnopqrstuvwxyz";
+    s8 *p;
+    s32 c = fcnt;
+    
+    if(base > 36)
+        return;
+
+    p = buf + 64;
+    *p = 0;
+    do
+    {
+        c--;
+        *--p = digits[x % base];
+        x /= base;
+    }while(x);
+    
+    if(fill != 0)
+    {
+        while(c > 0)
+        {
+            *--p = fill;
+            c--;
+        }
+    }
+    
+    kcon_puts(p);
+}
+KSYM_DEFINE(_putn, KSYM_FUNCTION | KSYM_PRIVATE);
+
+void kprintf(const s8 *fmt, ...)
+{
+    va_list ap;
+    s8 *s;
+    s8 c, fill;
+    s32 fcnt;
+    u32 n;
+    
+    va_start(ap, fmt);
+    while(*fmt)
+    {
+        if(*fmt == '%')
+        {
+            fmt++;
+            fill = 0;
+            fcnt = 0;
+            if((*fmt >= '0' && *fmt <= '9') || *fmt == ' ')
+                if(*(fmt+1) >= '0' && *(fmt+1) <= '9')
+                {
+                    fill = *fmt;
+                    fcnt = *(fmt+1) - '0';
+                    fmt++;
+                    fmt++;
+                }
+            switch(*fmt)
+            {
+            case 'c':
+                c = va_arg(ap, u32);
+                kcon_putc(c);
+                break;
+            case 's':
+                s = va_arg(ap, s8 *);
+                kcon_puts(s);
+                break;
+            case 'd':
+                n = va_arg(ap, u32);
+                _putn(n, 10, fill, fcnt);
+                break;
+            case 'x':
+                n = va_arg(ap, u32);
+                _putn(n, 16, fill, fcnt);
+                break;
+            case 'F':
+                n = va_arg(ap, u32);
+                kcon_set_fgcolor(n);
+                break;
+            case 'B':
+                n = va_arg(ap, u32);
+                kcon_set_bgcolor(n);
+                break;
+            case '%':
+                kcon_putc('%');
+                break;
+            case '\0':
+                goto out;
+            default:
+                kcon_putc('%');
+                kcon_putc(*fmt);
+                break;
+            }
+        }
+        else
+            kcon_putc(*fmt);
+        fmt++;
+    }
+
+    out:
+    va_end(ap);
+}
+KSYM_DEFINE(kprintf, KSYM_FUNCTION);
+
