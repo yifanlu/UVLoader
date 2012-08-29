@@ -8,6 +8,7 @@
 // 1110 0001 0010 111111111111 0001 1110 // BX LR
 
 #define BIT_SET(i, b) (i & (0x1 << b))
+#define PTR_VALID(ptr) (ptr > 0x81000000 && ptr < 0xF0000000) // TODO: change this to be better 
 resolve_entry_t *RESOLVE_TABLE = 0x85000000;
 int RESOLVE_ENTRIES = 0;
 
@@ -448,14 +449,14 @@ int uvl_resolve_all_loaded_modules (int type)
         segment_size = m_mod_info.segments[0].memsz;
         for (;;)
         {
-            result = memfind (m_mod_info.module_name, result, segment_size);
+            result = memstr (m_mod_info.module_name, strlen (m_mod_info.module_name) result, segment_size);
             if (result == NULL)
             {
                 break; // not found
             }
             // try making this the one
             mod_info = (module_info_t*)(result - 4);
-            if (ptr_valid (mod_info->ent_top) && ptr_valid (mod_info->stub_top))
+            if (PTR_VALID (mod_info->ent_top) && PTR_VALID (mod_info->stub_top))
             {
                 break; // we found it
             }
@@ -487,7 +488,7 @@ int uvl_resolve_all_loaded_modules (int type)
             for (imports = (module_exports_t*)(m_mod_info.segments[0].vaddr + mod_info->stub_top); 
                 imports < (m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
             {
-                if (uvl_add_resolved_imports (imports) < 0)
+                if (uvl_add_resolved_imports10 (imports) < 0)
                 {
                     LOG ("Unable to resolve imports at %p. Continuing.", imports);
                     continue;
