@@ -47,5 +47,6 @@ int uvl_entry ()
 // where the magic happens
 int uvl_start ()
 {
-
+    // clean up ram
+    // load ELF
 }

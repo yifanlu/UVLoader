@@ -41,4 +41,7 @@ u32_t strlen (const char *str);
 // This is not in libc's string.h, but we need it
 char* memstr (char *needle, int n_length, char *haystack, int h_length);
 
+// thanks naehrwert for the tiny printf
+int sprintf (char *str, char *format, ...);
+
 #endif

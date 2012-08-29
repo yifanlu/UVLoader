@@ -318,12 +318,17 @@ char* memstr (char *needle, int n_length, char *haystack, int h_length)
 
 // thanks naehrwert for the tiny printf
 
-static void _putn(u32 x, s32 base, s8 fill, s32 fcnt)
+static void _putn(char *str, uint x, int base, char fill, int fcnt, int upper)
 {
-    s8 buf[65];
-    s8 *digits = "0123456789abcdefghijklmnopqrstuvwxyz";
-    s8 *p;
-    s32 c = fcnt;
+    char buf[65];
+    char *digits;
+    char *p;
+    int c = fcnt;
+
+    if (upper)
+        digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    else
+        digits = "0123456789abcdefghijklmnopqrstuvwxyz"
     
     if(base > 36)
         return;
@@ -346,17 +351,16 @@ static void _putn(u32 x, s32 base, s8 fill, s32 fcnt)
         }
     }
     
-    kcon_puts(p);
+    for(; *p != '\0'; *(str++) = *(p++));
 }
-KSYM_DEFINE(_putn, KSYM_FUNCTION | KSYM_PRIVATE);
 
-void kprintf(const s8 *fmt, ...)
+int sprintf (char *str, const char *fmt, ...)
 {
     va_list ap;
-    s8 *s;
-    s8 c, fill;
-    s32 fcnt;
-    u32 n;
+    char *s;
+    char c, fill;
+    int fcnt;
+    uint n;
     
     va_start(ap, fmt);
     while(*fmt)
@@ -377,47 +381,41 @@ void kprintf(const s8 *fmt, ...)
             switch(*fmt)
             {
             case 'c':
-                c = va_arg(ap, u32);
-                kcon_putc(c);
+                c = va_arg(ap, uint);
+                *(str++) = c;
                 break;
             case 's':
-                s = va_arg(ap, s8 *);
-                kcon_puts(s);
+                s = va_arg(ap, char *);
+                for(; *s != '\0'; *(str++) = *(s++));
                 break;
             case 'd':
-                n = va_arg(ap, u32);
-                _putn(n, 10, fill, fcnt);
+                n = va_arg(ap, uint);
+                _putn(str, n, 10, fill, fcnt, 0);
                 break;
             case 'x':
-                n = va_arg(ap, u32);
-                _putn(n, 16, fill, fcnt);
+                n = va_arg(ap, uint);
+                _putn(str, n, 16, fill, fcnt, 0);
                 break;
-            case 'F':
-                n = va_arg(ap, u32);
-                kcon_set_fgcolor(n);
-                break;
-            case 'B':
-                n = va_arg(ap, u32);
-                kcon_set_bgcolor(n);
-                break;
+            case 'X':
+                n = va_arg(ap, uint);
+                _putn(str, n, 16, fill, fcnt, 1);
             case '%':
-                kcon_putc('%');
+                *(str++) = '%';
                 break;
             case '\0':
                 goto out;
             default:
-                kcon_putc('%');
-                kcon_putc(*fmt);
+                *(str++) = '%';
+                *(str++) = *fmt;
                 break;
             }
         }
         else
-            kcon_putc(*fmt);
+            *(str++) = *fmt;
         fmt++;
     }
 
     out:
+    *str = '\0';
     va_end(ap);
 }
-KSYM_DEFINE(kprintf, KSYM_FUNCTION);
-
