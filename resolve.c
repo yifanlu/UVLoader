@@ -205,7 +205,7 @@ u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg)
     }
 }
 
-int uvl_add_resolved_imports (module_imports_t *imp_table)
+int uvl_add_resolved_imports (module_imports_t *imp_table, int syscalls_only)
 {
     // this should be called BEFORE cleanup
     resolve_entry_t res_entry;
@@ -222,11 +222,19 @@ int uvl_add_resolved_imports (module_imports_t *imp_table)
             LOG ("Error generating entry from import stub.");
             return -1;
         }
+        if (syscalls_only && res_entry.type != RESOLVE_TYPE_SYSCALL)
+        {
+            continue;
+        }
         if (uvl_resolve_table_add (&entry) < 0)
         {
             LOG ("Error adding entry to table.");
             return -1;
         }
+    }
+    if (syscalls_only)
+    {
+        return 0;
     }
     // get variables
     res_entry.type = RESOLVE_TYPE_VARIABLE;
@@ -489,7 +497,7 @@ int uvl_resolve_all_loaded_modules (int type)
             for (imports = (module_exports_t*)(m_mod_info.segments[0].vaddr + mod_info->stub_top); 
                 imports < (m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
             {
-                if (uvl_add_resolved_imports10 (imports) < 0)
+                if (uvl_add_resolved_imports (imports, BIT_SET (type, RESOLVE_IMPS_SVC_ONLY)) < 0)
                 {
                     LOG ("Unable to resolve imports at %p. Continuing.", imports);
                     continue;

@@ -17,6 +17,7 @@
 
 #define RESOLVE_MOD_IMPS        0x1
 #define RESOLVE_MOD_EXPS        0x2
+#define RESOLVE_IMPS_SVC_ONLY   0x4
 
 #define MAX_LOADED_MODS         128
 
