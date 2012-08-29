@@ -1,6 +1,8 @@
 #ifndef UVL_RESOLVE
 #define UVL_RESOLVE
 
+#include "types.h"
+
 #define RESOLVE_TYPE_UNKNOWN    0
 #define RESOLVE_TYPE_FUNCTION   1
 #define RESOLVE_TYPE_SYSCALL    2
@@ -12,6 +14,9 @@
 #define INSTRUCTION_SYSCALL     3
 #define INSTRUCTION_BRANCH      4
 #define STUB_FUNC_MAX_LEN       16
+
+#define RESOLVE_MOD_IMPS        0x1
+#define RESOLVE_MOD_EXPS        0x2
 
 #define MAX_LOADED_MODS         128
 

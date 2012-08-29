@@ -1,7 +1,7 @@
-#include "scefuncs.h"
-#include "strings.h"
-#include "resolve.h"
 #include "load.h"
+#include "resolve.h"
+#include "scefuncs.h"
+#include "utils.h"
 
 int uvl_load_exe (const char *filename, void **entry)
 {

@@ -1,5 +1,6 @@
 #include "resolve.h"
-#include "string.h"
+#include "scefuncs.h"
+#include "utils.h"
 
 // 1110 0011 0000 0000 1100 001010000011
 // 1110 0011 0000 0101 1100 011100101001 // 0x5729
