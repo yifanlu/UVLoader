@@ -2,26 +2,42 @@
 #include "scefuncs.h"
 #include "utils.h"
 
-// 1110 0011 0000 0000 1100 001010000011
-// 1110 0011 0000 0101 1100 011100101001 // 0x5729
-// 1110 0011 0100 1000 1100 000100110110 // 0x8136
-// 1110 0001 0010 111111111111 0001 1100 // BX R12
-// 1110 0001 0010 111111111111 0001 1110 // BX LR
-
+/** Checks if a bit is set in a given member */
 #define BIT_SET(i, b) (i & (0x1 << b))
+/** Checks if this is a valid ARM address */
 #define PTR_VALID(ptr) (ptr > 0x81000000 && ptr < 0xF0000000) // TODO: change this to be better 
+/** The first entry in the resolve table containing information to resolve NIDs */
 resolve_entry_t *RESOLVE_TABLE = 0x85000000;
+/** Number of entries in the resolve table */
 int RESOLVE_ENTRIES = 0;
 
-int uvl_resolve_table_add (resolve_entry_t *entry) // TODO: remove?
+/********************************************//**
+ *  \brief Adds a resolve entry
+ *  
+ *  This function does not check for duplicates.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_resolve_table_add (resolve_entry_t *entry) ///< Entry to add
 {
     void *location = &RESOLVE_TABLE[RESOLVE_ENTRIES];
     memcpy (location, entry);
     RESOLVE_ENTRIES++;
-    return;
+    return 0;
 }
 
-resolve_entry_t *uvl_resolve_table_get (u32_t nid, int forced_resolved)
+/********************************************//**
+ *  \brief Gets a resolve entry
+ *  
+ *  This function returns the first entry in the 
+ *  table that has the given NID. If 
+ *  @a force_resolved is used, it will not 
+ *  return unresolved entries.
+ *  \returns Entry on success, NULL on error
+ ***********************************************/
+resolve_entry_t *
+uvl_resolve_table_get (u32_t nid,               ///< NID to resolve
+                         int forced_resolved)   ///< Only return resolved entries
 {
     int i;
     for (i = 0; i < RESOLVE_ENTRIES; i++)
@@ -36,16 +52,38 @@ resolve_entry_t *uvl_resolve_table_get (u32_t nid, int forced_resolved)
             return &RESOLVE_TABLE[i];
         }
     }
-    return NULL
+    return NULL;
 }
 
 // TODO: Implement this
-resolve_entry_t *uvl_estimate_syscall (u32_t nid)
+/********************************************//**
+ *  \brief Estimates an unknown syscall
+ *  
+ *  Estimates a syscall for a given NID based 
+ *  on information of existing syscalls in the 
+ *  resolve table.
+ *  \returns Entry on success, NULL on error
+ ***********************************************/
+resolve_entry_t *
+uvl_estimate_syscall (u32_t nid) ///< NID to resolve
 {
     return NULL;
 }
 
-int uvl_import_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry)
+/********************************************//**
+ *  \brief Creates resolve entry from stub 
+ *  function imported by a module
+ *  
+ *  Given the stub function of a loaded module 
+ *  that has already been resolved, extract 
+ *  the resolved information and write it to 
+ *  a @c resolve_entry_t.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_import_stub_to_entry (void *func,  ///< Stub function to read
+                         u32_t nid,    ///< NID resolved by stub
+               resolve_entry_t *entry) ///< Entry to write to
 {
     u32_t val = 0;
     u8_t inst_type = 0;
@@ -54,6 +92,7 @@ int uvl_import_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry)
     for (;;)
     {
         val = uvl_decode_arm_inst (func, &inst_type);
+        /*
         if (val < 0)
         {
             // instruction invalid, hopefully we got what we need
@@ -65,6 +104,7 @@ int uvl_import_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry)
             // or we screwed up
             continue;
         }
+        */
         switch (inst_type)
         {
             case INSTRUCTION_MOV:
@@ -100,7 +140,22 @@ int uvl_import_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry)
     return 0;
 }
 
-u32_t uvl_decode_arm_inst (u32_t cur_inst, u8_t *type)
+/********************************************//**
+ *  \brief Get an instruction's type and
+ *  immediate value
+ *  
+ *  Currently only supports ARMv7 encoding of 
+ *  MOV Rd, \#imm, MOVT Rd, \#imm, BX Rn, and 
+ *  SVC \#imm. You should use the return value 
+ *  of this function to check for error but 
+ *  instead the value of @a type where 
+ *  @c INSTRUCTION_UNKNOWN is a failure.
+ *  \returns Immediate value of instruction
+ *  \returns on success, indeterminate on error
+ ***********************************************/
+u32_t 
+uvl_decode_arm_inst (u32_t cur_inst, ///< ARMv7 instruction
+                      u8_t *type)    ///< See defined "Supported ARM instruction types"
 {
     // if this doesn't change, error
     *type = INSTRUCTION_UNKNOWN;
@@ -117,6 +172,7 @@ u32_t uvl_decode_arm_inst (u32_t cur_inst, u8_t *type)
         if (BIT_SET (cur_inst, 26) && !BIT_SET (cur_inst, 25) && BIT_SET (cur_inst, 24))
         {
             *type = INSTRUCTION_SYSCALL;
+            // TODO: Return syscall immediate value.
             return 1;
         }
     }
@@ -177,7 +233,20 @@ u32_t uvl_decode_arm_inst (u32_t cur_inst, u8_t *type)
     }
 }
 
-u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg)
+/********************************************//**
+ *  \brief Creates an ARMv7 instruction
+ *  
+ *  Currently only supports ARMv7 encoding of 
+ *  MOV Rd, \#imm, MOVT Rd, \#imm, BX Rn, and 
+ *  SVC \#imm. Depending on the @a type, not 
+ *  all parameters may be used.
+ *  \returns ARMv7 instruction on success 
+ *  \returns or 0 on failure.
+ ***********************************************/
+u32_t 
+uvl_encode_arm_inst (u8_t type,  ///< See defined "Supported ARM instruction types"
+                    u16_t immed, ///< Immediate value to encode
+                    u16_t reg)   ///< Register used in instruction
 {
     switch(type)
     {
@@ -205,7 +274,18 @@ u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg)
     }
 }
 
-int uvl_add_resolved_imports (module_imports_t *imp_table, int syscalls_only)
+/********************************************//**
+ *  \brief Add a module's import table's entries 
+ *  to the resolve table
+ *  
+ *  A loaded module has it's stubs already 
+ *  resolved by the kernel. This will copy 
+ *  those resolved entries for our own use.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_add_resolved_imports (module_imports_t *imp_table,    ///< Module's import table to read from
+                                       int syscalls_only) ///< If set, will only add resolved syscalls and nothing else
 {
     // this should be called BEFORE cleanup
     resolve_entry_t res_entry;
@@ -266,7 +346,18 @@ int uvl_add_resolved_imports (module_imports_t *imp_table, int syscalls_only)
     return 0;
 }
 
-int uvl_add_unresolved_imports (module_imports_t *imp_table)
+/********************************************//**
+ *  \brief Add the homebrew's unresolved entries 
+ *  to the resolve table
+ *  
+ *  Reads a homebrew's import table and adds 
+ *  the entries into the resolve table. A later 
+ *  call to \sa uvl_resolve_all_unresolved will
+ *  resolve them.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_add_unresolved_imports (module_imports_t *imp_table) ///< Homebrew's import table
 {
     resolve_entry_t res_entry;
     int i;
@@ -313,7 +404,14 @@ int uvl_add_unresolved_imports (module_imports_t *imp_table)
     return 0;
 }
 
-int uvl_add_resolved_exports (module_exports_t *exp_table)
+/********************************************//**
+ *  \brief Add a module's export entries to 
+ *  the resolve table
+ *  
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_add_resolved_exports (module_exports_t *exp_table) ///< Module's export table
 {
     resolve_entry_t res_entry;
     int i;
@@ -360,7 +458,17 @@ int uvl_add_resolved_exports (module_exports_t *exp_table)
     return 0;
 }
 
-int uvl_resolve_all_unresolved ()
+/********************************************//**
+ *  \brief Walks the resolve table, locates 
+ *  unresolved entries and resolves them
+ *  
+ *  Called after building the resolve table from 
+ *  resolved entries of loaded modules and 
+ *  unresolved entries of the homebrew.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_resolve_all_unresolved ()
 {
     resolve_entry_t *stub;
     resolve_entry_t *entry;
@@ -428,7 +536,18 @@ int uvl_resolve_all_unresolved ()
     }
 }
 
-int uvl_resolve_all_loaded_modules (int type)
+/********************************************//**
+ *  \brief Adds entries from loaded modules to 
+ *  resolve table
+ *  
+ *  This functions locates all loaded modules 
+ *  and attempts to read their import and/or 
+ *  export table and add them to our resolve 
+ *  table.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see defined "Search flags for importing loaded modules") directing the search
 {
     loaded_module_info_t m_mod_info;
     module_info_t *mod_info;

@@ -1,11 +1,24 @@
+/// 
+/// \file uvloader.c
+/// \brief Userland Vita Loader startup
+/// \defgroup uvloader UVLoader
+/// \brief Startup and hooks
+/// @{
+/// 
 #include "cleanup.h"
 #include "load.h"
 #include "resolve.h"
 #include "scefuncs.h"
 #include "utils.h"
 
-// what the exploit calls
-int uvl_entry ()
+/********************************************//**
+ *  \brief Entry point from exploit
+ *  
+ *  Call this from your exploit to run UVLoader.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_entry ()
 {
     SceUID uvl_thread;
     // TODO: find a place in memory to store table.
@@ -44,9 +57,15 @@ int uvl_entry ()
     return 0;
 }
 
-// where the magic happens
-int uvl_start ()
+/********************************************//**
+ *  \brief Starts UVLoader
+ *  
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_start ()
 {
     // clean up ram
     // load ELF
 }
+/// @}

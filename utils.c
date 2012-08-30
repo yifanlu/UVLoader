@@ -184,7 +184,7 @@ strlen(const char *str)
 }
 
 // Below is stolen from http://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string_search_algorithm
- 
+
 #define ALPHABET_LEN 255
 #define NOT_FOUND patlen
 #define max(a, b) ((a < b) ? b : a)
@@ -310,14 +310,23 @@ char* boyer_moore (char *string, uint stringlen, char *pat, uint patlen) {
     return NULL;
 }
 
-// this wrapper is because we might change the algo later
-char* memstr (char *needle, int n_length, char *haystack, int h_length)
+/********************************************//**
+ *  \brief Search for a string in memory
+ *  
+ *  Uses the Boyer-Moore algorithm to search. 
+ *  \returns First occurrence of @a needle in 
+ *  \returns @a haystack
+ ***********************************************/
+char* 
+memstr (char *needle,   ///< String to find
+         int n_length,  ///< Length of @a needle
+        char *haystack, ///< Where to search
+         int h_length)  ///< Length of @a haystack
 {
     return boyer_moore (haystack, h_length, needle, n_length);
 }
 
 // thanks naehrwert for the tiny printf
-
 static void _putn(char *str, uint x, int base, char fill, int fcnt, int upper)
 {
     char buf[65];

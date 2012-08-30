@@ -3,7 +3,17 @@
 #include "scefuncs.h"
 #include "utils.h"
 
-int uvl_load_exe (const char *filename, void **entry)
+/********************************************//**
+ *  \brief Loads an supported executable
+ *  
+ *  This function identifies and loads a 
+ *  executable at the given file.
+ *  Currently supports ELF and SCE executable.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int
+uvl_load_exe (const char *filename, ///< Absolute path to executable
+                    void **entry)   ///< Returned pointer to entry pointer
 {
     char magic[4];
 
@@ -45,7 +55,16 @@ int uvl_load_exe (const char *filename, void **entry)
     return -1;
 }
 
-int uvl_load_elf (SceUID fd, SceOff start_offset, void **entry)
+/********************************************//**
+ *  \brief Loads an ELF file
+ *  
+ *  Performs both loading and resolving NIDs
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
+              SceOff start_offset,  ///< Starting position of the ELF in file
+                void **entry)       ///< Returned pointer to entry pointer
 {
     Elf32_Ehdr_t elf_hdr;
     module_info_t mod_info;
@@ -134,7 +153,26 @@ int uvl_load_elf (SceUID fd, SceOff start_offset, void **entry)
     return 0;
 }
 
-int uvl_check_elf_header (Elf32_Ehdr_t *hdr)
+/********************************************//**
+ *  \brief Loads a system module by name
+ *  
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_load_module (char *name) ///< Name of module to load
+{
+    // TODO: Get filename for mod name and load module
+}
+
+/********************************************//**
+ *  \brief Validates ELF header
+ *  
+ *  Makes sure the ELF is recognized by the 
+ *  Vita's architecture.
+ *  \returns Zero if valid, otherwise invalid
+ ***********************************************/
+int 
+uvl_check_elf_header (Elf32_Ehdr_t *hdr) ///< ELF header to check
 {
     // magic number
     if (!(hdr->e_ident[EI_MAG0] == ELFMAG0 && hdr->e_ident[EI_MAG1] == ELFMAG1 && hdr->e_ident[EI_MAG2] == ELFMAG2 && hdr->e_ident[EI_MAG3] == ELFMAG3))
@@ -193,7 +231,21 @@ int uvl_check_elf_header (Elf32_Ehdr_t *hdr)
     return 0;
 }
 
-int uvl_get_module_info (SceUID off, SceOff start_offset, Elf32_Ehdr_t *elf_hdr, module_info_t *mod_info)
+/********************************************//**
+ *  \brief Finds SCE module info
+ *  
+ *  This function locates the strings table 
+ *  and finds the section where the module 
+ *  information resides. Then it reads the 
+ *  module information. This function will 
+ *  move the pointer in the file descriptor.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_get_module_info (SceUID fd,             ///< File descriptor for the ELF
+                     SceOff start_offset,   ///< Starting position of the ELF in file
+               Elf32_Ehdr_t *elf_hdr,       ///< ELF header
+              module_info_t *mod_info)      ///< Where to read information to
 {
     Elf32_Shdr_t sec_hdr;
     // find strings table
@@ -255,9 +307,4 @@ int uvl_get_module_info (SceUID off, SceOff start_offset, Elf32_Ehdr_t *elf_hdr,
         }
     }
     return -1;
-}
-
-int uvl_load_module (char *name)
-{
-    // TODO: Get filename for mod name and load module
 }

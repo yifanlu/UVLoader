@@ -1,16 +1,28 @@
+/// 
+/// \file load.h
+/// \brief Functions to load executable
+/// \defgroup load Executable Loader
+/// \brief Parses and loads ELFs
+/// @{
+/// 
 #ifndef UVL_LOAD
 #define UVL_LOAD
 
 #include "types.h"
 
-// ELF data types
+/** \name ELF data types
+ *  @{
+ */
 typedef void*   Elf32_Addr;
 typedef u32_t   Elf32_Off;
 typedef u32_t   Elf32_Sword;
 typedef u32_t   Elf32_Word;
 typedef u16_t   Elf32_Half;
+/** @}*/
 
-// ELF constants
+/** \name ELF identification
+ *  @{
+ */
 #define EI_NIDENT   16
 #define EI_MAG0     0
 #define EI_MAG1     1
@@ -20,27 +32,45 @@ typedef u16_t   Elf32_Half;
 #define EI_DATA     5
 #define EI_VERSION  6
 #define EI_PAD      7
-#define ET_EXEC     2
-#define EM_ARM      40
-#define EV_CURRENT  1
 #define ELFMAG0     0x7F
 #define ELFMAG1     'E'
 #define ELFMAG2     'L'
 #define ELFMAG3     'F'
-
 #define ELFCLASS32  1
 #define ELFDATA2LSB 1
+/** @}*/
+/** \name ELF object types
+ *  @{
+ */
+#define ET_EXEC     2
+/** @}*/
+/** \name ELF machine types
+ *  @{
+ */
+#define EM_ARM      40
+/** @}*/
+/** \name ELF version
+ *  @{
+ */
+#define EV_CURRENT  1
+/** @}*/
 
-// other constants
+/** \name SCE identification
+ *  @{
+ */
 #define MAGIC_LEN   4
 #define SCEMAG0     'S'
 #define SCEMAG1     'C'
 #define SCEMAG2     'E'
 #define SCEMAG3     0
 #define SCEHDR_LEN  0xA0
-#define SEC_MODINFO ".sceModuleInfo.rodata"
+/** @}*/
+#define SEC_MODINFO ".sceModuleInfo.rodata" ///< Name of module information section
 
-// ELF structs
+/** \name ELF structures
+ *  See the ELF specification for more information.
+ *  @{
+ */
 typedef struct Elf32_Ehdr
 {
     u8_t        e_ident[EI_NIDENT];
@@ -84,5 +114,21 @@ typedef struct Elf32_Phdr
     Elf32_Word  p_flags;
     Elf32_Word  p_align;
 } Elf32_Phdr_t;
+/** @}*/
+
+/** \name Functions to load code
+ *  @{
+ */
+int uvl_load_exe (const char *filename, void **entry);
+int uvl_load_elf (SceUID fd, SceOff start_offset, void **entry);
+int uvl_load_module (char *name);
+/** @}*/
+/** \name Helper functions
+ *  @{
+ */
+int uvl_check_elf_header (Elf32_Ehdr_t *hdr);
+int uvl_get_module_info (SceUID fd, SceOff start_offset, Elf32_Ehdr_t *elf_hdr, module_info_t *mod_info);
+/** @}*/
 
 #endif
+/// @}

@@ -1,45 +1,82 @@
+/// 
+/// \file resolve.h
+/// \brief Functions to resolve NIDs and syscalls
+/// \defgroup resolve Executable Resolver
+/// \brief Finds and resolves NIDs
+/// @{
+/// 
 #ifndef UVL_RESOLVE
 #define UVL_RESOLVE
 
 #include "types.h"
 
-#define RESOLVE_TYPE_UNKNOWN    0
-#define RESOLVE_TYPE_FUNCTION   1
-#define RESOLVE_TYPE_SYSCALL    2
-#define RESOLVE_TYPE_VARIABLE   3
+/** \name Type of entry
+ *  @{
+ */
+#define RESOLVE_TYPE_UNKNOWN    0       ///< Unknown type
+#define RESOLVE_TYPE_FUNCTION   1       ///< Function call
+#define RESOLVE_TYPE_SYSCALL    2       ///< Syscall
+#define RESOLVE_TYPE_VARIABLE   3       ///< Imported variable
+/** @}*/
 
-#define INSTRUCTION_UNKNOWN     0
-#define INSTRUCTION_MOV         1
-#define INSTRUCTION_MOVT        2
-#define INSTRUCTION_SYSCALL     3
-#define INSTRUCTION_BRANCH      4
-#define STUB_FUNC_MAX_LEN       16
+/** \name Supported ARM instruction types
+ *  @{
+ */
+#define INSTRUCTION_UNKNOWN     0       ///< Unknown/unsupported instruction
+#define INSTRUCTION_MOV         1       ///< MOV Rd, \#imm instruction
+#define INSTRUCTION_MOVT        2       ///< MOVT Rd, \#imm instruction
+#define INSTRUCTION_SYSCALL     3       ///< SVC \#imm instruction
+#define INSTRUCTION_BRANCH      4       ///< BX Rn instruction
+/** @}*/
 
-#define RESOLVE_MOD_IMPS        0x1
-#define RESOLVE_MOD_EXPS        0x2
-#define RESOLVE_IMPS_SVC_ONLY   0x4
+#define STUB_FUNC_MAX_LEN       16      ///< Max size for a stub function in bytes
 
-#define MAX_LOADED_MODS         128
+/** \name Search flags for importing loaded modules
+ *  \sa uvl_resolve_all_loaded_modules
+ *  @{
+ */
+#define RESOLVE_MOD_IMPS        0x1     ///< Add entry from import function stubs
+#define RESOLVE_MOD_EXPS        0x2     ///< Add entry from exported information
+#define RESOLVE_IMPS_SVC_ONLY   0x4     ///< Used with @c RESOLVE_MOD_IMPS but only add syscalls for import entries
+/** @}*/
 
+#define MAX_LOADED_MODS         128     ///< Maximum number of loaded modules
+
+/**
+ * \brief Resolve table entry
+ * 
+ * This can represent either an unresolved entry 
+ * from a homebrew or a resolved entry copied 
+ * from a loaded module.
+ */
 typedef struct resolve_entry
 {
-    u32_t   nid;
-    u16_t   type;
-    u16_t   resolved;
+    u32_t   nid;            ///< NID of entry
+    u16_t   type;           ///< See defined "Type of entry"
+    u16_t   resolved;       ///< Is a resolved entry?
+    /**
+     * \brief Value of the entry
+     */
     union value
     {
-        u32_t   value;
-        u32_t   ptr;
-        u32_t   func_ptr;
-        u32_t   syscall;
+        u32_t   value;      ///< Any double-word value for resolved
+        u32_t   ptr;        ///< A pointer value for unresolved pointing to where to write resolved value
+        u32_t   func_ptr;   ///< A pointer to stub function for unresolved or function to call for resolved
+        u32_t   syscall;    ///< A syscall number
     };
 } resolve_entry_t;
 
+/**
+ * \brief SCE module information section
+ * 
+ * Can be found in an ELF file or loaded in 
+ * memory.
+ */
 typedef struct module_info // thanks roxfan
 {
     u16_t   modattribute;  // ??
     u8_t    modversion[2]; // always 1,1?
-    char    modname[27];   // 
+    char    modname[27];   ///< Name of the module
     u8_t    type;          // 6 = user-mode prx?
     void    *gp_value;     // always 0 on ARM
     u32_t   ent_top;       // beginning of the export list (sceModuleExports array)
@@ -58,6 +95,12 @@ typedef struct module_info // thanks roxfan
     u32_t   extab_end;     //
 } module_info_t;
 
+/**
+ * \brief SCE module export table
+ * 
+ * Can be found in an ELF file or loaded in 
+ * memory.
+ */
 typedef struct module_exports // thanks roxfan
 {
     u16_t   size;           // size of this structure; 0x20 for Vita 1.x
@@ -72,6 +115,12 @@ typedef struct module_exports // thanks roxfan
     void    **entry_table;  // array of pointers to exported functions and then variables
 } module_exports_t;
 
+/**
+ * \brief SCE module import table
+ * 
+ * Can be found in an ELF file or loaded in 
+ * memory.
+ */
 typedef struct module_imports // thanks roxfan
 {
     u16_t   size;               // size of this structure; 0x34 for Vita 1.x
@@ -92,13 +141,22 @@ typedef struct module_imports // thanks roxfan
     void    **tls_entry_table;  // array of pointers to ???
 } module_imports_t;
 
+/**
+ * \brief Either an SCE module import table or export table
+ * 
+ * \sa module_imports
+ * \sa module_exports
+ */
 typedef union module_ports
 {
-    u16_t           size;
-    module_imports  imports;
-    module_exports  exports;
+    u16_t           size;       ///< Size of table
+    module_imports  imports;    ///< Import kind
+    module_exports  exports;    ///< Export kind
 } module_ports_t;
 
+/**
+ * \brief A segment of the module in memory
+ */
 typedef struct segment_info
 {
     u32_t           size;  // this structure size (0x18)
@@ -109,6 +167,11 @@ typedef struct segment_info
     u32_t           res;   // unused?
 } segment_info_t;
 
+/**
+ * \brief Loaded module information
+ * 
+ * Returned by @c sceKernelGetModuleInfo
+ */
 typedef struct loaded_module_info
 {
     u32_t           size;               // 0x1B8 for Vita 1.x
@@ -131,4 +194,41 @@ typedef struct loaded_module_info
     u32_t           type;       // 6 = user-mode PRX?
 } loaded_module_info_t;
 
+/** \name Interacting with the resolve table
+ *  @{
+ */
+int uvl_resolve_table_add (resolve_entry_t *entry);
+resolve_entry_t *uvl_resolve_table_get (u32_t nid, int forced_resolved);
+/** @}*/
+/** \name Estimating syscalls
+ *  @{
+ */
+resolve_entry_t *uvl_estimate_syscall (u32_t nid);
+/** @}*/
+/** \name Translating resolved stubs
+ *  @{
+ */
+int uvl_import_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry);
+/** @}*/
+/** \name ARM instruction functions
+ *  @{
+ */
+u32_t uvl_decode_arm_inst (u32_t cur_inst, u8_t *type);
+u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg);
+/** @}*/
+/** \name Bulk add to resolve table
+ *  @{
+ */
+int uvl_add_resolved_imports (module_imports_t *imp_table, int syscalls_only);
+int uvl_add_unresolved_imports (module_imports_t *imp_table);
+int uvl_add_resolved_exports (module_exports_t *exp_table);
+/** @}*/
+/** \name Resolving entries
+ *  @{
+ */
+int uvl_resolve_all_unresolved ();
+int uvl_resolve_all_loaded_modules (int type);
+/** @}*/
+
 #endif
+/// @}

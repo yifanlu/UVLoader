@@ -1,3 +1,10 @@
+/// 
+/// \file utils.h
+/// \brief Common functions
+/// \defgroup library Library Functions
+/// \brief String and memory functions
+/// @{
+/// 
 #ifndef UVL_UTILS
 #define UVL_UTILS
 
@@ -31,17 +38,32 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+/** \name string.h functions
+ *  See @c string.h documention for details.
+ *  @{
+ */
 void* memcpy (void *destination, const void *source, u32_t num);
 char* strcpy (char *destination, const char *source);
 int memcmp (const void *ptr1, const void *ptr2, u32_t num);
 int strcmp (const char *str1, const char *str2);
 void* memset (void *ptr, int value, u32_t num);
 u32_t strlen (const char *str);
+/** @}*/
 
 // This is not in libc's string.h, but we need it
+/** \name Search functions
+ *  @{
+ */
 char* memstr (char *needle, int n_length, char *haystack, int h_length);
+/** @}*/
 
-// thanks naehrwert for the tiny printf
+/** \name stdio.h functions
+ *  See @c stdio.h documention for details.
+ *  @{
+ */
 int sprintf (char *str, char *format, ...);
+/** @}*/
 
 #endif
+/// @}
