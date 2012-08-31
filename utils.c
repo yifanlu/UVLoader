@@ -183,6 +183,28 @@ strlen(const char *str)
     return (s - str);
 }
 
+/*
+ * Find the first occurrence of find in s.
+ */
+char *
+strstr(const char *s, const char *find)
+{
+    char c, sc;
+    size_t len;
+
+    if ((c = *find++) != 0) {
+        len = strlen(find);
+        do {
+            do {
+                if ((sc = *s++) == 0)
+                    return (NULL);
+            } while (sc != c);
+        } while (strncmp(s, find, len) != 0);
+        s--;
+    }
+    return ((char *)s);
+}
+
 // Below is stolen from http://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string_search_algorithm
 
 #define ALPHABET_LEN 255
@@ -315,7 +337,7 @@ char* boyer_moore (char *string, uint stringlen, char *pat, uint patlen) {
  *  
  *  Uses the Boyer-Moore algorithm to search. 
  *  \returns First occurrence of @a needle in 
- *  \returns @a haystack
+ *  @a haystack
  ***********************************************/
 char* 
 memstr (char *needle,   ///< String to find
@@ -363,15 +385,13 @@ static void _putn(char *str, uint x, int base, char fill, int fcnt, int upper)
     for(; *p != '\0'; *(str++) = *(p++));
 }
 
-int sprintf (char *str, const char *fmt, ...)
+int vsprintf (char *str, const char *fmt, va_list ap)
 {
-    va_list ap;
     char *s;
     char c, fill;
     int fcnt;
     uint n;
     
-    va_start(ap, fmt);
     while(*fmt)
     {
         if(*fmt == '%')
@@ -426,5 +446,37 @@ int sprintf (char *str, const char *fmt, ...)
 
     out:
     *str = '\0';
-    va_end(ap);
+}
+
+int sprintf (char *str, const char *format, ...)
+{
+    va_list arg;
+
+    va_start (arg, format);
+    vsprintf (str, format, arg);
+    va_end (arg);
+}
+
+/********************************************//**
+ *  \brief Writes a log entry
+ *  
+ *  Writes log to all places set in options 
+ *  including log file, on screen, and console.
+ ***********************************************/
+void logf (char *file,   ///< Source file of code writing to log
+           int line,    ///< Line number of code writing to log
+    const char *format, ///< Format of log entry or log entry itself
+               ...)     ///< Value(s) to write
+{
+    char processed_line[MAX_LOG_LENGTH];
+    char log_line[MAX_LOG_LENGTH];
+    va_list arg;
+
+    va_start (arg, format);
+    // generate log entry content
+    vsprintf (processed_line, format, arg);
+    va_end (arg);
+    // generate complete log entry
+    sprintf (log_line, "%s:%d %s\n", file, line, processed_line);
+    // TODO: Where to print log?
 }

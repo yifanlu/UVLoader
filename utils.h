@@ -10,6 +10,10 @@
 
 #include "types.h"
 
+#define MAX_LOG_LENGTH  0x100   ///< Any log entry larger than this will cause a buffer overflow!
+#define LOG (format, args...) \ ///< Write a log entry
+            (logf (__FILE__, __LINE__, format, args))
+
 // string.h from libc
 /*
  * Copyright (C) 2008 The Android Open Source Project
@@ -49,20 +53,22 @@ int memcmp (const void *ptr1, const void *ptr2, u32_t num);
 int strcmp (const char *str1, const char *str2);
 void* memset (void *ptr, int value, u32_t num);
 u32_t strlen (const char *str);
-/** @}*/
-
-// This is not in libc's string.h, but we need it
-/** \name Search functions
- *  @{
- */
-char* memstr (char *needle, int n_length, char *haystack, int h_length);
+char* strstr (char *str1, const char *str2);
 /** @}*/
 
 /** \name stdio.h functions
  *  See @c stdio.h documention for details.
  *  @{
  */
-int sprintf (char *str, char *format, ...);
+int vsprintf (char *str, const char *fmt, va_list ap);
+int sprintf (char *str, const char *format, ...);
+/** @}*/
+
+/** \name Additional functions
+ *  @{
+ */
+char* memstr (char *needle, int n_length, char *haystack, int h_length);
+void logf (char *file, int line, const char *format, ...);
 /** @}*/
 
 #endif

@@ -151,7 +151,7 @@ uvl_import_stub_to_entry (void *func,  ///< Stub function to read
  *  instead the value of @a type where 
  *  @c INSTRUCTION_UNKNOWN is a failure.
  *  \returns Immediate value of instruction
- *  \returns on success, indeterminate on error
+ *  on success, indeterminate on error
  ***********************************************/
 u32_t 
 uvl_decode_arm_inst (u32_t cur_inst, ///< ARMv7 instruction
@@ -241,7 +241,7 @@ uvl_decode_arm_inst (u32_t cur_inst, ///< ARMv7 instruction
  *  SVC \#imm. Depending on the @a type, not 
  *  all parameters may be used.
  *  \returns ARMv7 instruction on success 
- *  \returns or 0 on failure.
+ *  or 0 on failure.
  ***********************************************/
 u32_t 
 uvl_encode_arm_inst (u8_t type,  ///< See defined "Supported ARM instruction types"

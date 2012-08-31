@@ -1,23 +1,20 @@
-/// 
-/// \file uvloader.c
-/// \brief Userland Vita Loader startup
-/// \defgroup uvloader UVLoader
-/// \brief Startup and hooks
-/// @{
-/// 
 #include "cleanup.h"
 #include "load.h"
 #include "resolve.h"
 #include "scefuncs.h"
 #include "utils.h"
+#include "uvloader.h"
 
 /********************************************//**
  *  \brief Entry point from exploit
  *  
  *  Call this from your exploit to run UVLoader.
+ *  It will first cache all loaded modules and 
+ *  attempt to resolve its own NIDs which 
+ *  should only depend on sceLibKernel.
  *  \returns Zero on success, otherwise error
  ***********************************************/
-int 
+int START_SECTION
 uvl_entry ()
 {
     SceUID uvl_thread;
@@ -68,4 +65,3 @@ uvl_start ()
     // clean up ram
     // load ELF
 }
-/// @}
