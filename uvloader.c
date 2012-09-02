@@ -5,13 +5,18 @@
 #include "utils.h"
 #include "uvloader.h"
 
+// make sure code is PIE
+#ifndef __PIE__
+#error "Must compile with -fPIE"
+#endif
+
 /********************************************//**
  *  \brief Entry point from exploit
  *  
  *  Call this from your exploit to run UVLoader.
  *  It will first cache all loaded modules and 
  *  attempt to resolve its own NIDs which 
- *  should only depend on sceLibKernel.
+ *  should only depend on sceLibKernel.a
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int START_SECTION
@@ -24,12 +29,7 @@ uvl_entry ()
         LOG ("Cannot cache all loaded modules.");
         return -1;
     }
-    if (uvl_add_unresolved_uvloader () < 0)
-    {
-        LOG ("Cannot find UVLoader stubs.");
-        return -1;
-    }
-    if (uvl_resolve_all_unresolved () < 0)
+    if (uvl_scefuncs_resolve_all () < 0)
     {
         LOG ("Cannot resolve UVLoader stubs.");
         return -1;

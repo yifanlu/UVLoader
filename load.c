@@ -51,6 +51,13 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
         }
     }
 
+    // close file
+    if (sceIoClose (fd) < 0)
+    {
+        LOG ("Cannot close executable %s after loading.", filename);
+        return -1;
+    }
+
     LOG ("Invalid magic.");
     return -1;
 }

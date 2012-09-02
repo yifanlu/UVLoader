@@ -553,7 +553,7 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
     module_info_t *mod_info;
     void *result;
     u32_t segment_size;
-    u32_t mod_list[MAX_LOADED_MODS];
+    SceUID mod_list[MAX_LOADED_MODS];
     u32_t num_loaded = MAX_LOADED_MODS;
     int i;
     module_exports_t *exports;
