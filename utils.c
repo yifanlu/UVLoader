@@ -49,11 +49,11 @@ typedef long word;      /* "word" used for optimal copy speed */
  * (the portable versions of) bcopy, memcpy, and memmove.
  */
 void *
-memcpy(void *dst0, const void *src0, size_t length)
+memcpy(void *dst0, const void *src0, u32_t length)
 {
     char *dst = dst0;
     const char *src = src0;
-    size_t t;
+    u32_t t;
 
     if (length == 0 || dst == src)      /* nothing to do */
         goto done;
@@ -158,6 +158,20 @@ strcmp(const char *s1, const char *s2)
     return (*(unsigned char *)s1 - *(unsigned char *)--s2);
 }
 
+int
+strncmp(const char *s1, const char *s2, u32_t n)
+{
+    if (n == 0)
+        return (0);
+    do {
+        if (*s1 != *s2++)
+            return (*(unsigned char *)s1 - *(unsigned char *)--s2);
+        if (*s1++ == 0)
+            break;
+    } while (--n != 0);
+    return (0);
+}
+
 void*  memset(void*  dst, int c, u32_t n)
 {
     char*  q   = dst;
@@ -187,10 +201,10 @@ strlen(const char *str)
  * Find the first occurrence of find in s.
  */
 char *
-strstr(const char *s, const char *find)
+strstr(char *s, const char *find)
 {
     char c, sc;
-    size_t len;
+    u32_t len;
 
     if ((c = *find++) != 0) {
         len = strlen(find);
@@ -210,6 +224,12 @@ strstr(const char *s, const char *find)
 #define ALPHABET_LEN 255
 #define NOT_FOUND patlen
 #define max(a, b) ((a < b) ? b : a)
+
+void make_delta1(int *delta1, char *pat, int patlen);
+int is_prefix(char *word, int wordlen, int pos);
+int suffix_length(char *word, int wordlen, int pos);
+void make_delta2(int *delta2, char *pat, int patlen);
+char* boyer_moore (char *string, u32_t stringlen, char *pat, u32_t patlen);
  
 // delta1 table: delta1[c] contains the distance between the last
 // character of pat and the rightmost occurence of c in pat.
@@ -309,7 +329,7 @@ void make_delta2(int *delta2, char *pat, int patlen) {
     }
 }
  
-char* boyer_moore (char *string, uint stringlen, char *pat, uint patlen) {
+char* boyer_moore (char *string, u32_t stringlen, char *pat, u32_t patlen) {
     int i;
     int delta1[ALPHABET_LEN];
     int delta2[patlen * sizeof(int)];
@@ -349,7 +369,7 @@ memstr (char *needle,   ///< String to find
 }
 
 // thanks naehrwert for the tiny printf
-static void _putn(char *str, uint x, int base, char fill, int fcnt, int upper)
+static void _putn(char *str, u32_t x, int base, char fill, int fcnt, int upper)
 {
     char buf[65];
     char *digits;
@@ -357,9 +377,9 @@ static void _putn(char *str, uint x, int base, char fill, int fcnt, int upper)
     int c = fcnt;
 
     if (upper)
-        digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     else
-        digits = "0123456789abcdefghijklmnopqrstuvwxyz"
+        digits = "0123456789abcdefghijklmnopqrstuvwxyz";
     
     if(base > 36)
         return;
@@ -390,7 +410,7 @@ int vsprintf (char *str, const char *fmt, va_list ap)
     char *s;
     char c, fill;
     int fcnt;
-    uint n;
+    u32_t n;
     
     while(*fmt)
     {
@@ -410,7 +430,7 @@ int vsprintf (char *str, const char *fmt, va_list ap)
             switch(*fmt)
             {
             case 'c':
-                c = va_arg(ap, uint);
+                c = va_arg(ap, u32_t);
                 *(str++) = c;
                 break;
             case 's':
@@ -418,15 +438,15 @@ int vsprintf (char *str, const char *fmt, va_list ap)
                 for(; *s != '\0'; *(str++) = *(s++));
                 break;
             case 'd':
-                n = va_arg(ap, uint);
+                n = va_arg(ap, u32_t);
                 _putn(str, n, 10, fill, fcnt, 0);
                 break;
             case 'x':
-                n = va_arg(ap, uint);
+                n = va_arg(ap, u32_t);
                 _putn(str, n, 16, fill, fcnt, 0);
                 break;
             case 'X':
-                n = va_arg(ap, uint);
+                n = va_arg(ap, u32_t);
                 _putn(str, n, 16, fill, fcnt, 1);
             case '%':
                 *(str++) = '%';
@@ -463,18 +483,17 @@ int sprintf (char *str, const char *format, ...)
  *  Writes log to all places set in options 
  *  including log file, on screen, and console.
  ***********************************************/
-void logf (char *file,   ///< Source file of code writing to log
-           int line,    ///< Line number of code writing to log
-    const char *format, ///< Format of log entry or log entry itself
-               ...)     ///< Value(s) to write
+void vitalogf (char *file,   ///< Source file of code writing to log
+                int line,    ///< Line number of code writing to log
+                    ...)     ///< Format and value(s) to write
 {
     char processed_line[MAX_LOG_LENGTH];
     char log_line[MAX_LOG_LENGTH];
     va_list arg;
 
-    va_start (arg, format);
+    va_start (arg, line);
     // generate log entry content
-    vsprintf (processed_line, format, arg);
+    vsprintf (processed_line, va_arg (arg, const char*), arg);
     va_end (arg);
     // generate complete log entry
     sprintf (log_line, "%s:%d %s\n", file, line, processed_line);

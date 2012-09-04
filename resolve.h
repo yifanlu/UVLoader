@@ -60,10 +60,10 @@ typedef struct resolve_entry
     union value
     {
         u32_t   value;      ///< Any double-word value for resolved
-        u32_t   ptr;        ///< A pointer value for unresolved pointing to where to write resolved value
-        u32_t   func_ptr;   ///< A pointer to stub function for unresolved or function to call for resolved
+        void*   ptr;        ///< A pointer value for unresolved pointing to where to write resolved value
+        void*   func_ptr;   ///< A pointer to stub function for unresolved or function to call for resolved
         u32_t   syscall;    ///< A syscall number
-    };
+    } value;
 } resolve_entry_t;
 
 /**
@@ -108,7 +108,11 @@ typedef struct module_exports // thanks roxfan
     u16_t   attribute;      // ?
     u16_t   num_functions;  // number of exported functions
     u32_t   num_vars;       // number of exported variables
-    u32_t   num_tls_vars    // number of exported TLS variables?
+    u32_t   num_tls_vars;
+
+
+
+       // number of exported TLS variables?
     u32_t   module_nid;     // NID of this specific export list; one PRX can export several names
     char    *lib_name;      // name of the export module
     u32_t   *nid_table;     // array of 32-bit NIDs for the exports, first functions then vars
@@ -149,9 +153,10 @@ typedef struct module_imports // thanks roxfan
  */
 typedef union module_ports
 {
-    u16_t           size;       ///< Size of table
-    module_imports  imports;    ///< Import kind
-    module_exports  exports;    ///< Export kind
+    u16_t             
+    size;       ///< Size of table
+    module_imports_t  imports;    ///< Import kind
+    module_exports_t  exports;    ///< Export kind
 } module_ports_t;
 
 /**
@@ -159,12 +164,12 @@ typedef union module_ports
  */
 typedef struct segment_info
 {
-    u32_t           size;  // this structure size (0x18)
-    u32_t           perms; // probably rwx in low bits
-    u32_t           vaddr; // address in memory
-    u32_t           memsz; // size in memory
-    u32_t           flags; // meanig unknown
-    u32_t           res;   // unused?
+    u32_t           size;   // this structure size (0x18)
+    u32_t           perms;  // probably rwx in low bits
+    void            *vaddr; // address in memory
+    u32_t           memsz;  // size in memory
+    u32_t           flags;  // meanig unknown
+    u32_t           res;    // unused?
 } segment_info_t;
 
 /**
@@ -185,7 +190,7 @@ typedef struct loaded_module_info
     void            *exidx_start;
     void            *exidx_end;
     u32_t           unkn_40;
-    u32_t           unkn_40;
+    u32_t           unkn_44;
     void            *tls_init_data;
     u32_t           tls_init_size;
     u32_t           tls_area_size;

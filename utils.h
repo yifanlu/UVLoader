@@ -11,8 +11,18 @@
 #include "types.h"
 
 #define MAX_LOG_LENGTH  0x100   ///< Any log entry larger than this will cause a buffer overflow!
-#define LOG (format, args...) \ ///< Write a log entry
-            (logf (__FILE__, __LINE__, format, args))
+#define LOG(args...) \
+            vitalogf (__FILE__, __LINE__, args) ///< Write a log entry
+
+/** \name stdarg.h functions
+ *  See @c stdarg.h documentation for details.
+ *  @{
+ */
+typedef __builtin_va_list va_list;
+#define va_start(ap, v) __builtin_va_start(ap, v)
+#define va_arg(ap, type) __builtin_va_arg(ap, type)
+#define va_end(ap) __builtin_va_end(ap)
+/** @}*/
 
 // string.h from libc
 /*
@@ -51,6 +61,7 @@ void* memcpy (void *destination, const void *source, u32_t num);
 char* strcpy (char *destination, const char *source);
 int memcmp (const void *ptr1, const void *ptr2, u32_t num);
 int strcmp (const char *str1, const char *str2);
+int strncmp (const char *str1, const char *str2, u32_t num);
 void* memset (void *ptr, int value, u32_t num);
 u32_t strlen (const char *str);
 char* strstr (char *str1, const char *str2);
@@ -68,7 +79,7 @@ int sprintf (char *str, const char *format, ...);
  *  @{
  */
 char* memstr (char *needle, int n_length, char *haystack, int h_length);
-void logf (char *file, int line, const char *format, ...);
+void vitalogf (char *file, int line, ...);
 /** @}*/
 
 #endif

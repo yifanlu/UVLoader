@@ -2,21 +2,25 @@
 #include "resolve.h"
 #include "scefuncs.h"
 
-void uvl_scefuncs_resolve_all ()
+// There is no error check in this function. Hope code works.
+void
+uvl_scefuncs_resolve_all ()
 {
     // First create a macro for adding stubs
     resolve_entry_t entry;
-#define ADD_RESOLVE_STUB (stub, nid) \
-    entry.nid = nid; \
+#define ADD_RESOLVE_STUB(_stub, _nid) \
+    entry.nid = _nid; \
     entry.type = RESOLVE_TYPE_FUNCTION; \
     entry.resolved = 0; \
-    entry.value.func_ptr = stub;
-    // no error checks
+    entry.value.func_ptr = _stub; \
     uvl_resolve_table_add (&entry);
 
     // now add the stubs
-    ADD_RESOLVE_STUB (sceIoOpen, 0xDEADBEEF);
-    ADD_RESOLVE_STUB (sceIoClose, 0xDEADBEEF);
+    ADD_RESOLVE_STUB(sceIoOpen, 0xDEADBEEF);
+    ADD_RESOLVE_STUB(sceIoClose, 0xDEADBEEF);
+
+    // make sure our macro isn't used elsewhere
+#undef ADD_RESOLVE_STUB
 
     // finally resolve all
     uvl_resolve_all_unresolved ();

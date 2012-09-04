@@ -116,6 +116,12 @@ typedef struct Elf32_Phdr
 } Elf32_Phdr_t;
 /** @}*/
 
+/** \cond predefined-types
+ *  @{
+ */
+typedef struct module_info module_info_t;
+/** @}*/
+
 /** \name Functions to load code
  *  @{
  */

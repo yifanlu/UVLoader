@@ -7,7 +7,7 @@
 /** Checks if this is a valid ARM address */
 #define PTR_VALID(ptr) (ptr > 0x81000000 && ptr < 0xF0000000) // TODO: change this to be better 
 /** The first entry in the resolve table containing information to resolve NIDs */
-resolve_entry_t *RESOLVE_TABLE = 0x85000000;
+resolve_entry_t *RESOLVE_TABLE = (void*)0x85000000;
 /** Number of entries in the resolve table */
 int RESOLVE_ENTRIES = 0;
 
@@ -21,7 +21,7 @@ int
 uvl_resolve_table_add (resolve_entry_t *entry) ///< Entry to add
 {
     void *location = &RESOLVE_TABLE[RESOLVE_ENTRIES];
-    memcpy (location, entry);
+    memcpy (location, entry, sizeof (resolve_entry_t));
     RESOLVE_ENTRIES++;
     return 0;
 }
@@ -91,7 +91,7 @@ uvl_import_stub_to_entry (void *func,  ///< Stub function to read
     entry->type = RESOLVE_TYPE_UNKNOWN;
     for (;;)
     {
-        val = uvl_decode_arm_inst (func, &inst_type);
+        val = uvl_decode_arm_inst (*(u32_t*)func, &inst_type);
         /*
         if (val < 0)
         {
@@ -111,7 +111,7 @@ uvl_import_stub_to_entry (void *func,  ///< Stub function to read
                 entry->value.value = val;
                 break;
             case INSTRUCTION_MOVT:
-                entry->value.func_ptr |= val << 16; // load upper
+                entry->value.value |= val << 16; // load upper
                 break;
             case INSTRUCTION_SYSCALL:
                 entry->type = RESOLVE_TYPE_SYSCALL; // value's meaning changed to syscall
@@ -129,6 +129,8 @@ uvl_import_stub_to_entry (void *func,  ///< Stub function to read
             entry->resolved = 1;
             break;
         }
+        // next instruction
+        func = (char*)func + sizeof (u32_t);
     }
     if (!entry->resolved) // we failed :(
     {
@@ -306,7 +308,7 @@ uvl_add_resolved_imports (module_imports_t *imp_table,    ///< Module's import t
         {
             continue;
         }
-        if (uvl_resolve_table_add (&entry) < 0)
+        if (uvl_resolve_table_add (&res_entry) < 0)
         {
             LOG ("Error adding entry to table.");
             return -1;
@@ -323,7 +325,7 @@ uvl_add_resolved_imports (module_imports_t *imp_table,    ///< Module's import t
     {
         res_entry.nid = imp_table->var_nid_table[i];
         res_entry.value.value = *(u32_t*)imp_table->var_entry_table[i];
-        if (uvl_resolve_table_add (&entry) < 0)
+        if (uvl_resolve_table_add (&res_entry) < 0)
         {
             LOG ("Error adding entry to table.");
             return -1;
@@ -337,7 +339,7 @@ uvl_add_resolved_imports (module_imports_t *imp_table,    ///< Module's import t
     {
         res_entry.nid = imp_table->tls_nid_table[i];
         res_entry.value.value = *(u32_t*)imp_table->tls_entry_table[i];
-        if (uvl_resolve_table_add (&entry) < 0)
+        if (uvl_resolve_table_add (&res_entry) < 0)
         {
             LOG ("Error adding entry to table.");
             return -1;
@@ -370,7 +372,7 @@ uvl_add_unresolved_imports (module_imports_t *imp_table) ///< Homebrew's import 
     {
         res_entry.nid = imp_table->func_nid_table[i];
         res_entry.value.func_ptr = imp_table->func_entry_table[i];
-        if (uvl_resolve_table_add (&entry) < 0)
+        if (uvl_resolve_table_add (&res_entry) < 0)
         {
             LOG ("Error adding entry to table.");
             return -1;
@@ -382,7 +384,7 @@ uvl_add_unresolved_imports (module_imports_t *imp_table) ///< Homebrew's import 
     {
         res_entry.nid = imp_table->var_nid_table[i];
         res_entry.value.ptr = imp_table->var_entry_table[i];
-        if (uvl_resolve_table_add (&entry) < 0)
+        if (uvl_resolve_table_add (&res_entry) < 0)
         {
             LOG ("Error adding entry to table.");
             return -1;
@@ -395,7 +397,7 @@ uvl_add_unresolved_imports (module_imports_t *imp_table) ///< Homebrew's import 
     {
         res_entry.nid = imp_table->tls_nid_table[i];
         res_entry.value.ptr = imp_table->tls_entry_table[i];
-        if (uvl_resolve_table_add (&entry) < 0)
+        if (uvl_resolve_table_add (&res_entry) < 0)
         {
             LOG ("Error adding entry to table.");
             return -1;
@@ -424,7 +426,7 @@ uvl_add_resolved_exports (module_exports_t *exp_table) ///< Module's export tabl
     {
         res_entry.nid = exp_table->nid_table[offset];
         res_entry.value.func_ptr = exp_table->entry_table[offset];
-        if (uvl_resolve_table_add (&entry) < 0)
+        if (uvl_resolve_table_add (&res_entry) < 0)
         {
             LOG ("Error adding entry to table.");
             return -1;
@@ -436,7 +438,7 @@ uvl_add_resolved_exports (module_exports_t *exp_table) ///< Module's export tabl
     {
         res_entry.nid = exp_table->nid_table[offset];
         res_entry.value.value = *(u32_t*)exp_table->entry_table[offset];
-        if (uvl_resolve_table_add (&entry) < 0)
+        if (uvl_resolve_table_add (&res_entry) < 0)
         {
             LOG ("Error adding entry to table.");
             return -1;
@@ -449,7 +451,7 @@ uvl_add_resolved_exports (module_exports_t *exp_table) ///< Module's export tabl
     {
         res_entry.nid = exp_table->nid_table[offset];
         res_entry.value.value = *(u32_t*)exp_table->entry_table[offset];
-        if (uvl_resolve_table_add (&entry) < 0)
+        if (uvl_resolve_table_add (&res_entry) < 0)
         {
             LOG ("Error adding entry to table.");
             return -1;
@@ -494,8 +496,8 @@ uvl_resolve_all_unresolved ()
                     BX   R12
                     */
                     memloc = stub->value.func_ptr;
-                    memloc[0] = uvl_encode_arm_inst (INSTRUCTION_MOV, (u16_t)entry->value.func_ptr, 12);
-                    memloc[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)(entry->value.func_ptr >> 16), 12);
+                    memloc[0] = uvl_encode_arm_inst (INSTRUCTION_MOV, (u16_t)entry->value.value, 12);
+                    memloc[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)(entry->value.value >> 16), 12);
                     memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 12);
                     break;
                 case RESOLVE_TYPE_SYSCALL:
@@ -510,7 +512,7 @@ uvl_resolve_all_unresolved ()
                     memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 14);
                     break;
                 case RESOLVE_TYPE_VARIABLE:
-                    *stub->value.ptr = entry->value.value;
+                    *(u32_t*)stub->value.ptr = entry->value.value;
                     break;
             }
             stub->resolved = 1;
@@ -577,20 +579,20 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
         segment_size = m_mod_info.segments[0].memsz;
         for (;;)
         {
-            result = memstr (m_mod_info.module_name, strlen (m_mod_info.module_name) result, segment_size);
+            result = memstr (m_mod_info.module_name, strlen (m_mod_info.module_name), result, segment_size);
             if (result == NULL)
             {
                 break; // not found
             }
             // try making this the one
-            mod_info = (module_info_t*)(result - 4);
+            mod_info = (module_info_t*)((u32_t)result - 4);
             if (PTR_VALID (mod_info->ent_top) && PTR_VALID (mod_info->stub_top))
             {
                 break; // we found it
             }
             else // that string just happened to appear
             {
-                segment_size -= result - m_mod_info.segments[0].vaddr;
+                segment_size -= (u32_t)result - (u32_t)m_mod_info.segments[0].vaddr;
                 continue;
             }
         }
@@ -601,8 +603,8 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
         }
         if (BIT_SET (type, RESOLVE_MOD_EXPS))
         {
-            for (exports = (module_exports_t*)(m_mod_info.segments[0].vaddr + mod_info->ent_top); 
-                exports < (m_mod_info.segments[0].vaddr + mod_info->ent_end); exports++)
+            for (exports = (module_exports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_top); 
+                (u32_t)exports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_end); exports++)
             {
                 if (uvl_add_resolved_exports (exports) < 0)
                 {
@@ -614,7 +616,7 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
         if (BIT_SET (type, RESOLVE_MOD_IMPS))
         {
             for (imports = (module_exports_t*)(m_mod_info.segments[0].vaddr + mod_info->stub_top); 
-                imports < (m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
+                (u32_t)imports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
             {
                 if (uvl_add_resolved_imports (imports, BIT_SET (type, RESOLVE_IMPS_SVC_ONLY)) < 0)
                 {

@@ -1,4 +1,5 @@
 #include "cleanup.h"
+#include "resolve.h"
 
 int uvl_cleanup_memory ()
 {

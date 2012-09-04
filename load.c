@@ -76,7 +76,7 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
     Elf32_Ehdr_t elf_hdr;
     module_info_t mod_info;
     Elf32_Phdr_t prog_hdr;
-    u32_t base_address = (u32_t)-1;
+    void *base_address = (void*)(u32_t)-1;
     module_imports_t *import;
     int i;
 
@@ -121,7 +121,7 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
             LOG ("Error seeking to section %d.", i);
             return -1;
         }
-        if (sceIoRead (fd, (void*)prog_hdr.p_vaddr, prog_hdr.p_filesz)) < 0)
+        if (sceIoRead (fd, prog_hdr.p_vaddr, prog_hdr.p_filesz) < 0)
         {
             LOG ("Error reading program section %d.", i);
             return -1;
@@ -129,11 +129,11 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
         if (prog_hdr.p_memsz > prog_hdr.p_filesz)
         {
             // specs say we have to zero out extra bytes
-            memset ((void*)(prog_hdr.p_vaddr + prog_hdr.p_filesz), 0, prog_hdr.p_memsz - prog_hdr.p_filesz);
+            memset ((char*)prog_hdr.p_vaddr + prog_hdr.p_filesz, 0, prog_hdr.p_memsz - prog_hdr.p_filesz);
         }
     }
     // resolve NIDs
-    for (import = (module_imports_t*)(base_address + mod_info.stub_top); import < (base_address + mod_info.stub_end); import++)
+    for (import = (module_imports_t*)((char*)base_address + mod_info.stub_top); (void*)import < (void*)((char*)base_address + mod_info.stub_end); import++)
     {
         if (uvl_load_module (import->lib_name) < 0)
         {
@@ -156,7 +156,7 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
         LOG ("Failed to resolve app imports.");
         return -1;
     }
-    *entry = (void*)(base_address + elf_hdr.e_entry);
+    *entry = (void*)((u32_t)base_address + (u32_t)elf_hdr.e_entry);
     return 0;
 }
 
@@ -291,7 +291,7 @@ uvl_get_module_info (SceUID fd,             ///< File descriptor for the ELF
         LOG ("Error seeking section table.");
         return -1;
     }
-    for (i = 0; i < elf_hdr.e_shnum; i++)
+    for (i = 0; i < elf_hdr->e_shnum; i++)
     {
         if (sceIoRead (fd, &sec_hdr, sizeof (Elf32_Shdr_t)) < sizeof (Elf32_Shdr_t))
         {

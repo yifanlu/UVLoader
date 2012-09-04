@@ -8,7 +8,7 @@
 #ifndef UVL_CLEANUP
 #define UVL_CLEANUP
 
-
+#include "types.h"
 
 #endif
 /// @}
