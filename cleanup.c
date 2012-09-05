@@ -3,6 +3,12 @@
 #include "scefuncs.h"
 #include "utils.h"
 
+/********************************************//**
+ *  \brief Free up the RAM
+ *  
+ *  Frees up memory used by the loaded game.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
 int
 uvl_cleanup_memory ()
 {
@@ -17,6 +23,11 @@ uvl_cleanup_memory ()
     // close all file handles
 }
 
+/********************************************//**
+ *  \brief Unloads loaded modules
+ *  
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
 int
 uvl_unload_all_modules ()
 {

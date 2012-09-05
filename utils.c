@@ -1,3 +1,4 @@
+#include "config.h"
 #include "utils.h"
 
 // Below is stolen from Android's Bionic
@@ -374,7 +375,6 @@ memstr (char *needle,   ///< String to find
  *  ARM does not have native division support
  *  \returns Result of operation or zero if 
  *  dividing by zero.
- *  @a haystack
  ***********************************************/
 uidiv_result_t
 uidiv (u32_t num,   ///< Numerator

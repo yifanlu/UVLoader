@@ -10,9 +10,16 @@
 
 #include "types.h"
 
-#define MAX_LOG_LENGTH  0x100   ///< Any log entry larger than this will cause a buffer overflow!
+#ifdef DEBUG
+#define DEBUG_LOGGING   1                   ///< Enable debug logging
+#else
+#define DEBUG_LOGGING   0                   ///< Disable debug logging
+#endif
+
+#define MAX_LOG_LENGTH  0x100               ///< Any log entry larger than this will cause a buffer overflow!
+#define IF_DEBUG        if (DEBUG_LOGGING)  ///< Place before calling @c LOG to only show when debugging
 #define LOG(args...) \
-            vitalogf (__FILE__, __LINE__, args) ///< Write a log entry
+        vitalogf (__FILE__, __LINE__, args) ///< Write a log entry
 
 /** \name stdarg.h functions
  *  See @c stdarg.h documentation for details.

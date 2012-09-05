@@ -8,9 +8,9 @@
 /** Checks if this is a valid ARM address */
 #define PTR_VALID(ptr) (ptr > 0x81000000 && ptr < 0xF0000000) // TODO: change this to be better 
 /** Number of entries in the resolve table */
-u32_t *const g_resolve_entries = (u32_t*)(*RESOLVE_TABLE_LOCATION); // first four bytes is size
+u32_t *const g_resolve_entries = RESOLVE_TABLE_LOCATION; // first four bytes is size
 /** The first entry in the resolve table containing information to resolve NIDs */
-resolve_entry_t *const g_resolve_table = &(u32_t*)(*RESOLVE_TABLE_LOCATION)[1];
+resolve_entry_t *const g_resolve_table = (resolve_entry_t*)&((u32_t*)RESOLVE_TABLE_LOCATION)[1];
 
 /********************************************//**
  *  \brief Adds a resolve entry
