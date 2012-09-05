@@ -5,15 +5,13 @@
 #ifndef UVL_TYPES
 #define UVL_TYPES
 
-#include <stdint.h>
-
 /** \name Fixed width integers
  *  @{
  */
-typedef uint8_t u8_t;       ///< Unsigned 8-bit type
-typedef uint16_t u16_t;     ///< Unsigned 16-bit type
-typedef uint32_t u32_t;     ///< Unsigned 32-bit type
-typedef uint64_t u64_t;     ///< Unsigned 64-bit type
+typedef unsigned char u8_t;             ///< Unsigned 8-bit type
+typedef unsigned short int u16_t;       ///< Unsigned 16-bit type
+typedef unsigned int u32_t;             ///< Unsigned 32-bit type
+typedef unsigned long int u64_t;        ///< Unsigned 64-bit type
 /** @}*/
 
 /** \name SCE standard types
