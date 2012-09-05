@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>UVLoader: /Users/yifanlu/Development/C/UVLoader/load.h Source File</title>
+<title>UVLoader: load.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -64,12 +64,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
+</div><!-- top -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -78,11 +79,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_9e51036813d6151dfecc72d5fa7c02b3.html">Users</a></li><li class="navelem"><a class="el" href="dir_c042ca278f2ea374ba054684e770f304.html">yifanlu</a></li><li class="navelem"><a class="el" href="dir_78ec8ec77c35bdc0ab00f51de46d5750.html">Development</a></li><li class="navelem"><a class="el" href="dir_a95aae8b26ce45214022f27333004b20.html">C</a></li><li class="navelem"><a class="el" href="dir_55119fd1789b6c1ea252d1e95b3c9f98.html">UVLoader</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">load.h</div>  </div>
@@ -101,10 +97,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="types_8h.html" title="Types used in UVLoader.">types.h</a>&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">void</span>*   Elf32_Addr;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">typedef</span> u32_t   Elf32_Off;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">typedef</span> u32_t   Elf32_Sword;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">typedef</span> u32_t   Elf32_Word;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">typedef</span> u16_t   Elf32_Half;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">typedef</span> <a class="code" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33" title="Unsigned 32-bit type.">u32_t</a>   Elf32_Off;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">typedef</span> <a class="code" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33" title="Unsigned 32-bit type.">u32_t</a>   Elf32_Sword;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">typedef</span> <a class="code" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33" title="Unsigned 32-bit type.">u32_t</a>   Elf32_Word;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">typedef</span> <a class="code" href="types_8h.html#a77570ac4fcab86864fa1916e55676da2" title="Unsigned 16-bit type.">u16_t</a>   Elf32_Half;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define EI_NIDENT   16</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define EI_MAG0     0</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define EI_MAG1     1</span></div>
@@ -139,7 +135,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00074"></a><span class="lineno"><a class="code" href="struct_elf32___ehdr.html">   74</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="struct_elf32___ehdr.html">Elf32_Ehdr</a></div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;{</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    u8_t        e_ident[EI_NIDENT];</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <a class="code" href="types_8h.html#a4caecabca98b43919dd11be1c0d4cd8e" title="Unsigned 8-bit type.">u8_t</a>        e_ident[EI_NIDENT];</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    Elf32_Half  e_type;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    Elf32_Half  e_machine;</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    Elf32_Word  e_version;</div>
@@ -180,17 +176,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    Elf32_Word  p_flags;</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    Elf32_Word  p_align;</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;} <a class="code" href="struct_elf32___phdr.html">Elf32_Phdr_t</a>;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__load.html#gaf42fa9af8c0050f5f2998dcec67f219c" title="Loads an supported executable.">uvl_load_exe</a> (<span class="keyword">const</span> <span class="keywordtype">char</span> *filename, <span class="keywordtype">void</span> **entry);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__load.html#ga2984987adfb0eba822616e72620a6dfa" title="Loads an ELF file.">uvl_load_elf</a> (SceUID fd, SceOff start_offset, <span class="keywordtype">void</span> **entry);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__load.html#gadfa62679dbbd82a847b188f76745e49f" title="Loads a system module by name.">uvl_load_module</a> (<span class="keywordtype">char</span> *name);</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__load.html#gaddf0f835f4f422e854fa4c6eb7e657c3" title="Validates ELF header.">uvl_check_elf_header</a> (<a class="code" href="struct_elf32___ehdr.html">Elf32_Ehdr_t</a> *hdr);</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__load.html#gafd49aca44342a5cfe34d9cf62c20f3c0" title="Finds SCE module info.">uvl_get_module_info</a> (SceUID fd, SceOff start_offset, <a class="code" href="struct_elf32___ehdr.html">Elf32_Ehdr_t</a> *elf_hdr, <a class="code" href="structmodule__info.html" title="SCE module information section.">module_info_t</a> *mod_info);</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structmodule__info.html" title="SCE module information section.">module_info</a> <a class="code" href="structmodule__info.html" title="SCE module information section.">module_info_t</a>;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="keywordtype">int</span> uvl_load_exe (<span class="keyword">const</span> <span class="keywordtype">char</span> *filename, <span class="keywordtype">void</span> **entry);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keywordtype">int</span> uvl_load_elf (<a class="code" href="types_8h.html#a9c036549fd8cfd554ba3aa26a397b663" title="SceUID type.">SceUID</a> fd, <a class="code" href="types_8h.html#a6721a7b110c9ad5f7fcaca99bf4b51a9" title="SceOff type.">SceOff</a> start_offset, <span class="keywordtype">void</span> **entry);</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="keywordtype">int</span> uvl_load_module (<span class="keywordtype">char</span> *name);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="keywordtype">int</span> uvl_check_elf_header (<a class="code" href="struct_elf32___ehdr.html">Elf32_Ehdr_t</a> *hdr);</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="keywordtype">int</span> uvl_get_module_info (<a class="code" href="types_8h.html#a9c036549fd8cfd554ba3aa26a397b663" title="SceUID type.">SceUID</a> fd, <a class="code" href="types_8h.html#a6721a7b110c9ad5f7fcaca99bf4b51a9" title="SceOff type.">SceOff</a> start_offset, <a class="code" href="struct_elf32___ehdr.html">Elf32_Ehdr_t</a> *elf_hdr, <a class="code" href="structmodule__info.html" title="SCE module information section.">module_info_t</a> *mod_info);</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 29 2012 22:52:17 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

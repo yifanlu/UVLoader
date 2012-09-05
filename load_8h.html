@@ -69,7 +69,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -90,8 +90,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Functions to load executable.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="types_8h.html">types.h</a>&quot;</code><br/>
-</div><table class="memberdecls">
+<div class="textblock"><code>#include &quot;<a class="el" href="types_8h_source.html">types.h</a>&quot;</code><br/>
+</div>
+<p><a href="load_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_elf32___ehdr.html">Elf32_Ehdr</a></td></tr>
@@ -192,16 +194,16 @@ Typedefs</h2></td></tr>
 typedef void *&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Addr</b></td></tr>
 <tr class="separator:ga1129d364d15c4ff5cf37cd8dc9395465"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8316d362b808a6e6e26c8f1710db37c4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8316d362b808a6e6e26c8f1710db37c4"></a>
-typedef u32_t&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Off</b></td></tr>
+typedef <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Off</b></td></tr>
 <tr class="separator:ga8316d362b808a6e6e26c8f1710db37c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3cd9a896498613cfb255f583adcb7d75"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga3cd9a896498613cfb255f583adcb7d75"></a>
-typedef u32_t&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Sword</b></td></tr>
+typedef <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Sword</b></td></tr>
 <tr class="separator:ga3cd9a896498613cfb255f583adcb7d75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4bce045aa841f781558c5760f9523bba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga4bce045aa841f781558c5760f9523bba"></a>
-typedef u32_t&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Word</b></td></tr>
+typedef <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Word</b></td></tr>
 <tr class="separator:ga4bce045aa841f781558c5760f9523bba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf44790ca34bcb4a238bc8af9565a265c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf44790ca34bcb4a238bc8af9565a265c"></a>
-typedef u16_t&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Half</b></td></tr>
+typedef <a class="el" href="types_8h.html#a77570ac4fcab86864fa1916e55676da2">u16_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Half</b></td></tr>
 <tr class="separator:gaf44790ca34bcb4a238bc8af9565a265c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">ELF structures</div></td></tr>
 <tr><td colspan="2"><div class="groupText"><p>See the ELF specification for more information. </p>
@@ -215,33 +217,13 @@ typedef struct <a class="el" href="struct_elf32___shdr.html">Elf32_Shdr</a>&#160
 <tr class="memitem:gac3936ecf703b1a3fafce6c63137567ec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gac3936ecf703b1a3fafce6c63137567ec"></a>
 typedef struct <a class="el" href="struct_elf32___phdr.html">Elf32_Phdr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Phdr_t</b></td></tr>
 <tr class="separator:gac3936ecf703b1a3fafce6c63137567ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr><td colspan="2"><div class="groupHeader">Functions to load code</div></td></tr>
-<tr class="memitem:gaf42fa9af8c0050f5f2998dcec67f219c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gaf42fa9af8c0050f5f2998dcec67f219c">uvl_load_exe</a> (const char *filename, void **entry)</td></tr>
-<tr class="memdesc:gaf42fa9af8c0050f5f2998dcec67f219c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an supported executable.  <a href="group__load.html#gaf42fa9af8c0050f5f2998dcec67f219c"></a><br/></td></tr>
-<tr class="separator:gaf42fa9af8c0050f5f2998dcec67f219c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2984987adfb0eba822616e72620a6dfa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#ga2984987adfb0eba822616e72620a6dfa">uvl_load_elf</a> (SceUID fd, SceOff start_offset, void **entry)</td></tr>
-<tr class="memdesc:ga2984987adfb0eba822616e72620a6dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an ELF file.  <a href="group__load.html#ga2984987adfb0eba822616e72620a6dfa"></a><br/></td></tr>
-<tr class="separator:ga2984987adfb0eba822616e72620a6dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gadfa62679dbbd82a847b188f76745e49f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gadfa62679dbbd82a847b188f76745e49f">uvl_load_module</a> (char *name)</td></tr>
-<tr class="memdesc:gadfa62679dbbd82a847b188f76745e49f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a system module by name.  <a href="group__load.html#gadfa62679dbbd82a847b188f76745e49f"></a><br/></td></tr>
-<tr class="separator:gadfa62679dbbd82a847b188f76745e49f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Helper functions</div></td></tr>
-<tr class="memitem:gaddf0f835f4f422e854fa4c6eb7e657c3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gaddf0f835f4f422e854fa4c6eb7e657c3">uvl_check_elf_header</a> (<a class="el" href="struct_elf32___ehdr.html">Elf32_Ehdr_t</a> *hdr)</td></tr>
-<tr class="memdesc:gaddf0f835f4f422e854fa4c6eb7e657c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates ELF header.  <a href="group__load.html#gaddf0f835f4f422e854fa4c6eb7e657c3"></a><br/></td></tr>
-<tr class="separator:gaddf0f835f4f422e854fa4c6eb7e657c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafd49aca44342a5cfe34d9cf62c20f3c0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gafd49aca44342a5cfe34d9cf62c20f3c0">uvl_get_module_info</a> (SceUID fd, SceOff start_offset, <a class="el" href="struct_elf32___ehdr.html">Elf32_Ehdr_t</a> *elf_hdr, <a class="el" href="group__resolve.html#ga092c3dadc0aa862fd744954b5fc7602e">module_info_t</a> *mod_info)</td></tr>
-<tr class="memdesc:gafd49aca44342a5cfe34d9cf62c20f3c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds SCE module info.  <a href="group__load.html#gafd49aca44342a5cfe34d9cf62c20f3c0"></a><br/></td></tr>
-<tr class="separator:gafd49aca44342a5cfe34d9cf62c20f3c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions to load executable. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 29 2012 22:56:09 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

@@ -64,7 +64,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -75,6 +75,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">UVLoader</div>  </div>
@@ -84,18 +85,43 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Startup and hooks.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga085cc4c1fb868a8261a13fb5a0158510"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga085cc4c1fb868a8261a13fb5a0158510"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>START_SECTION</b>&#160;&#160;&#160;__attribute__ ((section (&quot;.text.start&quot;)))</td></tr>
+<tr class="separator:ga085cc4c1fb868a8261a13fb5a0158510"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ga66a5732f2cd6c2580a14fa76643be418"><td class="memItemLeft" align="right" valign="top">int START_SECTION&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uvloader.html#ga66a5732f2cd6c2580a14fa76643be418">_start</a> ()</td></tr>
+<tr class="memdesc:ga66a5732f2cd6c2580a14fa76643be418"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starting point from exploit.  <a href="#ga66a5732f2cd6c2580a14fa76643be418"></a><br/></td></tr>
+<tr class="separator:ga66a5732f2cd6c2580a14fa76643be418"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7319a09b22039644c46a8b5931ae2d44"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uvloader.html#ga7319a09b22039644c46a8b5931ae2d44">uvl_entry</a> ()</td></tr>
-<tr class="memdesc:ga7319a09b22039644c46a8b5931ae2d44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Entry point from exploit.  <a href="#ga7319a09b22039644c46a8b5931ae2d44"></a><br/></td></tr>
+<tr class="memdesc:ga7319a09b22039644c46a8b5931ae2d44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Entry point of UVLoader.  <a href="#ga7319a09b22039644c46a8b5931ae2d44"></a><br/></td></tr>
 <tr class="separator:ga7319a09b22039644c46a8b5931ae2d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaaa64590bd3f12290d30e7d2be1e41966"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uvloader.html#gaaa64590bd3f12290d30e7d2be1e41966">uvl_start</a> ()</td></tr>
-<tr class="memdesc:gaaa64590bd3f12290d30e7d2be1e41966"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts UVLoader.  <a href="#gaaa64590bd3f12290d30e7d2be1e41966"></a><br/></td></tr>
-<tr class="separator:gaaa64590bd3f12290d30e7d2be1e41966"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Startup and hooks. </p>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="ga66a5732f2cd6c2580a14fa76643be418"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int START_SECTION _start </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Starting point from exploit. </p>
+<p>Call this from your exploit to run UVLoader. It will first cache all loaded modules and attempt to resolve its own NIDs which should only depend on sceLibKernel.a </p>
+<dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga7319a09b22039644c46a8b5931ae2d44"></a>
 <div class="memitem">
 <div class="memproto">
@@ -109,26 +135,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Entry point from exploit. </p>
-<p>Call this from your exploit to run UVLoader. </p>
-<dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gaaa64590bd3f12290d30e7d2be1e41966"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int uvl_start </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Starts UVLoader. </p>
+<p>Entry point of UVLoader. </p>
 <dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
 
 </div>
@@ -136,7 +143,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 29 2012 22:56:09 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

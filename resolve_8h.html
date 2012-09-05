@@ -69,7 +69,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -91,8 +91,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Functions to resolve NIDs and syscalls.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="types_8h.html">types.h</a>&quot;</code><br/>
-</div><table class="memberdecls">
+<div class="textblock"><code>#include &quot;<a class="el" href="types_8h_source.html">types.h</a>&quot;</code><br/>
+</div>
+<p><a href="resolve_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structresolve__entry.html">resolve_entry</a></td></tr>
@@ -215,22 +217,22 @@ Functions</h2></td></tr>
 <tr class="memitem:ga529cd85b11b7e7ae9ce0eef561b32032"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#ga529cd85b11b7e7ae9ce0eef561b32032">uvl_resolve_table_add</a> (<a class="el" href="group__resolve.html#gab4a542ff37f9099e6a0967b83db7ba8c">resolve_entry_t</a> *entry)</td></tr>
 <tr class="memdesc:ga529cd85b11b7e7ae9ce0eef561b32032"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a resolve entry.  <a href="group__resolve.html#ga529cd85b11b7e7ae9ce0eef561b32032"></a><br/></td></tr>
 <tr class="separator:ga529cd85b11b7e7ae9ce0eef561b32032"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad7a69325cba8d52e9c75750b3c908cfc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__resolve.html#gab4a542ff37f9099e6a0967b83db7ba8c">resolve_entry_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#gad7a69325cba8d52e9c75750b3c908cfc">uvl_resolve_table_get</a> (u32_t nid, int forced_resolved)</td></tr>
+<tr class="memitem:gad7a69325cba8d52e9c75750b3c908cfc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__resolve.html#gab4a542ff37f9099e6a0967b83db7ba8c">resolve_entry_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#gad7a69325cba8d52e9c75750b3c908cfc">uvl_resolve_table_get</a> (<a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a> nid, int forced_resolved)</td></tr>
 <tr class="memdesc:gad7a69325cba8d52e9c75750b3c908cfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a resolve entry.  <a href="group__resolve.html#gad7a69325cba8d52e9c75750b3c908cfc"></a><br/></td></tr>
 <tr class="separator:gad7a69325cba8d52e9c75750b3c908cfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Estimating syscalls</div></td></tr>
-<tr class="memitem:gaabfb47b563fcd701fc0e158e67ae4e2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__resolve.html#gab4a542ff37f9099e6a0967b83db7ba8c">resolve_entry_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#gaabfb47b563fcd701fc0e158e67ae4e2b">uvl_estimate_syscall</a> (u32_t nid)</td></tr>
+<tr class="memitem:gaabfb47b563fcd701fc0e158e67ae4e2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__resolve.html#gab4a542ff37f9099e6a0967b83db7ba8c">resolve_entry_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#gaabfb47b563fcd701fc0e158e67ae4e2b">uvl_estimate_syscall</a> (<a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a> nid)</td></tr>
 <tr class="memdesc:gaabfb47b563fcd701fc0e158e67ae4e2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Estimates an unknown syscall.  <a href="group__resolve.html#gaabfb47b563fcd701fc0e158e67ae4e2b"></a><br/></td></tr>
 <tr class="separator:gaabfb47b563fcd701fc0e158e67ae4e2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Translating resolved stubs</div></td></tr>
-<tr class="memitem:gab796d28d6e7d20b7a94e97f3e25368c4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#gab796d28d6e7d20b7a94e97f3e25368c4">uvl_import_stub_to_entry</a> (void *func, u32_t nid, <a class="el" href="group__resolve.html#gab4a542ff37f9099e6a0967b83db7ba8c">resolve_entry_t</a> *entry)</td></tr>
+<tr class="memitem:gab796d28d6e7d20b7a94e97f3e25368c4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#gab796d28d6e7d20b7a94e97f3e25368c4">uvl_import_stub_to_entry</a> (void *func, <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a> nid, <a class="el" href="group__resolve.html#gab4a542ff37f9099e6a0967b83db7ba8c">resolve_entry_t</a> *entry)</td></tr>
 <tr class="memdesc:gab796d28d6e7d20b7a94e97f3e25368c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates resolve entry from stub function imported by a module.  <a href="group__resolve.html#gab796d28d6e7d20b7a94e97f3e25368c4"></a><br/></td></tr>
 <tr class="separator:gab796d28d6e7d20b7a94e97f3e25368c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">ARM instruction functions</div></td></tr>
-<tr class="memitem:gadb10e9420cec4396f0425a69087780ec"><td class="memItemLeft" align="right" valign="top">u32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#gadb10e9420cec4396f0425a69087780ec">uvl_decode_arm_inst</a> (u32_t cur_inst, u8_t *type)</td></tr>
+<tr class="memitem:gadb10e9420cec4396f0425a69087780ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#gadb10e9420cec4396f0425a69087780ec">uvl_decode_arm_inst</a> (<a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a> cur_inst, <a class="el" href="types_8h.html#a4caecabca98b43919dd11be1c0d4cd8e">u8_t</a> *type)</td></tr>
 <tr class="memdesc:gadb10e9420cec4396f0425a69087780ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an instruction's type and immediate value.  <a href="group__resolve.html#gadb10e9420cec4396f0425a69087780ec"></a><br/></td></tr>
 <tr class="separator:gadb10e9420cec4396f0425a69087780ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga584679ece34e1aa89982c21885e9718e"><td class="memItemLeft" align="right" valign="top">u32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#ga584679ece34e1aa89982c21885e9718e">uvl_encode_arm_inst</a> (u8_t type, u16_t immed, u16_t reg)</td></tr>
+<tr class="memitem:ga584679ece34e1aa89982c21885e9718e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#ga584679ece34e1aa89982c21885e9718e">uvl_encode_arm_inst</a> (<a class="el" href="types_8h.html#a4caecabca98b43919dd11be1c0d4cd8e">u8_t</a> type, <a class="el" href="types_8h.html#a77570ac4fcab86864fa1916e55676da2">u16_t</a> immed, <a class="el" href="types_8h.html#a77570ac4fcab86864fa1916e55676da2">u16_t</a> reg)</td></tr>
 <tr class="memdesc:ga584679ece34e1aa89982c21885e9718e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an ARMv7 instruction.  <a href="group__resolve.html#ga584679ece34e1aa89982c21885e9718e"></a><br/></td></tr>
 <tr class="separator:ga584679ece34e1aa89982c21885e9718e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Bulk add to resolve table</div></td></tr>
@@ -256,7 +258,7 @@ Functions</h2></td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 29 2012 22:56:09 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

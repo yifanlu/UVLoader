@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -95,36 +95,36 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Value of the entry.  
  <a href="unionresolve__entry_1_1value.html#details">More...</a></p>
 
-<p><code>#include &lt;resolve.h&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="resolve_8h_source.html">resolve.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:a8f4dbea1b3dd6837694e50b75c2f99b1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8f4dbea1b3dd6837694e50b75c2f99b1"></a>
-u32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionresolve__entry_1_1value.html#a8f4dbea1b3dd6837694e50b75c2f99b1">value</a></td></tr>
+<a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionresolve__entry_1_1value.html#a8f4dbea1b3dd6837694e50b75c2f99b1">value</a></td></tr>
 <tr class="memdesc:a8f4dbea1b3dd6837694e50b75c2f99b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Any double-word value for resolved. <br/></td></tr>
 <tr class="separator:a8f4dbea1b3dd6837694e50b75c2f99b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebf7f6f4c3d3c0d09c81c1d556bb155a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aebf7f6f4c3d3c0d09c81c1d556bb155a"></a>
-u32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionresolve__entry_1_1value.html#aebf7f6f4c3d3c0d09c81c1d556bb155a">ptr</a></td></tr>
-<tr class="memdesc:aebf7f6f4c3d3c0d09c81c1d556bb155a"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer value for unresolved pointing to where to write resolved value. <br/></td></tr>
-<tr class="separator:aebf7f6f4c3d3c0d09c81c1d556bb155a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6a48ba9883d28b5397677a1abd3dc54"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa6a48ba9883d28b5397677a1abd3dc54"></a>
-u32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionresolve__entry_1_1value.html#aa6a48ba9883d28b5397677a1abd3dc54">func_ptr</a></td></tr>
-<tr class="memdesc:aa6a48ba9883d28b5397677a1abd3dc54"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer to stub function for unresolved or function to call for resolved. <br/></td></tr>
-<tr class="separator:aa6a48ba9883d28b5397677a1abd3dc54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add9af9569af79ec26dd741fb226b38ba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add9af9569af79ec26dd741fb226b38ba"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionresolve__entry_1_1value.html#add9af9569af79ec26dd741fb226b38ba">ptr</a></td></tr>
+<tr class="memdesc:add9af9569af79ec26dd741fb226b38ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer value for unresolved pointing to where to write resolved value. <br/></td></tr>
+<tr class="separator:add9af9569af79ec26dd741fb226b38ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa319018f425605352b42899650a246e1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa319018f425605352b42899650a246e1"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionresolve__entry_1_1value.html#aa319018f425605352b42899650a246e1">func_ptr</a></td></tr>
+<tr class="memdesc:aa319018f425605352b42899650a246e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer to stub function for unresolved or function to call for resolved. <br/></td></tr>
+<tr class="separator:aa319018f425605352b42899650a246e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20ec67390ed3a3a82a4b8de3d7fcdde0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a20ec67390ed3a3a82a4b8de3d7fcdde0"></a>
-u32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionresolve__entry_1_1value.html#a20ec67390ed3a3a82a4b8de3d7fcdde0">syscall</a></td></tr>
+<a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionresolve__entry_1_1value.html#a20ec67390ed3a3a82a4b8de3d7fcdde0">syscall</a></td></tr>
 <tr class="memdesc:a20ec67390ed3a3a82a4b8de3d7fcdde0"><td class="mdescLeft">&#160;</td><td class="mdescRight">A syscall number. <br/></td></tr>
 <tr class="separator:a20ec67390ed3a3a82a4b8de3d7fcdde0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Value of the entry. </p>
 </div><hr/>The documentation for this union was generated from the following file:<ul>
-<li><a class="el" href="resolve_8h.html">resolve.h</a></li>
+<li><a class="el" href="resolve_8h_source.html">resolve.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 29 2012 22:56:09 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

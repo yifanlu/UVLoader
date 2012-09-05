@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ptr_5fvalid',['PTR_VALID',['../resolve_8c.html#a10461fdaf211dd0d72df6b807aa7a000',1,'resolve.c']]]
+  ['print_5fdebug_5flocation',['PRINT_DEBUG_LOCATION',['../config_8h.html#a5e4cf314a8926897217f46740c41c114',1,'config.h']]]
 ];

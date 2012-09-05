@@ -64,7 +64,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -74,6 +74,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle">
 <div class="title">Library Functions</div>  </div>
 </div><!--header-->
@@ -82,45 +86,116 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>String and memory functions.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuidiv__result.html">uidiv_result</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Division result.  <a href="structuidiv__result.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga704c232e88487ac8c32c6b6c8795bb2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga704c232e88487ac8c32c6b6c8795bb2d"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__library.html#ga704c232e88487ac8c32c6b6c8795bb2d">MAX_LOG_LENGTH</a>&#160;&#160;&#160;0x100</td></tr>
+<tr class="memdesc:ga704c232e88487ac8c32c6b6c8795bb2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Any log entry larger than this will cause a buffer overflow! <br/></td></tr>
+<tr class="separator:ga704c232e88487ac8c32c6b6c8795bb2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga698b8c9092a8447ac6a702434b37cdad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga698b8c9092a8447ac6a702434b37cdad"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__library.html#ga698b8c9092a8447ac6a702434b37cdad">LOG</a>(args...)&#160;&#160;&#160;<a class="el" href="group__library.html#gab0389e3647126922c0bc9a416e23e368">vitalogf</a> (__FILE__, __LINE__, args)</td></tr>
+<tr class="memdesc:ga698b8c9092a8447ac6a702434b37cdad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a log entry. <br/></td></tr>
+<tr class="separator:ga698b8c9092a8447ac6a702434b37cdad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga835f43fd3278495e8f548d693cd53ca8"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structuidiv__result.html">uidiv_result</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__library.html#ga835f43fd3278495e8f548d693cd53ca8">uidiv_result_t</a></td></tr>
+<tr class="memdesc:ga835f43fd3278495e8f548d693cd53ca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Division result.  <a href="#ga835f43fd3278495e8f548d693cd53ca8"></a><br/></td></tr>
+<tr class="separator:ga835f43fd3278495e8f548d693cd53ca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+stdarg.h functions</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp1ee19426c83f93fc3a042f1d2a76f55e"></a>See <code>stdarg.h</code> documentation for details. </p>
+</td></tr>
+<tr class="memitem:gaf53f622e3b6c080daeb167c1955d7ec1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf53f622e3b6c080daeb167c1955d7ec1"></a>
+typedef __builtin_va_list&#160;</td><td class="memItemRight" valign="bottom"><b>va_list</b></td></tr>
+<tr class="separator:gaf53f622e3b6c080daeb167c1955d7ec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaab2fdb7b45868b2622028377c750dad9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaab2fdb7b45868b2622028377c750dad9"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>va_start</b>(ap, v)&#160;&#160;&#160;__builtin_va_start(ap, v)</td></tr>
+<tr class="separator:gaab2fdb7b45868b2622028377c750dad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga81ebe6ea6253b0c6618e29de70fe10eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga81ebe6ea6253b0c6618e29de70fe10eb"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>va_arg</b>(ap, type)&#160;&#160;&#160;__builtin_va_arg(ap, type)</td></tr>
+<tr class="separator:ga81ebe6ea6253b0c6618e29de70fe10eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacd9b3b9085ec072324c5fdac2b40304e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gacd9b3b9085ec072324c5fdac2b40304e"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>va_end</b>(ap)&#160;&#160;&#160;__builtin_va_end(ap)</td></tr>
+<tr class="separator:gacd9b3b9085ec072324c5fdac2b40304e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 string.h functions</h2></td></tr>
 <tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpb5589da20ea0e7d866815d6108429280"></a>See <code>string.h</code> documention for details. </p>
 </td></tr>
 <tr class="memitem:ga1c96fecb3a60e3f5f93afad837550bbe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga1c96fecb3a60e3f5f93afad837550bbe"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>memcpy</b> (void *destination, const void *source, u32_t num)</td></tr>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>memcpy</b> (void *destination, const void *source, <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a> num)</td></tr>
 <tr class="separator:ga1c96fecb3a60e3f5f93afad837550bbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac137d536ff0037b3856083cb8a1c19a7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gac137d536ff0037b3856083cb8a1c19a7"></a>
 char *&#160;</td><td class="memItemRight" valign="bottom"><b>strcpy</b> (char *destination, const char *source)</td></tr>
 <tr class="separator:gac137d536ff0037b3856083cb8a1c19a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga731c940dd7650f8701c7bc7adbae9d37"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga731c940dd7650f8701c7bc7adbae9d37"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>memcmp</b> (const void *ptr1, const void *ptr2, u32_t num)</td></tr>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>memcmp</b> (const void *ptr1, const void *ptr2, <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a> num)</td></tr>
 <tr class="separator:ga731c940dd7650f8701c7bc7adbae9d37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6f3dcb20ff11ff9db5904c3cfb61a38c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga6f3dcb20ff11ff9db5904c3cfb61a38c"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>strcmp</b> (const char *str1, const char *str2)</td></tr>
 <tr class="separator:ga6f3dcb20ff11ff9db5904c3cfb61a38c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab3a8010d93011aa26a9dfe4be5e940a2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gab3a8010d93011aa26a9dfe4be5e940a2"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>strncmp</b> (const char *str1, const char *str2, <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a> num)</td></tr>
+<tr class="separator:gab3a8010d93011aa26a9dfe4be5e940a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1971d6d77ae1d1bbb94c3f7f26a808ba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga1971d6d77ae1d1bbb94c3f7f26a808ba"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>memset</b> (void *ptr, int value, u32_t num)</td></tr>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>memset</b> (void *ptr, int value, <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a> num)</td></tr>
 <tr class="separator:ga1971d6d77ae1d1bbb94c3f7f26a808ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga112d9b48b8154c8d7d357b5245d03fc5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga112d9b48b8154c8d7d357b5245d03fc5"></a>
-u32_t&#160;</td><td class="memItemRight" valign="bottom"><b>strlen</b> (const char *str)</td></tr>
+<a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>strlen</b> (const char *str)</td></tr>
 <tr class="separator:ga112d9b48b8154c8d7d357b5245d03fc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Search functions</h2></td></tr>
-<tr class="memitem:ga97029ca6c0bd64182210e485e0dbda99"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__library.html#ga97029ca6c0bd64182210e485e0dbda99">memstr</a> (char *needle, int n_length, char *haystack, int h_length)</td></tr>
-<tr class="memdesc:ga97029ca6c0bd64182210e485e0dbda99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search for a string in memory.  <a href="#ga97029ca6c0bd64182210e485e0dbda99"></a><br/></td></tr>
-<tr class="separator:ga97029ca6c0bd64182210e485e0dbda99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9b8955ed78305a9f68e032415a62e285"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga9b8955ed78305a9f68e032415a62e285"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>strstr</b> (char *str1, const char *str2)</td></tr>
+<tr class="separator:ga9b8955ed78305a9f68e032415a62e285"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 stdio.h functions</h2></td></tr>
 <tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp25e24ee004089e006f5d47a31b789312"></a>See <code>stdio.h</code> documention for details. </p>
 </td></tr>
-<tr class="memitem:ga43a985833564fba39c6c8a5417901990"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga43a985833564fba39c6c8a5417901990"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>sprintf</b> (char *str, char *format,...)</td></tr>
-<tr class="separator:ga43a985833564fba39c6c8a5417901990"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0ad7f31113bb0434c5e3be298d2a8f18"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga0ad7f31113bb0434c5e3be298d2a8f18"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>vsprintf</b> (char *str, const char *fmt, va_list ap)</td></tr>
+<tr class="separator:ga0ad7f31113bb0434c5e3be298d2a8f18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3082155ec11e7229f7a20439b31a169e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga3082155ec11e7229f7a20439b31a169e"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>sprintf</b> (char *str, const char *format,...)</td></tr>
+<tr class="separator:ga3082155ec11e7229f7a20439b31a169e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Additional functions</h2></td></tr>
+<tr class="memitem:ga97029ca6c0bd64182210e485e0dbda99"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__library.html#ga97029ca6c0bd64182210e485e0dbda99">memstr</a> (char *needle, int n_length, char *haystack, int h_length)</td></tr>
+<tr class="memdesc:ga97029ca6c0bd64182210e485e0dbda99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search for a string in memory.  <a href="#ga97029ca6c0bd64182210e485e0dbda99"></a><br/></td></tr>
+<tr class="separator:ga97029ca6c0bd64182210e485e0dbda99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaeaeefe8a4c67a5715bcca8bc3baefe68"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__library.html#ga835f43fd3278495e8f548d693cd53ca8">uidiv_result_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__library.html#gaeaeefe8a4c67a5715bcca8bc3baefe68">uidiv</a> (<a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a> num, <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a> dem)</td></tr>
+<tr class="memdesc:gaeaeefe8a4c67a5715bcca8bc3baefe68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsigned integer division.  <a href="#gaeaeefe8a4c67a5715bcca8bc3baefe68"></a><br/></td></tr>
+<tr class="separator:gaeaeefe8a4c67a5715bcca8bc3baefe68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab0389e3647126922c0bc9a416e23e368"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__library.html#gab0389e3647126922c0bc9a416e23e368">vitalogf</a> (char *file, int line,...)</td></tr>
+<tr class="memdesc:gab0389e3647126922c0bc9a416e23e368"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a log entry.  <a href="#gab0389e3647126922c0bc9a416e23e368"></a><br/></td></tr>
+<tr class="separator:gab0389e3647126922c0bc9a416e23e368"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>String and memory functions. </p>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a class="anchor" id="ga835f43fd3278495e8f548d693cd53ca8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structuidiv__result.html">uidiv_result</a>  <a class="el" href="group__library.html#ga835f43fd3278495e8f548d693cd53ca8">uidiv_result_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Division result. </p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__library.html#gaeaeefe8a4c67a5715bcca8bc3baefe68" title="Unsigned integer division.">uidiv</a> </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="ga97029ca6c0bd64182210e485e0dbda99"></a>
 <div class="memitem">
@@ -160,9 +235,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>sprintf</b> (char *str
 
 <p>Search for a string in memory. </p>
 <p>Uses the Boyer-Moore algorithm to search. </p>
-<dl class="section return"><dt>Returns</dt><dd>First occurrence of <em>needle</em> in </dd>
-<dd>
-<em>haystack</em> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>First occurrence of <em>needle</em> in <em>haystack</em> </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">needle</td><td>String to find </td></tr>
@@ -175,10 +248,89 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>sprintf</b> (char *str
 
 </div>
 </div>
+<a class="anchor" id="gaeaeefe8a4c67a5715bcca8bc3baefe68"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__library.html#ga835f43fd3278495e8f548d693cd53ca8">uidiv_result_t</a> uidiv </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td>
+          <td class="paramname"><em>num</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td>
+          <td class="paramname"><em>dem</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Unsigned integer division. </p>
+<p>ARM does not have native division support </p>
+<dl class="section return"><dt>Returns</dt><dd>Result of operation or zero if dividing by zero. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">num</td><td>Numerator </td></tr>
+    <tr><td class="paramname">dem</td><td>Denominator </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="gab0389e3647126922c0bc9a416e23e368"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vitalogf </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>line</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Writes a log entry. </p>
+<p>Writes log to all places set in options including log file, on screen, and console. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td>Source file of code writing to log </td></tr>
+    <tr><td class="paramname">line</td><td>Line number of code writing to log </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 29 2012 22:56:09 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

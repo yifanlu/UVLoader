@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>UVLoader: /Users/yifanlu/Development/C/UVLoader/types.h Source File</title>
+<title>UVLoader: types.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -64,12 +64,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
+</div><!-- top -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -78,11 +79,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_9e51036813d6151dfecc72d5fa7c02b3.html">Users</a></li><li class="navelem"><a class="el" href="dir_c042ca278f2ea374ba054684e770f304.html">yifanlu</a></li><li class="navelem"><a class="el" href="dir_78ec8ec77c35bdc0ab00f51de46d5750.html">Development</a></li><li class="navelem"><a class="el" href="dir_a95aae8b26ce45214022f27333004b20.html">C</a></li><li class="navelem"><a class="el" href="dir_55119fd1789b6c1ea252d1e95b3c9f98.html">UVLoader</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">types.h</div>  </div>
@@ -95,16 +91,26 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#ifndef UVL_TYPES</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define UVL_TYPES</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00008"></a><span class="lineno"><a class="code" href="types_8h.html#ad8d9dbef83392da434801486bf814fe4">    8</a></span>&#160;<span class="keyword">typedef</span> uint8 <a class="code" href="types_8h.html#ad8d9dbef83392da434801486bf814fe4" title="Unsigned 8-bit type.">u8</a>;       </div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="code" href="types_8h.html#a91ec65f57d610f6902fd081f1d1e265a">    9</a></span>&#160;<span class="keyword">typedef</span> uint16 <a class="code" href="types_8h.html#a91ec65f57d610f6902fd081f1d1e265a" title="Unsigned 16-bit type.">u16</a>;     </div>
-<div class="line"><a name="l00010"></a><span class="lineno"><a class="code" href="types_8h.html#a0bb0c4c53d0a5ea2c01d0bb363b56722">   10</a></span>&#160;<span class="keyword">typedef</span> uint32 <a class="code" href="types_8h.html#a0bb0c4c53d0a5ea2c01d0bb363b56722" title="Unsigned 32-bit type.">u32</a>;     </div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="code" href="types_8h.html#a02ecb7390e4c4515df2268d18f99abc0">   11</a></span>&#160;<span class="keyword">typedef</span> uint64 <a class="code" href="types_8h.html#a02ecb7390e4c4515df2268d18f99abc0" title="Unsigned 64-bit type.">u64</a>;     </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="code" href="types_8h.html#a4caecabca98b43919dd11be1c0d4cd8e">   13</a></span>&#160;<span class="keyword">typedef</span> uint8_t <a class="code" href="types_8h.html#a4caecabca98b43919dd11be1c0d4cd8e" title="Unsigned 8-bit type.">u8_t</a>;       </div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="code" href="types_8h.html#a77570ac4fcab86864fa1916e55676da2">   14</a></span>&#160;<span class="keyword">typedef</span> uint16_t <a class="code" href="types_8h.html#a77570ac4fcab86864fa1916e55676da2" title="Unsigned 16-bit type.">u16_t</a>;     </div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="code" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">   15</a></span>&#160;<span class="keyword">typedef</span> uint32_t <a class="code" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33" title="Unsigned 32-bit type.">u32_t</a>;     </div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="code" href="types_8h.html#aa63c762b1d59d368446b45a38950c691">   16</a></span>&#160;<span class="keyword">typedef</span> uint64_t <a class="code" href="types_8h.html#aa63c762b1d59d368446b45a38950c691" title="Unsigned 64-bit type.">u64_t</a>;     </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="code" href="types_8h.html#a9c036549fd8cfd554ba3aa26a397b663">   22</a></span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">int</span> <a class="code" href="types_8h.html#a9c036549fd8cfd554ba3aa26a397b663" title="SceUID type.">SceUID</a>;         </div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="code" href="types_8h.html#a6721a7b110c9ad5f7fcaca99bf4b51a9">   23</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="types_8h.html#aa63c762b1d59d368446b45a38950c691" title="Unsigned 64-bit type.">u64_t</a> <a class="code" href="types_8h.html#a6721a7b110c9ad5f7fcaca99bf4b51a9" title="SceOff type.">SceOff</a>;       </div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="code" href="types_8h.html#abed425d1d37747659f03f11b65d4ff2a">   24</a></span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">int</span> <a class="code" href="types_8h.html#abed425d1d37747659f03f11b65d4ff2a" title="SceSSize type.">SceSSize</a>;       </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">// TODO: Make sure void* is 4 bytes</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#define NULL 0</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 29 2012 22:52:17 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

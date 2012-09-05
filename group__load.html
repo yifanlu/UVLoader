@@ -64,7 +64,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -76,7 +76,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#define-members">Macros</a>  </div>
+<a href="#define-members">Macros</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">Executable Loader</div>  </div>
 </div><!--header-->
@@ -101,22 +102,121 @@ Macros</h2></td></tr>
 <tr class="memdesc:ga57bddf746dc6726fd088870195b6fd07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of module information section. <br/></td></tr>
 <tr class="separator:ga57bddf746dc6726fd088870195b6fd07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ga608e37571dcf880b423004fa2ecc2f6b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga608e37571dcf880b423004fa2ecc2f6b"></a>
+<a class="el" href="types_8h.html#a4caecabca98b43919dd11be1c0d4cd8e">u8_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>e_ident</b> [EI_NIDENT]</td></tr>
+<tr class="separator:ga608e37571dcf880b423004fa2ecc2f6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7f0b549920bf4fc78b5ca36a17dc50b3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga7f0b549920bf4fc78b5ca36a17dc50b3"></a>
+Elf32_Half&#160;</td><td class="memItemRight" valign="bottom"><b>e_type</b></td></tr>
+<tr class="separator:ga7f0b549920bf4fc78b5ca36a17dc50b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga334b2b2406970a5d2a0a903dd5ed5745"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga334b2b2406970a5d2a0a903dd5ed5745"></a>
+Elf32_Half&#160;</td><td class="memItemRight" valign="bottom"><b>e_machine</b></td></tr>
+<tr class="separator:ga334b2b2406970a5d2a0a903dd5ed5745"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf3c8fac8345400aef61da74b2de320c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf3c8fac8345400aef61da74b2de320c8"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>e_version</b></td></tr>
+<tr class="separator:gaf3c8fac8345400aef61da74b2de320c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga146e750d8c5ddfa36d84e83fd43a9828"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga146e750d8c5ddfa36d84e83fd43a9828"></a>
+Elf32_Addr&#160;</td><td class="memItemRight" valign="bottom"><b>e_entry</b></td></tr>
+<tr class="separator:ga146e750d8c5ddfa36d84e83fd43a9828"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gada87533ed3557b687daa8d999461c79b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gada87533ed3557b687daa8d999461c79b"></a>
+Elf32_Off&#160;</td><td class="memItemRight" valign="bottom"><b>e_phoff</b></td></tr>
+<tr class="separator:gada87533ed3557b687daa8d999461c79b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad1cb2a7b39b5465b19922fcd2a449ee1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gad1cb2a7b39b5465b19922fcd2a449ee1"></a>
+Elf32_Off&#160;</td><td class="memItemRight" valign="bottom"><b>e_shoff</b></td></tr>
+<tr class="separator:gad1cb2a7b39b5465b19922fcd2a449ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf4e9f6a9950c02e6378aa0e85aa8bfe3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf4e9f6a9950c02e6378aa0e85aa8bfe3"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>e_flags</b></td></tr>
+<tr class="separator:gaf4e9f6a9950c02e6378aa0e85aa8bfe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa0fef16d9e9b4c56c6449fe6e5e43571"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa0fef16d9e9b4c56c6449fe6e5e43571"></a>
+Elf32_Half&#160;</td><td class="memItemRight" valign="bottom"><b>e_ehsize</b></td></tr>
+<tr class="separator:gaa0fef16d9e9b4c56c6449fe6e5e43571"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad0b31b8c5e1c550d79195f8190650caa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gad0b31b8c5e1c550d79195f8190650caa"></a>
+Elf32_Half&#160;</td><td class="memItemRight" valign="bottom"><b>e_phentsize</b></td></tr>
+<tr class="separator:gad0b31b8c5e1c550d79195f8190650caa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga51ddda24560032b209311eb32528a249"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga51ddda24560032b209311eb32528a249"></a>
+Elf32_Half&#160;</td><td class="memItemRight" valign="bottom"><b>e_phnum</b></td></tr>
+<tr class="separator:ga51ddda24560032b209311eb32528a249"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8019991b37b5c2f1e1dd599627b07884"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8019991b37b5c2f1e1dd599627b07884"></a>
+Elf32_Half&#160;</td><td class="memItemRight" valign="bottom"><b>e_shentsize</b></td></tr>
+<tr class="separator:ga8019991b37b5c2f1e1dd599627b07884"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga42978053163eaa3a3a6b828ca72a7268"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga42978053163eaa3a3a6b828ca72a7268"></a>
+Elf32_Half&#160;</td><td class="memItemRight" valign="bottom"><b>e_shnum</b></td></tr>
+<tr class="separator:ga42978053163eaa3a3a6b828ca72a7268"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga70716c059a9a377dd31b958722f5e947"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga70716c059a9a377dd31b958722f5e947"></a>
+Elf32_Half&#160;</td><td class="memItemRight" valign="bottom"><b>e_shstrndx</b></td></tr>
+<tr class="separator:ga70716c059a9a377dd31b958722f5e947"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gade8467fed394a2adebbac57ce1007742"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gade8467fed394a2adebbac57ce1007742"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>sh_name</b></td></tr>
+<tr class="separator:gade8467fed394a2adebbac57ce1007742"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2a41bb54bee9e047efbf10185972395b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga2a41bb54bee9e047efbf10185972395b"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>sh_type</b></td></tr>
+<tr class="separator:ga2a41bb54bee9e047efbf10185972395b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga23c0c41226f447a73c37d501692e75d7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga23c0c41226f447a73c37d501692e75d7"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>sh_flags</b></td></tr>
+<tr class="separator:ga23c0c41226f447a73c37d501692e75d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga18c60e7404cee4ccf1e7a77445764bc4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga18c60e7404cee4ccf1e7a77445764bc4"></a>
+Elf32_Addr&#160;</td><td class="memItemRight" valign="bottom"><b>sh_addr</b></td></tr>
+<tr class="separator:ga18c60e7404cee4ccf1e7a77445764bc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4fd90cfe25373b4d13599f2c55120dca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga4fd90cfe25373b4d13599f2c55120dca"></a>
+Elf32_Off&#160;</td><td class="memItemRight" valign="bottom"><b>sh_offset</b></td></tr>
+<tr class="separator:ga4fd90cfe25373b4d13599f2c55120dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga22b9e86344a0dff7e25af8e49f77b1e9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga22b9e86344a0dff7e25af8e49f77b1e9"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>sh_size</b></td></tr>
+<tr class="separator:ga22b9e86344a0dff7e25af8e49f77b1e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabc776cd861d04445e42019265581750f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gabc776cd861d04445e42019265581750f"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>sh_link</b></td></tr>
+<tr class="separator:gabc776cd861d04445e42019265581750f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga44bff009f8cd38b77854ca666a43cc3b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga44bff009f8cd38b77854ca666a43cc3b"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>sh_info</b></td></tr>
+<tr class="separator:ga44bff009f8cd38b77854ca666a43cc3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga63c4e1b5e5601867073efc0ee9d9ede4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga63c4e1b5e5601867073efc0ee9d9ede4"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>sh_addralign</b></td></tr>
+<tr class="separator:ga63c4e1b5e5601867073efc0ee9d9ede4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab8925d294ee527ad4d9a5f573cbfb3f8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gab8925d294ee527ad4d9a5f573cbfb3f8"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>sh_entsize</b></td></tr>
+<tr class="separator:gab8925d294ee527ad4d9a5f573cbfb3f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1b4ed5de6b34c773a4bd176b0b1a486b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga1b4ed5de6b34c773a4bd176b0b1a486b"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>p_type</b></td></tr>
+<tr class="separator:ga1b4ed5de6b34c773a4bd176b0b1a486b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8506a191f6eb19d977badcc7b79304da"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8506a191f6eb19d977badcc7b79304da"></a>
+Elf32_Off&#160;</td><td class="memItemRight" valign="bottom"><b>p_offset</b></td></tr>
+<tr class="separator:ga8506a191f6eb19d977badcc7b79304da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacabdf03daaa792ce4051b6883b0df40d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gacabdf03daaa792ce4051b6883b0df40d"></a>
+Elf32_Addr&#160;</td><td class="memItemRight" valign="bottom"><b>p_vaddr</b></td></tr>
+<tr class="separator:gacabdf03daaa792ce4051b6883b0df40d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0d8f4187ea1e170564f61f9de0a2e0b4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga0d8f4187ea1e170564f61f9de0a2e0b4"></a>
+Elf32_Addr&#160;</td><td class="memItemRight" valign="bottom"><b>p_paddr</b></td></tr>
+<tr class="separator:ga0d8f4187ea1e170564f61f9de0a2e0b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3b607fe05ae8ac5dbe7b328eb25b9c11"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga3b607fe05ae8ac5dbe7b328eb25b9c11"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>p_filesz</b></td></tr>
+<tr class="separator:ga3b607fe05ae8ac5dbe7b328eb25b9c11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga927f5fb1182d6e414c7ac3573aed393f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga927f5fb1182d6e414c7ac3573aed393f"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>p_memsz</b></td></tr>
+<tr class="separator:ga927f5fb1182d6e414c7ac3573aed393f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga39014f5cea369c520082e26e9518a697"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga39014f5cea369c520082e26e9518a697"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>p_flags</b></td></tr>
+<tr class="separator:ga39014f5cea369c520082e26e9518a697"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga66609694ebd2c2235315b7a25b2bae63"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga66609694ebd2c2235315b7a25b2bae63"></a>
+Elf32_Word&#160;</td><td class="memItemRight" valign="bottom"><b>p_align</b></td></tr>
+<tr class="separator:ga66609694ebd2c2235315b7a25b2bae63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 ELF data types</h2></td></tr>
 <tr class="memitem:ga1129d364d15c4ff5cf37cd8dc9395465"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga1129d364d15c4ff5cf37cd8dc9395465"></a>
 typedef void *&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Addr</b></td></tr>
 <tr class="separator:ga1129d364d15c4ff5cf37cd8dc9395465"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8316d362b808a6e6e26c8f1710db37c4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8316d362b808a6e6e26c8f1710db37c4"></a>
-typedef u32_t&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Off</b></td></tr>
+typedef <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Off</b></td></tr>
 <tr class="separator:ga8316d362b808a6e6e26c8f1710db37c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3cd9a896498613cfb255f583adcb7d75"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga3cd9a896498613cfb255f583adcb7d75"></a>
-typedef u32_t&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Sword</b></td></tr>
+typedef <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Sword</b></td></tr>
 <tr class="separator:ga3cd9a896498613cfb255f583adcb7d75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4bce045aa841f781558c5760f9523bba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga4bce045aa841f781558c5760f9523bba"></a>
-typedef u32_t&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Word</b></td></tr>
+typedef <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Word</b></td></tr>
 <tr class="separator:ga4bce045aa841f781558c5760f9523bba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf44790ca34bcb4a238bc8af9565a265c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf44790ca34bcb4a238bc8af9565a265c"></a>
-typedef u16_t&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Half</b></td></tr>
+typedef <a class="el" href="types_8h.html#a77570ac4fcab86864fa1916e55676da2">u16_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Half</b></td></tr>
 <tr class="separator:gaf44790ca34bcb4a238bc8af9565a265c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
@@ -219,218 +319,13 @@ typedef struct <a class="el" href="struct_elf32___shdr.html">Elf32_Shdr</a>&#160
 <tr class="memitem:gac3936ecf703b1a3fafce6c63137567ec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gac3936ecf703b1a3fafce6c63137567ec"></a>
 typedef struct <a class="el" href="struct_elf32___phdr.html">Elf32_Phdr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Phdr_t</b></td></tr>
 <tr class="separator:gac3936ecf703b1a3fafce6c63137567ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Functions to load code</h2></td></tr>
-<tr class="memitem:gaf42fa9af8c0050f5f2998dcec67f219c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gaf42fa9af8c0050f5f2998dcec67f219c">uvl_load_exe</a> (const char *filename, void **entry)</td></tr>
-<tr class="memdesc:gaf42fa9af8c0050f5f2998dcec67f219c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an supported executable.  <a href="#gaf42fa9af8c0050f5f2998dcec67f219c"></a><br/></td></tr>
-<tr class="separator:gaf42fa9af8c0050f5f2998dcec67f219c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2984987adfb0eba822616e72620a6dfa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#ga2984987adfb0eba822616e72620a6dfa">uvl_load_elf</a> (SceUID fd, SceOff start_offset, void **entry)</td></tr>
-<tr class="memdesc:ga2984987adfb0eba822616e72620a6dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an ELF file.  <a href="#ga2984987adfb0eba822616e72620a6dfa"></a><br/></td></tr>
-<tr class="separator:ga2984987adfb0eba822616e72620a6dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gadfa62679dbbd82a847b188f76745e49f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gadfa62679dbbd82a847b188f76745e49f">uvl_load_module</a> (char *name)</td></tr>
-<tr class="memdesc:gadfa62679dbbd82a847b188f76745e49f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a system module by name.  <a href="#gadfa62679dbbd82a847b188f76745e49f"></a><br/></td></tr>
-<tr class="separator:gadfa62679dbbd82a847b188f76745e49f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Helper functions</h2></td></tr>
-<tr class="memitem:gaddf0f835f4f422e854fa4c6eb7e657c3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gaddf0f835f4f422e854fa4c6eb7e657c3">uvl_check_elf_header</a> (<a class="el" href="struct_elf32___ehdr.html">Elf32_Ehdr_t</a> *hdr)</td></tr>
-<tr class="memdesc:gaddf0f835f4f422e854fa4c6eb7e657c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates ELF header.  <a href="#gaddf0f835f4f422e854fa4c6eb7e657c3"></a><br/></td></tr>
-<tr class="separator:gaddf0f835f4f422e854fa4c6eb7e657c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafd49aca44342a5cfe34d9cf62c20f3c0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gafd49aca44342a5cfe34d9cf62c20f3c0">uvl_get_module_info</a> (SceUID fd, SceOff start_offset, <a class="el" href="struct_elf32___ehdr.html">Elf32_Ehdr_t</a> *elf_hdr, <a class="el" href="group__resolve.html#ga092c3dadc0aa862fd744954b5fc7602e">module_info_t</a> *mod_info)</td></tr>
-<tr class="memdesc:gafd49aca44342a5cfe34d9cf62c20f3c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds SCE module info.  <a href="#gafd49aca44342a5cfe34d9cf62c20f3c0"></a><br/></td></tr>
-<tr class="separator:gafd49aca44342a5cfe34d9cf62c20f3c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Parses and loads ELFs. </p>
-<h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="gaddf0f835f4f422e854fa4c6eb7e657c3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int uvl_check_elf_header </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="struct_elf32___ehdr.html">Elf32_Ehdr_t</a> *&#160;</td>
-          <td class="paramname"><em>hdr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Validates ELF header. </p>
-<p>Makes sure the ELF is recognized by the Vita's architecture. </p>
-<dl class="section return"><dt>Returns</dt><dd>Zero if valid, otherwise invalid </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">hdr</td><td>ELF header to check </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="gafd49aca44342a5cfe34d9cf62c20f3c0"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int uvl_get_module_info </td>
-          <td>(</td>
-          <td class="paramtype">SceUID&#160;</td>
-          <td class="paramname"><em>fd</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">SceOff&#160;</td>
-          <td class="paramname"><em>start_offset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="struct_elf32___ehdr.html">Elf32_Ehdr_t</a> *&#160;</td>
-          <td class="paramname"><em>elf_hdr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__resolve.html#ga092c3dadc0aa862fd744954b5fc7602e">module_info_t</a> *&#160;</td>
-          <td class="paramname"><em>mod_info</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Finds SCE module info. </p>
-<p>This function locates the strings table and finds the section where the module information resides. Then it reads the module information. This function will move the pointer in the file descriptor. </p>
-<dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">fd</td><td>File descriptor for the ELF </td></tr>
-    <tr><td class="paramname">start_offset</td><td>Starting position of the ELF in file </td></tr>
-    <tr><td class="paramname">elf_hdr</td><td>ELF header </td></tr>
-    <tr><td class="paramname">mod_info</td><td>Where to read information to </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="ga2984987adfb0eba822616e72620a6dfa"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int uvl_load_elf </td>
-          <td>(</td>
-          <td class="paramtype">SceUID&#160;</td>
-          <td class="paramname"><em>fd</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">SceOff&#160;</td>
-          <td class="paramname"><em>start_offset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void **&#160;</td>
-          <td class="paramname"><em>entry</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Loads an ELF file. </p>
-<p>Performs both loading and resolving NIDs </p>
-<dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">fd</td><td>File descriptor for ELF </td></tr>
-    <tr><td class="paramname">start_offset</td><td>Starting position of the ELF in file </td></tr>
-    <tr><td class="paramname">entry</td><td>Returned pointer to entry pointer </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="gaf42fa9af8c0050f5f2998dcec67f219c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int uvl_load_exe </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>filename</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void **&#160;</td>
-          <td class="paramname"><em>entry</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Loads an supported executable. </p>
-<p>This function identifies and loads a executable at the given file. Currently supports ELF and SCE executable. </p>
-<dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">filename</td><td>Absolute path to executable </td></tr>
-    <tr><td class="paramname">entry</td><td>Returned pointer to entry pointer </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="gadfa62679dbbd82a847b188f76745e49f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int uvl_load_module </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Loads a system module by name. </p>
-<dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">name</td><td>Name of module to load </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 29 2012 22:56:09 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>
