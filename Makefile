@@ -1,7 +1,9 @@
 CC=arm-none-eabi-gcc
 CFLAGS=-fPIE -std=c99 -mcpu=cortex-a9 -mthumb -D DEBUG
 LD=arm-none-eabi-gcc
-LDFLAGS=-nodefaultlibs -nostdlib -pie
+LDFLAGS=-T linker.x -nodefaultlibs -nostdlib -pie
+OBJCOPY=arm-none-eabi-objcopy
+OBJCOPYFLAGS=
 
 ODIR=obj
 
@@ -12,6 +14,7 @@ OBJ=uvloader.o cleanup.o load.o resolve.o utils.o scefuncs.o
 
 uvloader: $(OBJ)
 	$(LD) -o $@ $^ $(LDFLAGS)
+	$(OBJCOPY) -O binary $@ uvloader.bin
 
 .PHONY: clean
 

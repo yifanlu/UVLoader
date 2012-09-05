@@ -18,7 +18,7 @@
 #define UVL_VER_REV     1   ///< Revision
 /** @}*/
 
-int START_SECTION _start ();
+int START_SECTION uvl_start ();
 int uvl_entry ();
 
 #endif

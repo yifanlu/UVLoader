@@ -64,7 +64,7 @@
 
 #ifdef GENERATE_STUBS
 #define STUB_FUNCTION(type, name) \
-    type __attribute__((naked, aligned(16))) name () \
+    type __attribute__((naked, aligned(16), section(".sceStub.text.uvl"))) name () \
     { \
         __asm__ ("mov r12, #0\n" \
                  "movt r12, #0\n" \

@@ -21,7 +21,7 @@
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int START_SECTION
-_start ()
+uvl_start ()
 {
     IF_DEBUG LOG ("UVLoader %d.%d.%d started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
     SceUID uvl_thread;
