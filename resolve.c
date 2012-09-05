@@ -22,7 +22,7 @@ int
 uvl_resolve_table_add (resolve_entry_t *entry) ///< Entry to add
 {
     void *location = &g_resolve_table[*g_resolve_entries];
-    IF_DEBUG LOG ("Adding entry #%d to resolve table.", *g_resolve_entries);
+    IF_DEBUG LOG ("Adding entry #%u to resolve table.", *g_resolve_entries);
     memcpy (location, entry, sizeof (resolve_entry_t));
     (*g_resolve_entries)++;
     return 0;
@@ -141,7 +141,7 @@ uvl_import_stub_to_entry (void *func,  ///< Stub function to read
     }
     // put the finishing touches
     entry->nid = nid;
-    IF_DEBUG LOG ("Mapped resolved import NID: 0x%X to 0x%X of type %d.", entry->nid, entry->value.value, entry->type);
+    IF_DEBUG LOG ("Mapped resolved import NID: 0x%X to 0x%X of type %u.", entry->nid, entry->value.value, entry->type);
     return 0;
 }
 
@@ -298,7 +298,7 @@ uvl_add_resolved_imports (module_imports_t *imp_table,    ///< Module's import t
     u32_t nid;
     int i;
     // get functions first
-    IF_DEBUG LOG ("Found %d resolved function imports to copy.", imp_table->num_functions);
+    IF_DEBUG LOG ("Found %u resolved function imports to copy.", imp_table->num_functions);
     for(i = 0; i < imp_table->num_functions; i++)
     {
         nid = imp_table->func_nid_table[i];
@@ -325,7 +325,7 @@ uvl_add_resolved_imports (module_imports_t *imp_table,    ///< Module's import t
     // get variables
     res_entry.type = RESOLVE_TYPE_VARIABLE;
     res_entry.resolved = 1;
-    IF_DEBUG LOG ("Found %d resolved variable imports to copy.", imp_table->num_vars);
+    IF_DEBUG LOG ("Found %u resolved variable imports to copy.", imp_table->num_vars);
     for(i = 0; i < imp_table->num_vars; i++)
     {
         res_entry.nid = imp_table->var_nid_table[i];
@@ -340,7 +340,7 @@ uvl_add_resolved_imports (module_imports_t *imp_table,    ///< Module's import t
     // TODO: Find out how this works
     res_entry.type = RESOLVE_TYPE_VARIABLE;
     res_entry.resolved = 1;
-    IF_DEBUG LOG ("Found %d resolved tls imports to copy.", imp_table->num_tls_vars);
+    IF_DEBUG LOG ("Found %u resolved tls imports to copy.", imp_table->num_tls_vars);
     for(i = 0; i < imp_table->num_tls_vars; i++)
     {
         res_entry.nid = imp_table->tls_nid_table[i];
@@ -374,7 +374,7 @@ uvl_add_unresolved_imports (module_imports_t *imp_table) ///< Homebrew's import 
 
     // get functions first
     res_entry.type = RESOLVE_TYPE_FUNCTION;
-    IF_DEBUG LOG ("Found %d unresolved function imports to copy.", imp_table->num_functions);
+    IF_DEBUG LOG ("Found %u unresolved function imports to copy.", imp_table->num_functions);
     for(i = 0; i < imp_table->num_functions; i++)
     {
         res_entry.nid = imp_table->func_nid_table[i];
@@ -387,7 +387,7 @@ uvl_add_unresolved_imports (module_imports_t *imp_table) ///< Homebrew's import 
     }
     // get variables
     res_entry.type = RESOLVE_TYPE_VARIABLE;
-    IF_DEBUG LOG ("Found %d unresolved variable imports to copy.", imp_table->num_vars);
+    IF_DEBUG LOG ("Found %u unresolved variable imports to copy.", imp_table->num_vars);
     for(i = 0; i < imp_table->num_vars; i++)
     {
         res_entry.nid = imp_table->var_nid_table[i];
@@ -401,7 +401,7 @@ uvl_add_unresolved_imports (module_imports_t *imp_table) ///< Homebrew's import 
     // get TLS
     // TODO: Find out how this works
     res_entry.type = RESOLVE_TYPE_VARIABLE;
-    IF_DEBUG LOG ("Found %d unresolved tls imports to copy.", imp_table->num_tls_vars);
+    IF_DEBUG LOG ("Found %u unresolved tls imports to copy.", imp_table->num_tls_vars);
     for(i = 0; i < imp_table->num_tls_vars; i++)
     {
         res_entry.nid = imp_table->tls_nid_table[i];
@@ -431,7 +431,7 @@ uvl_add_resolved_exports (module_exports_t *exp_table) ///< Module's export tabl
 
     // get functions first
     res_entry.type = RESOLVE_TYPE_FUNCTION;
-    IF_DEBUG LOG ("Found %d resolved function exports to copy.", exp_table->num_functions);
+    IF_DEBUG LOG ("Found %u resolved function exports to copy.", exp_table->num_functions);
     for(i = 0; i < exp_table->num_functions; i++, offset++)
     {
         res_entry.nid = exp_table->nid_table[offset];
@@ -444,7 +444,7 @@ uvl_add_resolved_exports (module_exports_t *exp_table) ///< Module's export tabl
     }
     // get variables
     res_entry.type = RESOLVE_TYPE_VARIABLE;
-    IF_DEBUG LOG ("Found %d resolved variable exports to copy.", exp_table->num_vars);
+    IF_DEBUG LOG ("Found %u resolved variable exports to copy.", exp_table->num_vars);
     for(i = 0; i < exp_table->num_vars; i++, offset++)
     {
         res_entry.nid = exp_table->nid_table[offset];
@@ -458,7 +458,7 @@ uvl_add_resolved_exports (module_exports_t *exp_table) ///< Module's export tabl
     // get TLS
     // TODO: Find out how this works
     res_entry.type = RESOLVE_TYPE_VARIABLE;
-    IF_DEBUG LOG ("Found %d resolved tls exports to copy.", exp_table->num_tls_vars);
+    IF_DEBUG LOG ("Found %u resolved tls exports to copy.", exp_table->num_tls_vars);
     for(i = 0; i < exp_table->num_tls_vars; i++, offset++)
     {
         res_entry.nid = exp_table->nid_table[offset];
@@ -488,7 +488,7 @@ uvl_resolve_all_unresolved ()
     resolve_entry_t *entry;
     u32_t *memloc;
     int i;
-    IF_DEBUG LOG ("%d resolve entries to look through.", *g_resolve_entries);
+    IF_DEBUG LOG ("%u resolve entries to look through.", *g_resolve_entries);
     for (i = 0; i < *g_resolve_entries; i++)
     {
         if (g_resolve_table[i].resolved)
@@ -582,11 +582,11 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
         LOG ("Failed to get module list.");
         return -1;
     }
-    IF_DEBUG LOG ("Found %d loaded modules.", num_loaded);
+    IF_DEBUG LOG ("Found %u loaded modules.", num_loaded);
     for (i = 0; i < num_loaded; i++)
     {
         m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
-        IF_DEBUG LOG ("Getting information for module #%d, UID: 0x%X.", i, mod_list[i]);
+        IF_DEBUG LOG ("Getting information for module #%u, UID: 0x%X.", i, mod_list[i]);
         if (sceKernelGetModuleInfo (mod_list[i], &m_mod_info) < 0)
         {
             LOG ("Error getting info for mod 0x%08X, continuing", mod_list[i]);

@@ -23,7 +23,7 @@
 int START_SECTION
 uvl_start ()
 {
-    IF_DEBUG LOG ("UVLoader %d.%d.%d started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
+    IF_DEBUG LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
     SceUID uvl_thread;
     // TODO: find a place in memory to store table.
     IF_DEBUG LOG ("Caching all modules to resolve table.");

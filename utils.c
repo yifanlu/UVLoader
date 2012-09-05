@@ -411,7 +411,7 @@ uidiv (u32_t num,   ///< Numerator
 }
 
 // thanks naehrwert for the tiny printf
-static void _putn(char *str, u32_t x, u32_t base, char fill, int fcnt, int upper)
+static void _putn(char **p_str, u32_t x, u32_t base, char fill, int fcnt, int upper)
 {
     char buf[65];
     char *digits;
@@ -446,7 +446,7 @@ static void _putn(char *str, u32_t x, u32_t base, char fill, int fcnt, int upper
         }
     }
     
-    for(; *p != '\0'; *(str++) = *(p++));
+    for(; *p != '\0'; *((*p_str)++) = *(p++));
 }
 
 int vsprintf (char *str, const char *fmt, va_list ap)
@@ -481,17 +481,18 @@ int vsprintf (char *str, const char *fmt, va_list ap)
                 s = va_arg(ap, char *);
                 for(; *s != '\0'; *(str++) = *(s++));
                 break;
-            case 'd':
+            case 'u':
                 n = va_arg(ap, u32_t);
-                _putn(str, n, 10, fill, fcnt, 0);
+                _putn(&str, n, 10, fill, fcnt, 0);
                 break;
             case 'x':
                 n = va_arg(ap, u32_t);
-                _putn(str, n, 16, fill, fcnt, 0);
+                _putn(&str, n, 16, fill, fcnt, 0);
                 break;
             case 'X':
                 n = va_arg(ap, u32_t);
-                _putn(str, n, 16, fill, fcnt, 1);
+                _putn(&str, n, 16, fill, fcnt, 1);
+                break;
             case '%':
                 *(str++) = '%';
                 break;
@@ -510,6 +511,7 @@ int vsprintf (char *str, const char *fmt, va_list ap)
 
     out:
     *str = '\0';
+    return 0;
 }
 
 int sprintf (char *str, const char *format, ...)
@@ -519,6 +521,7 @@ int sprintf (char *str, const char *format, ...)
     va_start (arg, format);
     vsprintf (str, format, arg);
     va_end (arg);
+    return 0;
 }
 
 /********************************************//**
@@ -541,7 +544,7 @@ void vitalogf (char *file,   ///< Source file of code writing to log
     vsprintf (processed_line, va_arg (arg, const char*), arg);
     va_end (arg);
     // generate complete log entry
-    sprintf (log_line, "%s:%d %s\n", file, line, processed_line);
+    sprintf (log_line, "%s:%u %s\n", file, line, processed_line);
     if (PRINT_DEBUG_LOCATION > 0)
     {
         writeline = *PRINT_DEBUG_LOCATION;

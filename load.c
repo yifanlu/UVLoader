@@ -43,7 +43,7 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
     }
     else if (magic[0] == SCEMAG0)
     {
-        if (magic[1] == ELFMAG1 && magic[2] == ELFMAG2 && magic[3] == ELFMAG3)
+        if (magic[1] == SCEMAG1 && magic[2] == SCEMAG2 && magic[3] == SCEMAG3)
         {
             IF_DEBUG LOG ("Found a SCE, seeking to ELF.");
             if (sceIoLseek (fd, SCEHDR_LEN, SCE_SEEK_SET) < 0)
@@ -108,10 +108,10 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
         return -1;
     }
     // actually load the ELF
-    IF_DEBUG LOG ("Found %d program sections.", elf_hdr.e_phnum);
+    IF_DEBUG LOG ("Found %u program sections.", elf_hdr.e_phnum);
     for (i = 0; i < elf_hdr.e_phnum; i++)
     {
-        IF_DEBUG LOG ("Seeking program header #%d.", i);
+        IF_DEBUG LOG ("Seeking program header #%u.", i);
         if (sceIoLseek (fd, start_offset + elf_hdr.e_phoff + i * elf_hdr.e_phentsize, SCE_SEEK_SET) < 0)
         {
             LOG ("Error seeking program header.");
@@ -132,19 +132,19 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
         IF_DEBUG LOG ("Seeking to program.");
         if (sceIoLseek (fd, start_offset + prog_hdr.p_offset, SCE_SEEK_SET) < 0)
         {
-            LOG ("Error seeking to section %d.", i);
+            LOG ("Error seeking to section %u.", i);
             return -1;
         }
         IF_DEBUG LOG ("Loading program to memory at 0x%X.", (u32_t)prog_hdr.p_vaddr);
         if (sceIoRead (fd, prog_hdr.p_vaddr, prog_hdr.p_filesz) < 0)
         {
-            LOG ("Error reading program section %d.", i);
+            LOG ("Error reading program section %u.", i);
             return -1;
         }
         if (prog_hdr.p_memsz > prog_hdr.p_filesz)
         {
             // specs say we have to zero out extra bytes
-            IF_DEBUG LOG ("Adding %d bytes of padding.", prog_hdr.p_memsz - prog_hdr.p_filesz);
+            IF_DEBUG LOG ("Adding %u bytes of padding.", prog_hdr.p_memsz - prog_hdr.p_filesz);
             memset ((char*)prog_hdr.p_vaddr + prog_hdr.p_filesz, 0, prog_hdr.p_memsz - prog_hdr.p_filesz);
         }
     }
@@ -318,7 +318,7 @@ uvl_get_module_info (SceUID fd,             ///< File descriptor for the ELF
         LOG ("Error seeking section table.");
         return -1;
     }
-    IF_DEBUG LOG ("Reading %d sections.", elf_hdr->e_shnum);
+    IF_DEBUG LOG ("Reading %u sections.", elf_hdr->e_shnum);
     for (i = 0; i < elf_hdr->e_shnum; i++)
     {
         IF_DEBUG LOG ("Reading section header.");
