@@ -1,4 +1,5 @@
 #include "cleanup.h"
+#include "config.h"
 #include "load.h"
 #include "resolve.h"
 #include "scefuncs.h"
@@ -11,7 +12,7 @@
 #endif
 
 /********************************************//**
- *  \brief Entry point from exploit
+ *  \brief Starting point from exploit
  *  
  *  Call this from your exploit to run UVLoader.
  *  It will first cache all loaded modules and 
@@ -20,7 +21,7 @@
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int START_SECTION
-uvl_entry ()
+_start ()
 {
     SceUID uvl_thread;
     // TODO: find a place in memory to store table.
@@ -29,11 +30,11 @@ uvl_entry ()
         LOG ("Cannot cache all loaded modules.");
         return -1;
     }
-    
+
     // WARNING: No error checks here
     uvl_scefuncs_resolve_all ();
 
-    uvl_thread = sceKernelCreateThread ("uvloader", uvl_start, 0x18, 0x10000, 0, NULL);
+    uvl_thread = sceKernelCreateThread ("uvloader", uvl_entry, 0x18, 0x10000, 0, NULL);
     if (uvl_thread < 0)
     {
         LOG ("Cannot create UVLoader thread.");
@@ -54,14 +55,24 @@ uvl_entry ()
 }
 
 /********************************************//**
- *  \brief Starts UVLoader
+ *  \brief Entry point of UVLoader
  *  
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int 
-uvl_start ()
+uvl_entry ()
 {
-    // clean up ram
-    // load ELF
-    return 0;
+    int (*start)();
+    if (uvl_cleanup_memory () < 0)
+    {
+        LOG ("Cannot cleanup memory.");
+        return -1;
+    }
+    if (uvl_load_exe (HOMEBREW_PATH, (void**)&start) < 0)
+    {
+        LOG ("Cannot load homebrew.");
+        return -1;
+    }
+    // sceKernelRegisterCallbackToEvent on exit
+    return start();
 }

@@ -1,3 +1,4 @@
+#include "config.h"
 #include "resolve.h"
 #include "scefuncs.h"
 #include "utils.h"
@@ -7,9 +8,9 @@
 /** Checks if this is a valid ARM address */
 #define PTR_VALID(ptr) (ptr > 0x81000000 && ptr < 0xF0000000) // TODO: change this to be better 
 /** The first entry in the resolve table containing information to resolve NIDs */
-resolve_entry_t *RESOLVE_TABLE = (void*)0x85000000;
+resolve_entry_t *const g_resolve_table = (void*)(RESOLVE_TABLE_LOCATION + sizeof (int));
 /** Number of entries in the resolve table */
-int RESOLVE_ENTRIES = 0;
+u32_t *const g_resolve_entries = (void*)(RESOLVE_TABLE_LOCATION); // first four bytes is size
 
 /********************************************//**
  *  \brief Adds a resolve entry
@@ -20,9 +21,9 @@ int RESOLVE_ENTRIES = 0;
 int 
 uvl_resolve_table_add (resolve_entry_t *entry) ///< Entry to add
 {
-    void *location = &RESOLVE_TABLE[RESOLVE_ENTRIES];
+    void *location = &g_resolve_table[*g_resolve_entries];
     memcpy (location, entry, sizeof (resolve_entry_t));
-    RESOLVE_ENTRIES++;
+    (*g_resolve_entries)++;
     return 0;
 }
 
@@ -40,16 +41,16 @@ uvl_resolve_table_get (u32_t nid,               ///< NID to resolve
                          int forced_resolved)   ///< Only return resolved entries
 {
     int i;
-    for (i = 0; i < RESOLVE_ENTRIES; i++)
+    for (i = 0; i < *g_resolve_entries; i++)
     {
-        if (RESOLVE_TABLE[i].nid == nid)
+        if (g_resolve_table[i].nid == nid)
         {
             // entries could be placeholders for resolving later
-            if (forced_resolved && !RESOLVE_TABLE[i].resolved)
+            if (forced_resolved && !g_resolve_table[i].resolved)
             {
                 continue;
             }
-            return &RESOLVE_TABLE[i];
+            return &g_resolve_table[i];
         }
     }
     return NULL;
@@ -476,13 +477,13 @@ uvl_resolve_all_unresolved ()
     resolve_entry_t *entry;
     u32_t *memloc;
     int i;
-    for (i = 0; i < RESOLVE_ENTRIES; i++)
+    for (i = 0; i < *g_resolve_entries; i++)
     {
-        if (RESOLVE_TABLE[i].resolved)
+        if (g_resolve_table[i].resolved)
         {
             continue;
         }
-        stub = &RESOLVE_TABLE[i];
+        stub = &g_resolve_table[i];
         // first attempt, look up in table
         if ((entry = uvl_resolve_table_get (stub->nid, 1)) != NULL)
         {

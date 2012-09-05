@@ -16,4 +16,4 @@ uvloader: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -rf *~ *.o *.elf *.bin *.s
+	rm -rf *~ *.o *.elf *.bin *.s uvloader

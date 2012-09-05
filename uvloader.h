@@ -10,8 +10,8 @@
 
 #define START_SECTION __attribute__ ((section (".text.start")))
 
-int START_SECTION uvl_entry ();
-int uvl_start ();
+int START_SECTION _start ();
+int uvl_entry ();
 
 #endif
 /// @}
