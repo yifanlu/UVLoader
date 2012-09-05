@@ -1,7 +1,10 @@
 #include "cleanup.h"
 #include "resolve.h"
+#include "scefuncs.h"
+#include "utils.h"
 
-int uvl_cleanup_memory ()
+int
+uvl_cleanup_memory ()
 {
     // close and delete all threads
     if (uvl_unload_all_modules () < 0)
@@ -14,7 +17,8 @@ int uvl_cleanup_memory ()
     // close all file handles
 }
 
-int uvl_unload_all_modules ()
+int
+uvl_unload_all_modules ()
 {
     loaded_module_info_t m_mod_info;
     SceUID mod_list[MAX_LOADED_MODS];

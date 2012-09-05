@@ -24,6 +24,14 @@ typedef __builtin_va_list va_list;
 #define va_end(ap) __builtin_va_end(ap)
 /** @}*/
 
+/** \brief Division result
+ *  \sa uidiv
+ */
+typedef struct uidiv_result {
+    u32_t quo;  ///< Quotient
+    u32_t rem;  ///< Remainder
+} uidiv_result_t;
+
 // string.h from libc
 /*
  * Copyright (C) 2008 The Android Open Source Project
@@ -79,6 +87,7 @@ int sprintf (char *str, const char *format, ...);
  *  @{
  */
 char* memstr (char *needle, int n_length, char *haystack, int h_length);
+uidiv_result_t uidiv (u32_t num, u32_t dem);
 void vitalogf (char *file, int line, ...);
 /** @}*/
 

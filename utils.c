@@ -368,13 +368,56 @@ memstr (char *needle,   ///< String to find
     return boyer_moore (haystack, h_length, needle, n_length);
 }
 
+/********************************************//**
+ *  \brief Unsigned integer division
+ *  
+ *  ARM does not have native division support
+ *  \returns Result of operation or zero if 
+ *  dividing by zero.
+ *  @a haystack
+ ***********************************************/
+uidiv_result_t
+uidiv (u32_t num,   ///< Numerator
+       u32_t dem)   ///< Denominator
+{
+    u32_t tmp = dem;
+    uidiv_result_t ans = {0};
+    
+    if (dem == 0)
+    {
+        // TODO: Somehow make error
+        return ans;
+    }
+    
+    while (tmp <= num >> 1)
+    {
+        tmp <<= 1;
+    }
+    
+    do
+    {
+        if (num >= tmp)
+        {
+            num -= tmp;
+            ans.quo++;
+        }
+        ans.quo <<= 1;
+        tmp >>= 1;
+    } while (tmp >= dem);
+    ans.quo >>= 1;
+    ans.rem = num;
+    
+    return ans;
+}
+
 // thanks naehrwert for the tiny printf
-static void _putn(char *str, u32_t x, int base, char fill, int fcnt, int upper)
+static void _putn(char *str, u32_t x, u32_t base, char fill, int fcnt, int upper)
 {
     char buf[65];
     char *digits;
     char *p;
     int c = fcnt;
+    uidiv_result_t div_res;
 
     if (upper)
         digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -389,8 +432,9 @@ static void _putn(char *str, u32_t x, int base, char fill, int fcnt, int upper)
     do
     {
         c--;
-        *--p = digits[x % base];
-        x /= base;
+        div_res = uidiv (x, base);
+        *--p = digits[div_res.rem];
+        x = div_res.quo;
     }while(x);
     
     if(fill != 0)

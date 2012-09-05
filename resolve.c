@@ -615,7 +615,7 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
         }
         if (BIT_SET (type, RESOLVE_MOD_IMPS))
         {
-            for (imports = (module_exports_t*)(m_mod_info.segments[0].vaddr + mod_info->stub_top); 
+            for (imports = (module_imports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_top); 
                 (u32_t)imports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
             {
                 if (uvl_add_resolved_imports (imports, BIT_SET (type, RESOLVE_IMPS_SVC_ONLY)) < 0)

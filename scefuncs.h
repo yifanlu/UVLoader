@@ -75,11 +75,17 @@
 #define STUB_FUNCTION(type, name) type __attribute__((naked)) name ()
 #endif
 
-STUB_FUNCTION (SceUID, sceIoOpen);
-STUB_FUNCTION (int, sceIoClose);
-STUB_FUNCTION (SceOff, sceIoLseek);
-STUB_FUNCTION (SceOff, sceIoRead);
-STUB_FUNCTION (int, sceKernelGetModuleList);
-STUB_FUNCTION (int, sceKernelGetModuleInfo);
+STUB_FUNCTION(SceUID, sceIoOpen);
+STUB_FUNCTION(int, sceIoClose);
+STUB_FUNCTION(SceOff, sceIoLseek);
+STUB_FUNCTION(SceOff, sceIoRead);
+STUB_FUNCTION(int, sceKernelGetModuleList);
+STUB_FUNCTION(int, sceKernelGetModuleInfo);
+STUB_FUNCTION(SceUID, sceKernelCreateThread);
+STUB_FUNCTION(int, sceKernelStartThread);
+STUB_FUNCTION(int, sceKernelExitDeleteThread);
+STUB_FUNCTION(int, sceKernelStopUnloadModule);
+
+void uvl_scefuncs_resolve_all ();
 
 #endif

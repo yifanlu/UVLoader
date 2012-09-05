@@ -29,11 +29,10 @@ uvl_entry ()
         LOG ("Cannot cache all loaded modules.");
         return -1;
     }
-    if (uvl_scefuncs_resolve_all () < 0)
-    {
-        LOG ("Cannot resolve UVLoader stubs.");
-        return -1;
-    }
+    
+    // WARNING: No error checks here
+    uvl_scefuncs_resolve_all ();
+
     uvl_thread = sceKernelCreateThread ("uvloader", uvl_start, 0x18, 0x10000, 0, NULL);
     if (uvl_thread < 0)
     {
@@ -64,4 +63,5 @@ uvl_start ()
 {
     // clean up ram
     // load ELF
+    return 0;
 }
