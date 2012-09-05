@@ -5,8 +5,6 @@ LDFLAGS=-T linker.x -nodefaultlibs -nostdlib -pie
 OBJCOPY=arm-none-eabi-objcopy
 OBJCOPYFLAGS=
 
-ODIR=obj
-
 OBJ=uvloader.o cleanup.o load.o resolve.o utils.o scefuncs.o
 
 %.o: %.c
@@ -14,7 +12,7 @@ OBJ=uvloader.o cleanup.o load.o resolve.o utils.o scefuncs.o
 
 uvloader: $(OBJ)
 	$(LD) -o $@ $^ $(LDFLAGS)
-	$(OBJCOPY) -O binary $@ uvloader.bin
+	$(OBJCOPY) -O binary $@ $@.bin
 
 .PHONY: clean
 
