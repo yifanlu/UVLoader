@@ -1,5 +1,5 @@
 CC=arm-none-eabi-gcc
-CFLAGS=-fPIE -std=c99 -mcpu=cortex-a9
+CFLAGS=-fPIE -std=c99 -mcpu=cortex-a9 -mthumb
 LD=arm-none-eabi-gcc
 LDFLAGS=-nodefaultlibs -nostdlib -pie
 

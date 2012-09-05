@@ -531,6 +531,7 @@ void vitalogf (char *file,   ///< Source file of code writing to log
                 int line,    ///< Line number of code writing to log
                     ...)     ///< Format and value(s) to write
 {
+    void (*writeline)(char *);
     char processed_line[MAX_LOG_LENGTH];
     char log_line[MAX_LOG_LENGTH];
     va_list arg;
@@ -541,5 +542,10 @@ void vitalogf (char *file,   ///< Source file of code writing to log
     va_end (arg);
     // generate complete log entry
     sprintf (log_line, "%s:%d %s\n", file, line, processed_line);
-    // TODO: Where to print log?
+    if (PRINT_DEBUG_LOCATION > 0)
+    {
+        writeline = *PRINT_DEBUG_LOCATION;
+        writeline (log_line);
+    }
+    // TODO: print to screen
 }
