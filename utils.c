@@ -449,6 +449,13 @@ static void _putn(char **p_str, u32_t x, u32_t base, char fill, int fcnt, int up
     for(; *p != '\0'; *((*p_str)++) = *(p++));
 }
 
+/********************************************//**
+ *  \brief Simple @c vsprintf
+ *  
+ *  Only supports %c, %s, %u, %x, %X with 
+ *  optional zero padding.
+ *  Always returns zero.
+ ***********************************************/
 int vsprintf (char *str, const char *fmt, va_list ap)
 {
     char *s;
@@ -514,6 +521,13 @@ int vsprintf (char *str, const char *fmt, va_list ap)
     return 0;
 }
 
+/********************************************//**
+ *  \brief Simple @c sprintf
+ *  
+ *  Only supports %c, %s, %u, %x, %X with 
+ *  optional zero padding.
+ *  Always returns zero.
+ ***********************************************/
 int sprintf (char *str, const char *format, ...)
 {
     va_list arg;

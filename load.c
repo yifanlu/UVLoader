@@ -19,7 +19,7 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
 
     *entry = NULL;
     IF_DEBUG LOG ("Opening %s for reading.", filename);
-    SceUID fd = sceIoOpen (filename, SCE_O_RDONLY, SCE_STM_RU);
+    SceUID fd = sceIoOpen (filename, PSP2_O_RDONLY, PSP2_STM_RU);
     if (fd < 0)
     {
         LOG ("Cannot open executable file for loading.");
@@ -46,7 +46,7 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
         if (magic[1] == SCEMAG1 && magic[2] == SCEMAG2 && magic[3] == SCEMAG3)
         {
             IF_DEBUG LOG ("Found a SCE, seeking to ELF.");
-            if (sceIoLseek (fd, SCEHDR_LEN, SCE_SEEK_SET) < 0)
+            if (sceIoLseek (fd, SCEHDR_LEN, PSP2_SEEK_SET) < 0)
             {
                 LOG ("Cannot skip SCE header.");
                 return -1;
@@ -112,7 +112,7 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
     for (i = 0; i < elf_hdr.e_phnum; i++)
     {
         IF_DEBUG LOG ("Seeking program header #%u.", i);
-        if (sceIoLseek (fd, start_offset + elf_hdr.e_phoff + i * elf_hdr.e_phentsize, SCE_SEEK_SET) < 0)
+        if (sceIoLseek (fd, start_offset + elf_hdr.e_phoff + i * elf_hdr.e_phentsize, PSP2_SEEK_SET) < 0)
         {
             LOG ("Error seeking program header.");
             return -1;
@@ -130,7 +130,7 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
         }
         // TODO: Alloc memory to load and set permissions
         IF_DEBUG LOG ("Seeking to program.");
-        if (sceIoLseek (fd, start_offset + prog_hdr.p_offset, SCE_SEEK_SET) < 0)
+        if (sceIoLseek (fd, start_offset + prog_hdr.p_offset, PSP2_SEEK_SET) < 0)
         {
             LOG ("Error seeking to section %u.", i);
             return -1;
@@ -278,7 +278,7 @@ uvl_get_module_info (SceUID fd,             ///< File descriptor for the ELF
     Elf32_Shdr_t sec_hdr;
     // find strings table
     IF_DEBUG LOG ("Seeking to strings table.");
-    if (sceIoLseek (fd, start_offset + elf_hdr->e_shoff + elf_hdr->e_shstrndx * elf_hdr->e_shentsize, SCE_SEEK_SET) < 0)
+    if (sceIoLseek (fd, start_offset + elf_hdr->e_shoff + elf_hdr->e_shstrndx * elf_hdr->e_shentsize, PSP2_SEEK_SET) < 0)
     {
         LOG ("Error seeking strings table.");
         return -1;
@@ -292,7 +292,7 @@ uvl_get_module_info (SceUID fd,             ///< File descriptor for the ELF
     char strings[sec_hdr.sh_size];
     int name_idx;
     IF_DEBUG LOG ("Seeking strings table.");
-    if (sceIoLseek (fd, start_offset + sec_hdr.sh_offset, SCE_SEEK_SET) < 0)
+    if (sceIoLseek (fd, start_offset + sec_hdr.sh_offset, PSP2_SEEK_SET) < 0)
     {
         LOG ("Error seeking strings table.");
         return -1;
@@ -313,7 +313,7 @@ uvl_get_module_info (SceUID fd,             ///< File descriptor for the ELF
     // find sceModuleInfo section
     int i;
     IF_DEBUG LOG ("Seeking sections table.");
-    if (sceIoLseek (fd, start_offset + elf_hdr->e_shoff, SCE_SEEK_SET) < 0)
+    if (sceIoLseek (fd, start_offset + elf_hdr->e_shoff, PSP2_SEEK_SET) < 0)
     {
         LOG ("Error seeking section table.");
         return -1;
@@ -331,7 +331,7 @@ uvl_get_module_info (SceUID fd,             ///< File descriptor for the ELF
         {
             IF_DEBUG LOG ("Found requested section %s.", name_idx);
             IF_DEBUG LOG ("Seeking to section.");
-            if (sceIoLseek (fd, start_offset + sec_hdr.sh_offset, SCE_SEEK_SET) < 0)
+            if (sceIoLseek (fd, start_offset + sec_hdr.sh_offset, PSP2_SEEK_SET) < 0)
             {
                 LOG ("Error seeking sceModuleInfo table.");
                 return -1;
