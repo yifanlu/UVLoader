@@ -21,9 +21,15 @@
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int START_SECTION
-uvl_start ()
+uvl_start (void *f_writeline)
 {
+    vitasetlog (f_writeline);
     IF_DEBUG LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
+    u32_t i = 0;
+    for (;;)
+    {
+        LOG ("Ran %u times", ++i);
+    }
     SceUID uvl_thread;
     // TODO: find a place in memory to store table.
     IF_DEBUG LOG ("Caching all modules to resolve table.");

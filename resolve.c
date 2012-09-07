@@ -8,9 +8,9 @@
 /** Checks if this is a valid ARM address */
 #define PTR_VALID(ptr) (ptr > 0x81000000 && ptr < 0xF0000000) // TODO: change this to be better 
 /** Number of entries in the resolve table */
-u32_t *const g_resolve_entries = RESOLVE_TABLE_LOCATION; // first four bytes is size
+u32_t g_resolve_entries = 0; // first four bytes is size
 /** The first entry in the resolve table containing information to resolve NIDs */
-resolve_entry_t *const g_resolve_table = (resolve_entry_t*)&((u32_t*)RESOLVE_TABLE_LOCATION)[1];
+resolve_entry_t g_resolve_table[MAX_RESOLVE_ENTRIES] = {0};
 
 /********************************************//**
  *  \brief Adds a resolve entry
@@ -21,10 +21,18 @@ resolve_entry_t *const g_resolve_table = (resolve_entry_t*)&((u32_t*)RESOLVE_TAB
 int 
 uvl_resolve_table_add (resolve_entry_t *entry) ///< Entry to add
 {
-    void *location = &g_resolve_table[*g_resolve_entries];
-    IF_DEBUG LOG ("Adding entry #%u to resolve table.", *g_resolve_entries);
+    if (g_resolve_entries >= MAX_RESOLVE_ENTRIES)
+    {
+        LOG ("Resolve table full. Please recompile with larger table.");
+        return -1;
+    }
+    void *location = &g_resolve_table[g_resolve_entries];
+    IF_DEBUG LOG ("Adding entry #%u to resolve table.", g_resolve_entries);
+    IF_DEBUG LOG ("NID: 0x%08X, type: %u, resolved: %u, value 0x%08X", entry->nid, entry->type, entry->resolved, entry->value.value);
+    psp2UnlockMem ();
     memcpy (location, entry, sizeof (resolve_entry_t));
-    (*g_resolve_entries)++;
+    g_resolve_entries++;
+    psp2LockMem ();
     return 0;
 }
 
@@ -42,7 +50,7 @@ uvl_resolve_table_get (u32_t nid,               ///< NID to resolve
                          int forced_resolved)   ///< Only return resolved entries
 {
     int i;
-    for (i = 0; i < *g_resolve_entries; i++)
+    for (i = 0; i < g_resolve_entries; i++)
     {
         if (g_resolve_table[i].nid == nid)
         {
@@ -125,10 +133,10 @@ uvl_import_stub_to_entry (void *func,  ///< Stub function to read
             default:
                 break;
         }
-        if (entry->type != RESOLVE_TYPE_UNKNOWN && entry->value.value > 0)
+        if (entry->type != RESOLVE_TYPE_UNKNOWN)
         {
-            // we resolved it, get out before something weird happens
-            entry->resolved = 1;
+            // we reached a jump or syscall, so it's either resolved or broken
+            entry->resolved = (entry->value.value > 0);
             break;
         }
         // next instruction
@@ -216,19 +224,25 @@ uvl_decode_arm_inst (u32_t cur_inst, ///< ARMv7 instruction
         // discard bytes 15-0
         return (((cur_inst << 12) >> 28) << 12) | ((cur_inst << 20) >> 20);
     }
-    // Bits 27-25 should be 000 for BLX instructions
+    // Bits 27-25 should be 000 for jump instructions
     else if (!BIT_SET (cur_inst, 26) && !BIT_SET (cur_inst, 25))
     {
-        // Bits 24-4 should be 101111111111110001, 0x12FFF1
-        if ((cur_inst << 7) >> 15 != 0x2FFF1)
-        {
-            // Not a BX Rn instruction
-            return -1;
-        }
-        else
+        // Bits 24-4 should be 100101111111111110001, 0x12FFF1 for BX
+        if ((cur_inst << 7) >> 11 != 0x12FFF1)
         {
             *type = INSTRUCTION_BRANCH;
             return 1;
+        }
+        // Bits 24-4 should be 100101111111111110001, 0x12FFF3 for BLX
+        else if ((cur_inst << 7) >> 11 == 0x12FFF3)
+        {
+            *type = INSTRUCTION_BRANCH;
+            return 1;
+        }
+        else
+        {
+            // unknown jump
+            return -1;
         }
     }
     else
@@ -305,8 +319,8 @@ uvl_add_resolved_imports (module_imports_t *imp_table,    ///< Module's import t
         memory = imp_table->func_entry_table[i];
         if (uvl_import_stub_to_entry (memory, nid, &res_entry) < 0)
         {
-            LOG ("Error generating entry from import stub.");
-            return -1;
+            LOG ("Error generating entry from import stub. Continuing.");
+            continue;
         }
         if (syscalls_only && res_entry.type != RESOLVE_TYPE_SYSCALL)
         {
@@ -455,20 +469,6 @@ uvl_add_resolved_exports (module_exports_t *exp_table) ///< Module's export tabl
             return -1;
         }
     }
-    // get TLS
-    // TODO: Find out how this works
-    res_entry.type = RESOLVE_TYPE_VARIABLE;
-    IF_DEBUG LOG ("Found %u resolved tls exports to copy.", exp_table->num_tls_vars);
-    for(i = 0; i < exp_table->num_tls_vars; i++, offset++)
-    {
-        res_entry.nid = exp_table->nid_table[offset];
-        res_entry.value.value = *(u32_t*)exp_table->entry_table[offset];
-        if (uvl_resolve_table_add (&res_entry) < 0)
-        {
-            LOG ("Error adding entry to table.");
-            return -1;
-        }
-    }
     return 0;
 }
 
@@ -488,8 +488,8 @@ uvl_resolve_all_unresolved ()
     resolve_entry_t *entry;
     u32_t *memloc;
     int i;
-    IF_DEBUG LOG ("%u resolve entries to look through.", *g_resolve_entries);
-    for (i = 0; i < *g_resolve_entries; i++)
+    IF_DEBUG LOG ("%u resolve entries to look through.", g_resolve_entries);
+    for (i = 0; i < g_resolve_entries; i++)
     {
         if (g_resolve_table[i].resolved)
         {
@@ -592,12 +592,13 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
             LOG ("Error getting info for mod 0x%08X, continuing", mod_list[i]);
             continue;
         }
+        IF_DEBUG LOG ("Module: %s, file: %s", m_mod_info.module_name, m_mod_info.file_path);
         mod_info = NULL;
         result = m_mod_info.segments[0].vaddr;
         segment_size = m_mod_info.segments[0].memsz;
-        for (;;)
+        while (segment_size > 0)
         {
-            IF_DEBUG LOG ("Searching for module name in memory.");
+            IF_DEBUG LOG ("Searching for module name in memory. Start 0x%X", result);
             result = memstr (m_mod_info.module_name, strlen (m_mod_info.module_name), result, segment_size);
             if (result == NULL)
             {
@@ -606,14 +607,18 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
             }
             // try making this the one
             mod_info = (module_info_t*)((u32_t)result - 4);
-            if (PTR_VALID (mod_info->ent_top) && PTR_VALID (mod_info->stub_top))
+            IF_DEBUG LOG ("Possible module info struct at 0x%X", (u32_t)mod_info);
+            if (mod_info->modattribute == MOD_INFO_VALID_ATTR && mod_info->modversion == MOD_INFO_VALID_VER) // TODO: Better check
             {
+                IF_DEBUG LOG ("Module export start at 0x%X import start at 0x%X", (u32_t)mod_info->ent_top + (u32_t)m_mod_info.segments[0].vaddr, (u32_t)mod_info->stub_top + (u32_t)m_mod_info.segments[0].vaddr);
                 break; // we found it
             }
             else // that string just happened to appear
             {
                 IF_DEBUG LOG ("False alarm, found name is not in module info structure.");
-                segment_size -= (u32_t)result - (u32_t)m_mod_info.segments[0].vaddr;
+                mod_info = NULL;
+                segment_size -= ((u32_t)result - (u32_t)m_mod_info.segments[0].vaddr) + strlen (m_mod_info.module_name); // subtract length
+                result = (void*)((u32_t)result + strlen (m_mod_info.module_name)); // start after name
                 continue;
             }
         }
@@ -628,6 +633,10 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
             for (exports = (module_exports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_top); 
                 (u32_t)exports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_end); exports++)
             {
+                if (exports->lib_name != NULL)
+                {
+                    IF_DEBUG LOG ("Adding exports for %s", exports->lib_name);
+                }
                 if (uvl_add_resolved_exports (exports) < 0)
                 {
                     LOG ("Unable to resolve exports at %p. Continuing.", exports);
@@ -641,6 +650,7 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
             for (imports = (module_imports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_top); 
                 (u32_t)imports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
             {
+                IF_DEBUG LOG ("Adding imports for %s", imports->lib_name);
                 if (uvl_add_resolved_imports (imports, BIT_SET (type, RESOLVE_IMPS_SVC_ONLY)) < 0)
                 {
                     LOG ("Unable to resolve imports at %p. Continuing.", imports);

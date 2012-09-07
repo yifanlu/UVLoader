@@ -40,7 +40,15 @@
 #define RESOLVE_IMPS_SVC_ONLY   0x4     ///< Used with @c RESOLVE_MOD_IMPS but only add syscalls for import entries
 /** @}*/
 
+/** \name Module infomation check
+ *  @{
+ */
+#define MOD_INFO_VALID_ATTR     0x0000
+#define MOD_INFO_VALID_VER      0x0101
+/** @}*/
+
 #define MAX_LOADED_MODS         128     ///< Maximum number of loaded modules
+#define MAX_RESOLVE_ENTRIES     0x1000  ///< Maximum number of resolves
 
 /**
  * \brief Resolve table entry
@@ -75,7 +83,7 @@ typedef struct resolve_entry
 typedef struct module_info // thanks roxfan
 {
     u16_t   modattribute;  // ??
-    u8_t    modversion[2]; // always 1,1?
+    u16_t   modversion;    // always 1,1?
     char    modname[27];   ///< Name of the module
     u8_t    type;          // 6 = user-mode prx?
     void    *gp_value;     // always 0 on ARM
@@ -108,11 +116,7 @@ typedef struct module_exports // thanks roxfan
     u16_t   attribute;      // ?
     u16_t   num_functions;  // number of exported functions
     u32_t   num_vars;       // number of exported variables
-    u32_t   num_tls_vars;
-
-
-
-       // number of exported TLS variables?
+    u32_t   num_tls_vars;   // number of exported TLS variables?  <-- pretty sure wrong // yifanlu
     u32_t   module_nid;     // NID of this specific export list; one PRX can export several names
     char    *lib_name;      // name of the export module
     u32_t   *nid_table;     // array of 32-bit NIDs for the exports, first functions then vars

@@ -16,12 +16,12 @@ uvl_scefuncs_resolve_all ()
     uvl_resolve_table_add (&entry);
 
     // now add the stubs
-    ADD_RESOLVE_STUB(sceIoOpen, 0xDEADBEEF);
-    ADD_RESOLVE_STUB(sceIoClose, 0xDEADBEEF);
 
     // make sure our macro isn't used elsewhere
 #undef ADD_RESOLVE_STUB
 
     // finally resolve all
+    psp2UnlockMem (); // unlock memory
     uvl_resolve_all_unresolved ();
+    psp2LockMem (); // lock memory
 }

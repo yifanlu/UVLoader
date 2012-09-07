@@ -95,6 +95,7 @@ int sprintf (char *str, const char *format, ...);
  */
 char* memstr (char *needle, int n_length, char *haystack, int h_length);
 uidiv_result_t uidiv (u32_t num, u32_t dem);
+void vitasetlog (void *log_func);
 void vitalogf (char *file, int line, ...);
 /** @}*/
 

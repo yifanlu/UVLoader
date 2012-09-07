@@ -30,9 +30,9 @@
 
 #ifdef GENERATE_STUBS
 #define STUB_FUNCTION(type, name) \
-    type __attribute__((naked, aligned(16), section(".sceStub.text.uvl"))) name () \
+    type __attribute__((naked, section(".sceStub.text.uvl"))) name () \
     { \
-        __asm__ ("mov r12, #0\n" \
+        __asm__ ("movw r12, #0\n" \
                  "movt r12, #0\n" \
                  "bx r12\n" \
                  "nop"); \
@@ -41,6 +41,7 @@
 #define STUB_FUNCTION(type, name) type __attribute__((naked)) name ()
 #endif
 
+// some names from https://github.com/pspdev/pspsdk
 STUB_FUNCTION(SceUID, sceIoOpen);
 STUB_FUNCTION(int, sceIoClose);
 STUB_FUNCTION(SceOff, sceIoLseek);
@@ -51,6 +52,8 @@ STUB_FUNCTION(SceUID, sceKernelCreateThread);
 STUB_FUNCTION(int, sceKernelStartThread);
 STUB_FUNCTION(int, sceKernelExitDeleteThread);
 STUB_FUNCTION(int, sceKernelStopUnloadModule);
+STUB_FUNCTION(void, psp2UnlockMem);
+STUB_FUNCTION(void, psp2LockMem);
 
 void uvl_scefuncs_resolve_all ();
 

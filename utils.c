@@ -1,4 +1,5 @@
 #include "config.h"
+#include "scefuncs.h"
 #include "utils.h"
 
 // Below is stolen from Android's Bionic
@@ -538,15 +539,29 @@ int sprintf (char *str, const char *format, ...)
     return 0;
 }
 
+void (*g_writeline)(char *) = 0;
+
+/********************************************//**
+ *  \brief Sets the logging function
+ ***********************************************/
+void
+vitasetlog (void *log_func) ///< Pointer to logging function
+{
+    psp2UnlockMem ();
+    g_writeline = log_func;
+    psp2LockMem ();
+}
+
 /********************************************//**
  *  \brief Writes a log entry
  *  
  *  Writes log to all places set in options 
  *  including log file, on screen, and console.
  ***********************************************/
-void vitalogf (char *file,   ///< Source file of code writing to log
-                int line,    ///< Line number of code writing to log
-                    ...)     ///< Format and value(s) to write
+void
+vitalogf (char *file,   ///< Source file of code writing to log
+           int line,    ///< Line number of code writing to log
+               ...)     ///< Format and value(s) to write
 {
     void (*writeline)(char *);
     char processed_line[MAX_LOG_LENGTH];
@@ -559,10 +574,9 @@ void vitalogf (char *file,   ///< Source file of code writing to log
     va_end (arg);
     // generate complete log entry
     sprintf (log_line, "%s:%u %s\n", file, line, processed_line);
-    if (PRINT_DEBUG_LOCATION > 0)
+    if (g_writeline > 0)
     {
-        writeline = *PRINT_DEBUG_LOCATION;
-        writeline (log_line);
+        g_writeline (log_line);
     }
     // TODO: print to screen
 }
