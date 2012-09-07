@@ -22,7 +22,7 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
     SceUID fd = sceIoOpen (filename, PSP2_O_RDONLY, PSP2_STM_RU);
     if (fd < 0)
     {
-        LOG ("Cannot open executable file for loading.");
+        LOG ("Cannot open executable file for reading.");
         return -1;
     }
 
@@ -33,18 +33,14 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
         return -1;
     }
 
-    if (magic[0] == ELFMAG0)
-    {
-        if (magic[1] == ELFMAG1 && magic[2] == ELFMAG2 && magic[3] == ELFMAG3)
-        {
+     if (magic[0] == ELFMAG0 && magic[1] == ELFMAG1 && magic[2] == ELFMAG2 && magic[3] == ELFMAG3)
+     {
             IF_DEBUG LOG ("Found a ELF, loading.");
             return uvl_load_elf (fd, 0, entry);
-        }
-    }
-    else if (magic[0] == SCEMAG0)
-    {
-        if (magic[1] == SCEMAG1 && magic[2] == SCEMAG2 && magic[3] == SCEMAG3)
-        {
+     }
+
+     if (magic[0] == SCEMAG0 && magic[1] == SCEMAG1 && magic[2] == SCEMAG2 && magic[3] == SCEMAG3)
+     {
             IF_DEBUG LOG ("Found a SCE, seeking to ELF.");
             if (sceIoLseek (fd, SCEHDR_LEN, PSP2_SEEK_SET) < 0)
             {
@@ -53,8 +49,7 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
             }
             IF_DEBUG LOG ("Loading ELF.");
             return uvl_load_elf (fd, SCEHDR_LEN, entry);
-        }
-    }
+     }
 
     // close file
     IF_DEBUG LOG ("Closing executable file.");
