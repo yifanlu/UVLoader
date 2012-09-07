@@ -37,14 +37,14 @@ uvl_start ()
     IF_DEBUG LOG ("Resolving UVLoader.");
     uvl_scefuncs_resolve_all ();
 
-    IF_DEBUG LOG ("Creating thread to run loader.");
+    IF_DEBUG LOG ("Creating thread to run UVLoader.");
     uvl_thread = sceKernelCreateThread ("uvloader", uvl_entry, 0x18, 0x10000, 0, NULL);
     if (uvl_thread < 0)
     {
         LOG ("Cannot create UVLoader thread.");
         return -1;
     }
-    IF_DEBUG LOG ("Starting loader thread.");
+    IF_DEBUG LOG ("Starting UVLoader thread.");
     if (sceKernelStartThread (uvl_thread, 0, NULL) < 0)
     {
         LOG ("Cannot start UVLoader thread.");
