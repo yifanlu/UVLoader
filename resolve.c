@@ -3,6 +3,9 @@
 #include "scefuncs.h"
 #include "utils.h"
 
+// Resolve table deprecated (for now), trying live resolving 
+#if 0
+
 /** Checks if a bit is set in a given member */
 #define BIT_SET(i, b) (i & (0x1 << b))
 /** Checks if this is a valid ARM address */
@@ -659,4 +662,234 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
             }
         }
     }
+}
+#endif
+
+/********************************************//**
+ *  \brief Creates an ARMv7 instruction
+ *  
+ *  Currently only supports ARMv7 encoding of 
+ *  MOV Rd, \#imm, MOVT Rd, \#imm, BX Rn, and 
+ *  SVC \#imm. Depending on the @a type, not 
+ *  all parameters may be used.
+ *  \returns ARMv7 instruction on success 
+ *  or 0 on failure.
+ ***********************************************/
+u32_t 
+uvl_encode_arm_inst (u8_t type,  ///< See defined "Supported ARM instruction types"
+                    u16_t immed, ///< Immediate value to encode
+                    u16_t reg)   ///< Register used in instruction
+{
+    switch(type)
+    {
+        case INSTRUCTION_MOV:
+            // 1110 0011 0000 XXXX YYYY XXXXXXXXXXXX
+            // where X is the immediate and Y is the register
+            // Upper bits == 0xE30
+            return ((u32_t)0xE30 << 20) | ((u32_t)((immed >> 12) << 12) << 4) | ((immed << 4) >> 4) | (reg << 12);
+        case INSTRUCTION_MOVT:
+            // 1110 0011 0100 XXXX YYYY XXXXXXXXXXXX
+            // where X is the immediate and Y is the register
+            // Upper bits == 0xE34
+            return ((u32_t)0xE34 << 20) | ((u32_t)((immed >> 12) << 12) << 4) | ((immed << 4) >> 4) | (reg << 12);
+        case INSTRUCTION_SYSCALL:
+            // Syscall does not have any immediate value, the number should
+            // already be in R12
+            return (u32_t)0xEF000000;
+        case INSTRUCTION_BRANCH:
+            // 1110 0001 0010 111111111111 0001 YYYY
+            // BX Rn has 0xE12FFF1 as top bytes
+            return ((u32_t)0xE12FFF1 << 4) | reg;
+        case INSTRUCTION_UNKNOWN:
+        default:
+            return 0;
+    }
+}
+
+/********************************************//**
+ *  \brief Resolves a NID using all loaded 
+ *  modules
+ *  
+ *  Searches every loaded module in memory for 
+ *  the NID.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int
+uvl_resolve_stub (u32_t nid,       ///< NID to search for
+                   void *stub,     ///< The stub to fill
+                   char *lib_name) ///< A hint to which library to look in, can be NULL
+{
+    loaded_module_info_t m_mod_info;
+    module_info_t *mod_info;
+    void *result;
+    u32_t segment_size;
+    SceUID mod_list[MAX_LOADED_MODS];
+    u32_t num_loaded = MAX_LOADED_MODS;
+    int i;
+
+    IF_DEBUG LOG ("Getting list of loaded modules.");
+    if (sceKernelGetModuleList (0xFF, mod_list, &num_loaded) < 0)
+    {
+        LOG ("Failed to get module list.");
+        return -1;
+    }
+    IF_DEBUG LOG ("Found %u loaded modules.", num_loaded);
+    for (i = 0; i < num_loaded; i++)
+    {
+        m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
+        IF_DEBUG LOG ("Getting information for module #%u, UID: 0x%X.", i, mod_list[i]);
+        if (sceKernelGetModuleInfo (mod_list[i], &m_mod_info) < 0)
+        {
+            LOG ("Error getting info for mod 0x%08X, continuing", mod_list[i]);
+            continue;
+        }
+        IF_DEBUG LOG ("Module: %s, file: %s", m_mod_info.module_name, m_mod_info.file_path);
+        mod_info = NULL;
+        result = m_mod_info.segments[0].vaddr;
+        segment_size = m_mod_info.segments[0].memsz;
+        while (segment_size > 0)
+        {
+            IF_DEBUG LOG ("Searching for module name in memory. Start 0x%X", result);
+            result = memstr (m_mod_info.module_name, strlen (m_mod_info.module_name), result, segment_size);
+            if (result == NULL)
+            {
+                IF_DEBUG LOG ("Cannot find module name in memory.");
+                break; // not found
+            }
+            // try making this the one
+            mod_info = (module_info_t*)((u32_t)result - 4);
+            IF_DEBUG LOG ("Possible module info struct at 0x%X", (u32_t)mod_info);
+            if (mod_info->modattribute == MOD_INFO_VALID_ATTR && mod_info->modversion == MOD_INFO_VALID_VER) // TODO: Better check
+            {
+                IF_DEBUG LOG ("Module export start at 0x%X import start at 0x%X", (u32_t)mod_info->ent_top + (u32_t)m_mod_info.segments[0].vaddr, (u32_t)mod_info->stub_top + (u32_t)m_mod_info.segments[0].vaddr);
+                break; // we found it
+            }
+            else // that string just happened to appear
+            {
+                IF_DEBUG LOG ("False alarm, found name is not in module info structure.");
+                mod_info = NULL;
+                segment_size -= ((u32_t)result - (u32_t)m_mod_info.segments[0].vaddr) + strlen (m_mod_info.module_name); // subtract length
+                result = (void*)((u32_t)result + strlen (m_mod_info.module_name)); // start after name
+                continue;
+            }
+        }
+        if (mod_info == NULL)
+        {
+            LOG ("Can't get module information for %s. Continuing.", m_mod_info.module_name);
+            continue;
+        }
+        if (uvl_resolve_stub_from_module (nid, stub, lib_name, result, mod_info) < 0)
+        {
+            IF_DEBUG LOG ("Failed to resolve NID with module %s. Continuing.", m_mod_info.module_name);
+            continue;
+        }
+        else
+        {
+            IF_DEBUG LOG ("Resolved NID with module %s.", m_mod_info.module_name);
+            break;
+        }
+    }
+}
+
+/********************************************//**
+ *  \brief Resolves a NID exports/imports of 
+ *  a loaded module.
+ *  
+ *  \returns Zero if found, otherwise not found
+ ***********************************************/
+int
+uvl_resolve_stub_from_module (u32_t nid,        ///< NID to search for
+                               void *stub,      ///< The stub to fill
+                               char *lib_name,  ///< A hint to which library to look in, can be NULL
+                               void *mod_start, ///< Start of the module to check in
+                      module_info_t *mod_info)  ///< Information of the module to check in
+{
+    module_exports_t *exports;
+    module_imports_t *imports;
+    u32_t *memloc = stub;
+    u32_t i;
+
+    IF_DEBUG LOG ("Checking exports table for 0x%08X in %s.", nid, mod_info->modname);
+    for (exports = (module_exports_t*)((u32_t)mod_start + mod_info->ent_top); 
+        (u32_t)exports < ((u32_t)mod_start + mod_info->ent_end); exports++)
+    {
+        if (!(lib_name > 0 && exports->lib_name > 0 && strcmp (lib_name, exports->lib_name) == 0))
+        {
+            // skip this one, not the right name
+            continue;
+        }
+        for (i = 0; i < exports->num_functions + exports->num_vars; i++)
+        {
+            if (exports->nid_table[i] == nid)
+            {
+                // found it
+                psp2UnlockMem ();
+                if (i >= exports->num_functions) // variable
+                {
+                    IF_DEBUG LOG ("Resolving NID: 0x%08X as variable valued: 0x%08X", nid, *(u32_t*)exports->entry_table[i]);
+                    *memloc = *(u32_t*)exports->entry_table[i];
+                }
+                else // function
+                {
+                    IF_DEBUG LOG ("Resolving NID: 0x%08X as function pointer: 0x%08X", nid, (u32_t)exports->entry_table[i]);
+                    memloc[0] = uvl_encode_arm_inst (INSTRUCTION_MOV, (u16_t)(u32_t)exports->entry_table[i], 12);
+                    memloc[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)((u32_t)exports->entry_table[i] >> 16), 12);
+                    memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 12);
+                }
+                psp2LockMem ();
+                return 0; // resolved
+            }
+        }
+    }
+    IF_DEBUG LOG ("Checking imports table for 0x%08X in %s.", nid, mod_info->modname);
+    for (imports = (module_imports_t*)((u32_t)mod_start + mod_info->stub_top); 
+        (u32_t)imports < ((u32_t)mod_start + mod_info->stub_end); imports++)
+    {
+        if (!(lib_name > 0 && imports->lib_name > 0 && strcmp (lib_name, imports->lib_name) == 0))
+        {
+            // skip this one, not the right name
+            continue;
+        }
+        for (i = 0; i < imports->num_functions; i++)
+        {
+            if (imports->func_nid_table[i] == nid)
+            {
+                // found it
+                psp2UnlockMem ();
+                IF_DEBUG LOG ("Resolving NID: 0x%08X as copy of resolved stub at: 0x%08X", nid, (u32_t)imports->func_entry_table[i]);
+                if (memcpy (stub, imports->func_entry_table[i], STUB_FUNC_SIZE) < 0)
+                {
+                    LOG ("Failed to copy resolved stub function.");
+                    continue;
+                }
+                psp2LockMem ();
+                return 0; // resolved
+            }
+        }
+        for (i = 0; i < imports->num_vars; i++)
+        {
+            if (imports->var_nid_table[i] == nid)
+            {
+                // found it
+                psp2UnlockMem ();
+                IF_DEBUG LOG ("Resolving NID: 0x%08X as variable valued: 0x%08X", nid, *(u32_t*)imports->var_entry_table[i]);
+                *memloc = *(u32_t*)imports->var_entry_table[i];
+                psp2LockMem ();
+                return 0; // resolved
+            }
+        }
+        for (i = 0; i < imports->num_tls_vars; i++)
+        {
+            if (imports->tls_nid_table[i] == nid)
+            {
+                // found it
+                psp2UnlockMem ();
+                IF_DEBUG LOG ("Resolving NID: 0x%08X as tls variable valued: 0x%08X", nid, *(u32_t*)imports->tls_entry_table[i]);
+                *memloc = *(u32_t*)imports->tls_entry_table[i];
+                psp2LockMem ();
+                return 0; // resolved
+            }
+        }
+    }
+    return -1; // can't resolve it
 }

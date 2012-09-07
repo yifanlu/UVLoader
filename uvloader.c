@@ -31,6 +31,8 @@ uvl_start (void *f_writeline)
         LOG ("Ran %u times", ++i);
     }
     SceUID uvl_thread;
+// old resolve table code
+#if 0
     // TODO: find a place in memory to store table.
     IF_DEBUG LOG ("Caching all modules to resolve table.");
     if (uvl_resolve_all_loaded_modules (RESOLVE_MOD_IMPS | RESOLVE_MOD_EXPS | RESOLVE_IMPS_SVC_ONLY) < 0)
@@ -38,6 +40,7 @@ uvl_start (void *f_writeline)
         LOG ("Cannot cache all loaded modules.");
         return -1;
     }
+#endif
 
     // WARNING: No error checks here
     IF_DEBUG LOG ("Resolving UVLoader.");

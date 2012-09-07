@@ -84,7 +84,7 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
     Elf32_Phdr_t prog_hdr;
     void *base_address = (void*)(u32_t)-1;
     module_imports_t *import;
-    int i;
+    u32_t i;
 
     *entry = NULL;
     // get headers
@@ -148,6 +148,7 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
             memset ((char*)prog_hdr.p_vaddr + prog_hdr.p_filesz, 0, prog_hdr.p_memsz - prog_hdr.p_filesz);
         }
     }
+    // TODO: Relocations
     // resolve NIDs
     IF_DEBUG LOG ("Resolving NID imports.");
     for (import = (module_imports_t*)((char*)base_address + mod_info.stub_top); (void*)import < (void*)((char*)base_address + mod_info.stub_end); import++)
@@ -158,6 +159,36 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
             LOG ("Error loading required module: %s", import->lib_name);
             return -1;
         }
+        for (i = 0; i < import->num_functions; i++)
+        {
+            IF_DEBUG LOG ("Trying to resolve function NID: 0x%08X from %s", import->func_nid_table[i], import->lib_name);
+            if (uvl_resolve_stub (import->func_nid_table[i], import->func_entry_table[i], import->lib_name) < 0)
+            {
+                LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->func_nid_table[i]);
+                continue;
+            }
+        }
+        for (i = 0; i < import->num_vars; i++)
+        {
+            IF_DEBUG LOG ("Trying to resolve variable NID: 0x%08X from %s", import->var_nid_table[i], import->lib_name);
+            if (uvl_resolve_stub (import->var_nid_table[i], import->var_entry_table[i], import->lib_name) < 0)
+            {
+                LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->var_nid_table[i]);
+                continue;
+            }
+        }
+        for (i = 0; i < import->num_tls_vars; i++)
+        {
+            IF_DEBUG LOG ("Trying to resolve tls NID: 0x%08X from %s", import->tls_nid_table[i], import->lib_name);
+            if (uvl_resolve_stub (import->tls_nid_table[i], import->tls_entry_table[i], import->lib_name) < 0)
+            {
+                LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->tls_nid_table[i]);
+                continue;
+            }
+        }
+    }
+// old resolve code
+#if 0
         IF_DEBUG LOG ("Queuing required importes for module.");
         if (uvl_add_unresolved_imports (import) < 0)
         {
@@ -177,6 +208,7 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
         LOG ("Failed to resolve app imports.");
         return -1;
     }
+#endif
     *entry = (void*)((u32_t)base_address + (u32_t)elf_hdr.e_entry);
     return 0;
 }

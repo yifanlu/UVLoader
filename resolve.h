@@ -49,6 +49,7 @@
 
 #define MAX_LOADED_MODS         128     ///< Maximum number of loaded modules
 #define MAX_RESOLVE_ENTRIES     0x1000  ///< Maximum number of resolves
+#define STUB_FUNC_SIZE          0x10    ///< Size of stub functions
 
 /**
  * \brief Resolve table entry
@@ -203,6 +204,8 @@ typedef struct loaded_module_info
     u32_t           type;       // 6 = user-mode PRX?
 } loaded_module_info_t;
 
+// Resolve table deprecated (for now), trying live resolving 
+#if 0
 /** \name Interacting with the resolve table
  *  @{
  */
@@ -237,6 +240,14 @@ int uvl_add_resolved_exports (module_exports_t *exp_table);
  */
 int uvl_resolve_all_unresolved ();
 int uvl_resolve_all_loaded_modules (int type);
+/** @}*/
+#endif
+/** \name Resolving entries
+ *  @{
+ */
+u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg);
+int uvl_resolve_stub (u32_t nid, void *stub, char *lib_name);
+int uvl_resolve_stub_from_module (u32_t nid, void *stub, char *lib_name, void *mod_start, module_info_t *mod_info);
 /** @}*/
 
 #endif

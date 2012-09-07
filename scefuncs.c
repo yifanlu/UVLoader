@@ -21,7 +21,5 @@ uvl_scefuncs_resolve_all ()
 #undef ADD_RESOLVE_STUB
 
     // finally resolve all
-    psp2UnlockMem (); // unlock memory
-    uvl_resolve_all_unresolved ();
-    psp2LockMem (); // lock memory
+    // TODO: Resolve code
 }
