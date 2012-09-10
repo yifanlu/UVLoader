@@ -19,7 +19,7 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
 
     *entry = NULL;
     IF_DEBUG LOG ("Opening %s for reading.", filename);
-    SceUID fd = sceIoOpen (filename, PSP2_O_RDONLY, PSP2_STM_RU);
+    PsvUID fd = sceIoOpen (filename, PSP2_O_RDONLY, PSP2_STM_RU);
     if (fd < 0)
     {
         LOG ("Cannot open executable file for loading.");
@@ -75,18 +75,15 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int 
-uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
-              SceOff start_offset,  ///< Starting position of the ELF in file
+uvl_load_elf (PsvUID fd,            ///< File descriptor for ELF
+              PsvOff start_offset,  ///< Starting position of the ELF in file
                 void **entry)       ///< Returned pointer to entry pointer
 {
     Elf32_Ehdr_t elf_hdr;
-    module_info_t mod_info;
-    Elf32_Phdr_t prog_hdr;
-    void *base_address = (void*)(u32_t)-1;
-    module_imports_t *import;
     u32_t i;
-
+    void *base_address = NULL;
     *entry = NULL;
+
     // get headers
     IF_DEBUG LOG ("Reading headers.");
     if (sceIoRead (fd, &elf_hdr, sizeof (Elf32_Ehdr_t)) < sizeof (Elf32_Ehdr_t))
@@ -95,61 +92,106 @@ uvl_load_elf (SceUID fd,            ///< File descriptor for ELF
         return -1;
     }
     IF_DEBUG LOG ("Checking headers.");
-    if (uvl_check_elf_header (&elf_hdr) < 0)
+    if (uvl_elf_check_header (&elf_hdr) < 0)
     {
         LOG ("Check header failed.");
         return -1;
     }
+
     // get mod_info
+    module_info_t mod_info;
     IF_DEBUG LOG ("Getting module info.");
-    if (uvl_get_module_info (fd, start_offset, &elf_hdr, &mod_info) < 0)
+    if (uvl_elf_get_module_info (fd, start_offset, &elf_hdr, &mod_info) < 0)
     {
         LOG ("Cannot find module info section.");
         return -1;
     }
+
+    // free memory
+    Elf32_Phdr_t prog_hdrs[elf_hdr.e_phnum];
+    IF_DEBUG LOG ("Seeking program headers.");
+    if (sceIoLseek (fd, start_offset + elf_hdr.e_phoff, PSP2_SEEK_SET) < 0)
+    {
+        LOG ("Error seeking program header.");
+        return -1;
+    }
+    IF_DEBUG LOG ("Reading program headers.");
+    if (sceIoRead (fd, prog_hdrs, elf_hdr.e_phnum * elf_hdr.e_phentsize) < 0)
+    {
+        LOG ("Error reading program header.");
+        return -1;
+    }
+    IF_DEBUG LOG ("Freeing memory.");
+    if (uvl_elf_free_memory (prog_hdrs, elf_hdr.e_phnum) < 0)
+    {
+        LOG ("Error freeing memory.");
+        return -1;
+    }
+
     // actually load the ELF
-    IF_DEBUG LOG ("Found %u program sections.", elf_hdr.e_phnum);
+    PsvUID memblock;
+    void *blockaddr;
+    u32_t length;
+    IF_DEBUG LOG ("Loading %u program sections.", elf_hdr.e_phnum);
     for (i = 0; i < elf_hdr.e_phnum; i++)
     {
-        IF_DEBUG LOG ("Seeking program header #%u.", i);
-        if (sceIoLseek (fd, start_offset + elf_hdr.e_phoff + i * elf_hdr.e_phentsize, PSP2_SEEK_SET) < 0)
+        if (prog_hdrs[i].p_type != PT_LOAD)
         {
-            LOG ("Error seeking program header.");
+            IF_DEBUG LOG ("Section %u is not loadable. Skipping.", i);
+            continue;
+        }
+        length = prog_hdrs[i].p_memsz;
+        length = (length + 0xFFFFF) & ~0xFFFFF; // Align to 1MB
+        if (prog_hdrs[i].p_flags & PF_X == PF_X) // executable section
+        {
+            if (base_address == NULL)
+            {
+                base_address = prog_hdrs[i].p_vaddr; // set this to first exe section
+                // TODO: better way to find baseaddr
+            }
+            memblock = sceKernelAllocCodeMemBlock ("UVLHomebrew", length);
+        }
+        else // data section
+        {
+            memblock = sceKernelAllocMemBlock ("UVLHomebrew", 0xC20D060, length, NULL);
+        }
+        if (memblock < 0)
+        {
+            LOG ("Error allocating memory.");
             return -1;
         }
-        IF_DEBUG LOG ("Reading program header.");
-        if (sceIoRead (fd, &prog_hdr, elf_hdr.e_phentsize) < elf_hdr.e_phentsize)
+        if (sceKernelGetMemBlockBase (memblock, &blockaddr) < 0)
         {
-            LOG ("Error reading program header.");
+            LOG ("Error getting memory block address.");
+        }
+        if ((u32_t)blockaddr != (u32_t)prog_hdrs[i].p_vaddr)
+        {
+            LOG ("Error, section %u wants to be loaded to 0x%08X but we allocated 0x%08X", i, (u32_t)prog_hdrs[i].p_vaddr, (u32_t)blockaddr);
+        }
+        IF_DEBUG LOG ("Allocated memory at 0x%08X, attempting to load section %u.", (u32_t)blockaddr, i);
+        IF_DEBUG LOG ("Seeking program section.");
+        if (sceIoLseek (fd, start_offset + prog_hdrs[i].p_offset, PSP2_SEEK_SET) < 0)
+        {
+            LOG ("Error seeking program section.");
             return -1;
         }
-        if (prog_hdr.p_vaddr < base_address) // lowest number is base address
+        IF_DEBUG LOG ("Reading program section.");
+        if (sceIoRead (fd, blockaddr, prog_hdrs[i].p_filesz) < 0)
         {
-            IF_DEBUG LOG ("Possible base address: 0x%X.", (u32_t)base_address);
-            base_address = prog_hdr.p_vaddr;
-        }
-        // TODO: Alloc memory to load and set permissions
-        IF_DEBUG LOG ("Seeking to program.");
-        if (sceIoLseek (fd, start_offset + prog_hdr.p_offset, PSP2_SEEK_SET) < 0)
-        {
-            LOG ("Error seeking to section %u.", i);
+            LOG ("Error reading program section.");
             return -1;
         }
-        IF_DEBUG LOG ("Loading program to memory at 0x%X.", (u32_t)prog_hdr.p_vaddr);
-        if (sceIoRead (fd, prog_hdr.p_vaddr, prog_hdr.p_filesz) < 0)
-        {
-            LOG ("Error reading program section %u.", i);
-            return -1;
-        }
-        if (prog_hdr.p_memsz > prog_hdr.p_filesz)
-        {
-            // specs say we have to zero out extra bytes
-            IF_DEBUG LOG ("Adding %u bytes of padding.", prog_hdr.p_memsz - prog_hdr.p_filesz);
-            memset ((char*)prog_hdr.p_vaddr + prog_hdr.p_filesz, 0, prog_hdr.p_memsz - prog_hdr.p_filesz);
-        }
+        IF_DEBUG LOG ("Zeroing %u remainder of memory.", prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
+        memset ((void*)((u32_t)blockaddr + prog_hdrs[i].p_filesz), 0, prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
     }
-    // TODO: Relocations
+
     // resolve NIDs
+    module_imports_t *import;
+    if (base_address == NULL)
+    {
+        LOG ("Cannot find base address for executable.");
+        return -1;
+    }
     IF_DEBUG LOG ("Resolving NID imports.");
     for (import = (module_imports_t*)((char*)base_address + mod_info.stub_top); (void*)import < (void*)((char*)base_address + mod_info.stub_end); import++)
     {
@@ -232,7 +274,7 @@ uvl_load_module (char *name) ///< Name of module to load
  *  \returns Zero if valid, otherwise invalid
  ***********************************************/
 int 
-uvl_check_elf_header (Elf32_Ehdr_t *hdr) ///< ELF header to check
+uvl_elf_check_header (Elf32_Ehdr_t *hdr) ///< ELF header to check
 {
     // magic number
     if (!(hdr->e_ident[EI_MAG0] == ELFMAG0 && hdr->e_ident[EI_MAG1] == ELFMAG1 && hdr->e_ident[EI_MAG2] == ELFMAG2 && hdr->e_ident[EI_MAG3] == ELFMAG3))
@@ -302,10 +344,10 @@ uvl_check_elf_header (Elf32_Ehdr_t *hdr) ///< ELF header to check
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int 
-uvl_get_module_info (SceUID fd,             ///< File descriptor for the ELF
-                     SceOff start_offset,   ///< Starting position of the ELF in file
-               Elf32_Ehdr_t *elf_hdr,       ///< ELF header
-              module_info_t *mod_info)      ///< Where to read information to
+uvl_elf_get_module_info (PsvUID fd,             ///< File descriptor for the ELF
+                         PsvOff start_offset,   ///< Starting position of the ELF in file
+                   Elf32_Ehdr_t *elf_hdr,       ///< ELF header
+                  module_info_t *mod_info)      ///< Where to read information to
 {
     Elf32_Shdr_t sec_hdr;
     // find strings table
@@ -335,10 +377,10 @@ uvl_get_module_info (SceUID fd,             ///< File descriptor for the ELF
         LOG ("Error reading strings table.");
         return -1;
     }
-    name_idx = strstr (strings, SEC_MODINFO) - strings;
+    name_idx = strstr (strings, UVL_SEC_MODINFO) - strings;
     if (name_idx <= 0)
     {
-        LOG ("Cannot find section %s in string table.", SEC_MODINFO);
+        LOG ("Cannot find section %s in string table.", UVL_SEC_MODINFO);
         return -1;
     }
     IF_DEBUG LOG ("Found section %s.", name_idx);
@@ -378,4 +420,72 @@ uvl_get_module_info (SceUID fd,             ///< File descriptor for the ELF
         }
     }
     return -1;
+}
+
+/********************************************//**
+ *  \brief Frees memory of where we want to load
+ *  
+ *  Finds the max and min addresses we want to
+ *  load to using program headers and frees 
+ *  any module taking up those spaces.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int
+uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs,   ///< Array of program headers
+                              int count)        ///< Number of program headers
+{
+    void *min_addr = (void*)0x00000000;
+    void *max_addr = (void*)0xFFFFFFFF;
+    loaded_module_info_t m_mod_info;
+    PsvUID mod_list[MAX_LOADED_MODS];
+    u32_t num_loaded = MAX_LOADED_MODS;
+    int i, j;
+    u32_t length;
+    int temp[2];
+
+    IF_DEBUG LOG ("Reading %u program headers.", count);
+    for (i = 0; i < count; i++)
+    {
+        if (prog_hdrs[i].p_vaddr > min_addr)
+        {
+            min_addr = prog_hdrs[i].p_vaddr;
+        }
+        if ((u32_t)prog_hdrs[i].p_vaddr + prog_hdrs[i].p_memsz < (u32_t)max_addr)
+        {
+            max_addr = (void*)((u32_t)prog_hdrs[i].p_vaddr + prog_hdrs[i].p_memsz);
+        }
+    }
+    IF_DEBUG LOG ("Lowest load address: 0x%08X, highest: 0x%08X", (u32_t)min_addr, (u32_t)max_addr);\
+
+    IF_DEBUG LOG ("Getting list of loaded modules.");
+    if (sceKernelGetModuleList (0xFF, mod_list, &num_loaded) < 0)
+    {
+        LOG ("Failed to get module list.");
+        return -1;
+    }
+    IF_DEBUG LOG ("Found %u loaded modules.", num_loaded);
+    for (i = 0; i < num_loaded; i++)
+    {
+        m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
+        IF_DEBUG LOG ("Getting information for module #%u, UID: 0x%X.", i, mod_list[i]);
+        if (sceKernelGetModuleInfo (mod_list[i], &m_mod_info) < 0)
+        {
+            LOG ("Error getting info for mod 0x%08X, continuing", mod_list[i]);
+            continue;
+        }
+        for (j = 0; j < 3; j++)
+        {
+            if (m_mod_info.segments[j].vaddr > min_addr || (u32_t)m_mod_info.segments[j].vaddr + m_mod_info.segments[j].memsz > (u32_t)min_addr)
+            {
+                IF_DEBUG LOG ("Module %s segment %u (0x%08X, size %u) is in our address space. Attempting to unload.", m_mod_info.module_name, j, (u32_t)m_mod_info.segments[j].vaddr, m_mod_info.segments[j].memsz);
+                if (sceKernelStopUnloadModule (mod_list[i], 0, 0, 0, &temp[0], &temp[1]) < 0)
+                {
+                    LOG ("Error unloading %s.", m_mod_info.module_name);
+                    return -1;
+                }
+                break;
+            }
+        }
+    }
+    return 0;
 }

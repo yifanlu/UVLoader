@@ -54,7 +54,24 @@ typedef u16_t   Elf32_Half;
  */
 #define EV_CURRENT  1
 /** @}*/
-
+/** \name ELF sh section type
+ *  @{
+ */
+#define SHT_RELA    4
+#define SHT_REL     9
+/** @}*/
+/** \name ELF ph section type
+ *  @{
+ */
+#define PT_LOAD     1
+/** @}*/
+/** \name ELF ph formats
+ *  @{
+ */
+#define PF_X        1
+#define PF_W        2
+#define PF_R        4
+/** @}*/
 /** \name SCE identification
  *  @{
  */
@@ -65,7 +82,8 @@ typedef u16_t   Elf32_Half;
 #define SCEMAG3     0
 #define SCEHDR_LEN  0xA0
 /** @}*/
-#define SEC_MODINFO ".sceModuleInfo.rodata" ///< Name of module information section
+#define UVL_SEC_MODINFO        ".sceModuleInfo.rodata" ///< Name of module information section
+#define UVL_SEC_MIN_ALIGN      0x100000                ///< Alignment of each section
 
 /** \name ELF structures
  *  See the ELF specification for more information.
@@ -126,14 +144,15 @@ typedef struct module_info module_info_t;
  *  @{
  */
 int uvl_load_exe (const char *filename, void **entry);
-int uvl_load_elf (SceUID fd, SceOff start_offset, void **entry);
+int uvl_load_elf (PsvUID fd, PsvOff start_offset, void **entry);
 int uvl_load_module (char *name);
 /** @}*/
 /** \name Helper functions
  *  @{
  */
-int uvl_check_elf_header (Elf32_Ehdr_t *hdr);
-int uvl_get_module_info (SceUID fd, SceOff start_offset, Elf32_Ehdr_t *elf_hdr, module_info_t *mod_info);
+int uvl_elf_check_header (Elf32_Ehdr_t *hdr);
+int uvl_elf_get_module_info (PsvUID fd, PsvOff start_offset, Elf32_Ehdr_t *elf_hdr, module_info_t *mod_info);
+int uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs, int count);
 /** @}*/
 
 #endif

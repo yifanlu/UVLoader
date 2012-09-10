@@ -42,18 +42,20 @@
 #endif
 
 // some names from https://github.com/pspdev/pspsdk
-STUB_FUNCTION(SceUID, sceIoOpen);
+STUB_FUNCTION(PsvUID, sceIoOpen);
 STUB_FUNCTION(int, sceIoClose);
-STUB_FUNCTION(SceOff, sceIoLseek);
-STUB_FUNCTION(SceOff, sceIoRead);
+STUB_FUNCTION(PsvOff, sceIoLseek);
+STUB_FUNCTION(PsvOff, sceIoRead);
 STUB_FUNCTION(int, sceKernelGetModuleList);
 STUB_FUNCTION(int, sceKernelGetModuleInfo);
-STUB_FUNCTION(SceUID, sceKernelCreateThread);
+STUB_FUNCTION(PsvUID, sceKernelCreateThread);
 STUB_FUNCTION(int, sceKernelStartThread);
 STUB_FUNCTION(int, sceKernelExitDeleteThread);
 STUB_FUNCTION(int, sceKernelStopUnloadModule);
-STUB_FUNCTION(void, psp2UnlockMem);
-STUB_FUNCTION(void, psp2LockMem);
+STUB_FUNCTION(int, sceKernelAllocMemBlock);
+STUB_FUNCTION(int, sceKernelAllocCodeMemBlock);
+STUB_FUNCTION(int, sceKernelGetMemBlockBase);
+STUB_FUNCTION(int, sceKernelFreeMemBlock);
 
 void uvl_scefuncs_resolve_all ();
 

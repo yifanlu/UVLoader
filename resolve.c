@@ -32,10 +32,10 @@ uvl_resolve_table_add (resolve_entry_t *entry) ///< Entry to add
     void *location = &g_resolve_table[g_resolve_entries];
     IF_DEBUG LOG ("Adding entry #%u to resolve table.", g_resolve_entries);
     IF_DEBUG LOG ("NID: 0x%08X, type: %u, resolved: %u, value 0x%08X", entry->nid, entry->type, entry->resolved, entry->value.value);
-    psp2UnlockMem ();
+    psvUnlockMem ();
     memcpy (location, entry, sizeof (resolve_entry_t));
     g_resolve_entries++;
-    psp2LockMem ();
+    psvLockMem ();
     return 0;
 }
 
@@ -573,7 +573,7 @@ uvl_resolve_all_loaded_modules (int type) ///< An OR combination of flags (see d
     module_info_t *mod_info;
     void *result;
     u32_t segment_size;
-    SceUID mod_list[MAX_LOADED_MODS];
+    PsvUID mod_list[MAX_LOADED_MODS];
     u32_t num_loaded = MAX_LOADED_MODS;
     int i;
     module_exports_t *exports;
@@ -723,7 +723,7 @@ uvl_resolve_stub (u32_t nid,       ///< NID to search for
     module_info_t *mod_info;
     void *result;
     u32_t segment_size;
-    SceUID mod_list[MAX_LOADED_MODS];
+    PsvUID mod_list[MAX_LOADED_MODS];
     u32_t num_loaded = MAX_LOADED_MODS;
     int i;
 
@@ -823,7 +823,7 @@ uvl_resolve_stub_from_module (u32_t nid,        ///< NID to search for
             if (exports->nid_table[i] == nid)
             {
                 // found it
-                psp2UnlockMem ();
+                psvUnlockMem ();
                 if (i >= exports->num_functions) // variable
                 {
                     IF_DEBUG LOG ("Resolving NID: 0x%08X as variable valued: 0x%08X", nid, *(u32_t*)exports->entry_table[i]);
@@ -836,7 +836,7 @@ uvl_resolve_stub_from_module (u32_t nid,        ///< NID to search for
                     memloc[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)((u32_t)exports->entry_table[i] >> 16), 12);
                     memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 12);
                 }
-                psp2LockMem ();
+                psvLockMem ();
                 return 0; // resolved
             }
         }
@@ -855,14 +855,14 @@ uvl_resolve_stub_from_module (u32_t nid,        ///< NID to search for
             if (imports->func_nid_table[i] == nid)
             {
                 // found it
-                psp2UnlockMem ();
+                psvUnlockMem ();
                 IF_DEBUG LOG ("Resolving NID: 0x%08X as copy of resolved stub at: 0x%08X", nid, (u32_t)imports->func_entry_table[i]);
                 if (memcpy (stub, imports->func_entry_table[i], STUB_FUNC_SIZE) < 0)
                 {
                     LOG ("Failed to copy resolved stub function.");
                     continue;
                 }
-                psp2LockMem ();
+                psvLockMem ();
                 return 0; // resolved
             }
         }
@@ -871,10 +871,10 @@ uvl_resolve_stub_from_module (u32_t nid,        ///< NID to search for
             if (imports->var_nid_table[i] == nid)
             {
                 // found it
-                psp2UnlockMem ();
+                psvUnlockMem ();
                 IF_DEBUG LOG ("Resolving NID: 0x%08X as variable valued: 0x%08X", nid, *(u32_t*)imports->var_entry_table[i]);
                 *memloc = *(u32_t*)imports->var_entry_table[i];
-                psp2LockMem ();
+                psvLockMem ();
                 return 0; // resolved
             }
         }
@@ -883,10 +883,10 @@ uvl_resolve_stub_from_module (u32_t nid,        ///< NID to search for
             if (imports->tls_nid_table[i] == nid)
             {
                 // found it
-                psp2UnlockMem ();
+                psvUnlockMem ();
                 IF_DEBUG LOG ("Resolving NID: 0x%08X as tls variable valued: 0x%08X", nid, *(u32_t*)imports->tls_entry_table[i]);
                 *memloc = *(u32_t*)imports->tls_entry_table[i];
-                psp2LockMem ();
+                psvLockMem ();
                 return 0; // resolved
             }
         }

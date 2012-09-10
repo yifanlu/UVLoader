@@ -547,9 +547,9 @@ void (*g_writeline)(char *) = 0;
 void
 vitasetlog (void *log_func) ///< Pointer to logging function
 {
-    psp2UnlockMem ();
+    psvUnlockMem ();
     g_writeline = log_func;
-    psp2LockMem ();
+    psvLockMem ();
 }
 
 /********************************************//**

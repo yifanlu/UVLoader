@@ -17,9 +17,9 @@ typedef unsigned long int u64_t;        ///< Unsigned 64-bit type
 /** \name SCE standard types
  *  @{
  */
-typedef int SceUID;         ///< SceUID type
-typedef u64_t SceOff;       ///< SceOff type
-typedef int SceSSize;       ///< SceSSize type
+typedef int PsvUID;         ///< PsvUID type
+typedef u64_t PsvOff;       ///< PsvOff type
+typedef int PsvSSize;       ///< PsvSSize type
 /** @}*/
 
 // TODO: Make sure void* is 4 bytes

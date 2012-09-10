@@ -32,7 +32,7 @@ int
 uvl_unload_all_modules ()
 {
     loaded_module_info_t m_mod_info;
-    SceUID mod_list[MAX_LOADED_MODS];
+    PsvUID mod_list[MAX_LOADED_MODS];
     u32_t num_loaded = MAX_LOADED_MODS;
     int status;
     int i;
