@@ -7,9 +7,9 @@ In short, this is a loader that allows running homebrew games on the Vita using
 save-file exploits or similar methods where there is no access to the system 
 loader functions (which are found in the kernel). UVL does this by hooking on 
 to functions and API calls imported by the running game and passing them to 
-the homebrew being loader. This is *not* a way to run backups or pirated games 
-as that is not only wrong to do, but also because UVL does not and can not 
-decrypt content nor can it do dynamic linking or other sophisticated things 
+the homebrew being loader. This is **not** a way to run backups or pirated 
+games as that is not only wrong to do, but also because UVL does not and can 
+not decrypt content nor can it do dynamic linking or other sophisticated things 
 that the system loader does.
 
 ## How do I run it?
