@@ -235,7 +235,7 @@ resolve_entry_t *uvl_resolve_table_get (u32_t nid);
  */
 resolve_entry_t *uvl_estimate_syscall (u32_t nid);
 /** @}*/
-/** \name Translating resolved stubs
+/** \name Capturing and resolving stubs
  *  @{
  */
 int uvl_resolve_import_stub_to_entry (void *stub, u32_t nid, resolve_entry_t *entry);
@@ -251,13 +251,11 @@ u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg);
  *  @{
  */
 int uvl_resolve_add_imports (module_imports_t *imp_table, int syscalls_only);
-//int uvl_add_unresolved_imports (module_imports_t *imp_table);
 int uvl_resolve_add_exports (module_exports_t *exp_table);
 /** @}*/
 /** \name Resolving entries
  *  @{
  */
-//int uvl_resolve_all_unresolved ();
 int uvl_resolve_add_all_modules (int type);
 int uvl_resolve_add_module (PsvUID modid, int type);
 int uvl_resolve_imports (module_imports_0945_t *import);

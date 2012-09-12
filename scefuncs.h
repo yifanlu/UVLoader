@@ -42,27 +42,6 @@
 #endif
 
 // some names from https://github.com/pspdev/pspsdk
-STUB_FUNCTION(int, psvUnlockMem, 0x83D4, 0xDBB8);
-STUB_FUNCTION(int, psvLockMem, 0x83D4, 0xDC08);
-STUB_FUNCTION(PsvUID, sceIoOpen, 0xE000, 0xAFE5);
-STUB_FUNCTION(int, sceIoClose, 0xE000, 0x6224);
-STUB_FUNCTION(PsvSSize, sceIoWrite, 0xE000, 0x60F4);
-//STUB_FUNCTION(PsvOff, sceIoLseek, 0xE000, 0xAFF5);
-STUB_FUNCTION(PsvOff, sceIoRead, 0xE000, 0x62B4);
-//STUB_FUNCTION(PsvSSize, sceIoPread, 0xE000, 0xB1B1);
-STUB_FUNCTION(int, sceKernelGetModuleList, 0xE000, 0x5F94);
-STUB_FUNCTION(int, sceKernelGetModuleInfo, 0xE000, 0x5FA4);
-STUB_FUNCTION(PsvUID, sceKernelCreateThread, 0xE000, 0xB6B9);
-STUB_FUNCTION(int, sceKernelStartThread, 0xE000, 0xB291);
-STUB_FUNCTION(int, sceKernelExitDeleteThread, 0xE000, 0x5A54);
-STUB_FUNCTION(int, sceKernelStopUnloadModule, 0xE000, 0x11F9);
-STUB_FUNCTION(int, sceKernelAllocMemBlock, 0xE004, 0x0570);
-STUB_FUNCTION(int, sceKernelAllocCodeMemBlock, 0x82B3, 0x9BD0);
-STUB_FUNCTION(int, sceKernelGetMemBlockBase, 0xE004, 0x0560);
-STUB_FUNCTION(int, sceKernelFreeMemBlock, 0xE004, 0x0550);
-
-PsvUID fakeOpen (const char *filename, int flag, int mode);
-PsvSSize sceIoPread (PsvUID fd, void *buf, int nbyte, PsvOff offset);
 
 void uvl_scefuncs_resolve_all ();
 

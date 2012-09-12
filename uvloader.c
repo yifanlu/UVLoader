@@ -26,16 +26,6 @@ uvl_start ()
     vita_init_log ();
     LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
     PsvUID uvl_thread;
-// old resolve table code
-#if 0
-    // TODO: find a place in memory to store table.
-    IF_DEBUG LOG ("Caching all modules to resolve table.");
-    if (uvl_resolve_all_loaded_modules (RESOLVE_MOD_IMPS | RESOLVE_MOD_EXPS | RESOLVE_IMPS_SVC_ONLY) < 0)
-    {
-        LOG ("Cannot cache all loaded modules.");
-        return -1;
-    }
-#endif
 
     IF_DEBUG LOG ("Creating thread to run loader.");
     uvl_thread = sceKernelCreateThread ("uvloader", uvl_entry, 0x10000100, 0x00001000, 0, (0x01 << 16 | 0x02 << 16 | 0x04 << 16), NULL);
@@ -71,14 +61,6 @@ uvl_entry ()
 {
     int (*start)();
 
-#if 0
-    IF_DEBUG LOG ("Cleaning up memory.");
-    if (uvl_cleanup_memory () < 0)
-    {
-        LOG ("Cannot cleanup memory.");
-        return -1;
-    }
-#endif
     IF_DEBUG LOG ("Initializing resolve table.");
     if (uvl_resolve_table_initialize () < 0)
     {
@@ -103,5 +85,4 @@ uvl_entry ()
     start ();
     IF_DEBUG LOG ("Homebrew ran.");
     return 0;
-    //return start();
 }

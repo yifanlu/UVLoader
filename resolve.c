@@ -436,69 +436,6 @@ uvl_resolve_add_imports (module_imports_t *imp_table,    ///< Module's import ta
     return 0;
 }
 
-#if 0
-/********************************************//**
- *  \brief Add the homebrew's unresolved entries 
- *  to the resolve table
- *  
- *  Reads a homebrew's import table and adds 
- *  the entries into the resolve table. A later 
- *  call to \sa uvl_resolve_all_unresolved will
- *  resolve them.
- *  \returns Zero on success, otherwise error
- ***********************************************/
-int 
-uvl_add_unresolved_imports (module_imports_t *imp_table) ///< Homebrew's import table
-{
-    resolve_entry_t res_entry;
-    int i;
-    res_entry.resolved = 0;
-
-
-    // get functions first
-    res_entry.type = RESOLVE_TYPE_FUNCTION;
-    IF_DEBUG LOG ("Found %u unresolved function imports to copy.", imp_table->num_functions);
-    for(i = 0; i < imp_table->num_functions; i++)
-    {
-        res_entry.nid = imp_table->func_nid_table[i];
-        res_entry.value.func_ptr = imp_table->func_entry_table[i];
-        if (uvl_resolve_table_add (&res_entry) < 0)
-        {
-            LOG ("Error adding entry to table.");
-            return -1;
-        }
-    }
-    // get variables
-    res_entry.type = RESOLVE_TYPE_VARIABLE;
-    IF_DEBUG LOG ("Found %u unresolved variable imports to copy.", imp_table->num_vars);
-    for(i = 0; i < imp_table->num_vars; i++)
-    {
-        res_entry.nid = imp_table->var_nid_table[i];
-        res_entry.value.ptr = imp_table->var_entry_table[i];
-        if (uvl_resolve_table_add (&res_entry) < 0)
-        {
-            LOG ("Error adding entry to table.");
-            return -1;
-        }
-    }
-    // get TLS
-    // TODO: Find out how this works
-    res_entry.type = RESOLVE_TYPE_VARIABLE;
-    IF_DEBUG LOG ("Found %u unresolved tls imports to copy.", imp_table->num_tls_vars);
-    for(i = 0; i < imp_table->num_tls_vars; i++)
-    {
-        res_entry.nid = imp_table->tls_nid_table[i];
-        res_entry.value.ptr = imp_table->tls_entry_table[i];
-        if (uvl_resolve_table_add (&res_entry) < 0)
-        {
-            LOG ("Error adding entry to table.");
-            return -1;
-        }
-    }
-    return 0;
-}
-#endif
-
 /********************************************//**
  *  \brief Add a module's export entries to 
  *  the resolve table

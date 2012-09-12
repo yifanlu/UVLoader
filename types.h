@@ -17,13 +17,13 @@ typedef unsigned long int u64_t;        ///< Unsigned 64-bit type
 /** \name SCE standard types
  *  @{
  */
-typedef int PsvUID;         ///< PsvUID type
+typedef int PsvUID;            ///< PsvUID type
 typedef long int PsvOff;       ///< PsvOff type
-typedef int PsvSSize;       ///< PsvSSize type
+typedef int PsvSSize;          ///< PsvSSize type
 /** @}*/
 
 // TODO: Make sure void* is 4 bytes
 
-#define NULL 0
+#define NULL 0              ///< For NULL pointers
 
 #endif
