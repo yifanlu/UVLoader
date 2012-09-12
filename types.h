@@ -18,7 +18,7 @@ typedef unsigned long int u64_t;        ///< Unsigned 64-bit type
  *  @{
  */
 typedef int PsvUID;         ///< PsvUID type
-typedef u64_t PsvOff;       ///< PsvOff type
+typedef long int PsvOff;       ///< PsvOff type
 typedef int PsvSSize;       ///< PsvSSize type
 /** @}*/
 

@@ -21,10 +21,10 @@
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int START_SECTION
-uvl_start (void *f_writeline)
+uvl_start ()
 {
-    vitasetlog (f_writeline);
-    IF_DEBUG LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
+    vita_init_log ();
+    LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
     PsvUID uvl_thread;
 // old resolve table code
 #if 0
@@ -38,12 +38,11 @@ uvl_start (void *f_writeline)
 #endif
 
     // WARNING: No error checks here
-    IF_DEBUG LOG ("Resolving UVLoader.");
-    uvl_scefuncs_resolve_all ();
+    //IF_DEBUG LOG ("Resolving UVLoader.");
+    //uvl_scefuncs_resolve_all ();
 
-#if 0
     IF_DEBUG LOG ("Creating thread to run loader.");
-    uvl_thread = sceKernelCreateThread ("uvloader", uvl_entry, 0x18, 0x10000, 0, NULL);
+    uvl_thread = sceKernelCreateThread ("uvloader", uvl_entry, 0x10000100, 0x00001000, 0, (0x01 << 16 | 0x02 << 16 | 0x04 << 16), NULL);
     if (uvl_thread < 0)
     {
         LOG ("Cannot create UVLoader thread.");
@@ -64,8 +63,6 @@ uvl_start (void *f_writeline)
     // should not reach here
     IF_DEBUG LOG ("Error removing old thread.");
     return 0;
-#endif
-    return uvl_entry (); // TODO: This will be in new thread
 }
 
 /********************************************//**
@@ -86,6 +83,18 @@ uvl_entry ()
         return -1;
     }
 #endif
+    IF_DEBUG LOG ("Initializing resolve table.");
+    if (uvl_resolve_table_initialize () < 0)
+    {
+        LOG ("Failed to initialize resolve table.");
+        return -1;
+    }
+    IF_DEBUG LOG ("Filling resolve table.");
+    if (uvl_resolve_add_all_modules (RESOLVE_MOD_IMPS | RESOLVE_MOD_EXPS | RESOLVE_IMPS_SVC_ONLY) < 0)
+    {
+        LOG ("Cannot cache all loaded entries.");
+        return -1;
+    }
     IF_DEBUG LOG ("Loading homebrew.");
     if (uvl_load_exe (HOMEBREW_PATH, (void**)&start) < 0)
     {
@@ -93,6 +102,7 @@ uvl_entry ()
         return -1;
     }
     // sceKernelRegisterCallbackToEvent on exit
+    // TODO: Free allocated memory and unload code
     IF_DEBUG LOG ("Passing control to homebrew.");
     return start();
 }

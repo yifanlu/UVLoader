@@ -80,10 +80,12 @@ typedef u16_t   Elf32_Half;
 #define SCEMAG1     'C'
 #define SCEMAG2     'E'
 #define SCEMAG3     0
-#define SCEHDR_LEN  0xA0
+#define SCEHDR_LEN  0x800
 /** @}*/
 #define UVL_SEC_MODINFO        ".sceModuleInfo.rodata" ///< Name of module information section
+#define UVL_LOAD_BASE          0x81000000              ///< Where games are loaded to.
 #define UVL_SEC_MIN_ALIGN      0x100000                ///< Alignment of each section
+#define UVL_BIN_MAX_SIZE       0x200000                ///< 2MB max, change in the future
 
 /** \name ELF structures
  *  See the ELF specification for more information.
@@ -143,15 +145,16 @@ typedef struct module_info module_info_t;
 /** \name Functions to load code
  *  @{
  */
+int uvl_load_file (const char *filename, void **data, PsvSSize *size);
 int uvl_load_exe (const char *filename, void **entry);
-int uvl_load_elf (PsvUID fd, PsvOff start_offset, void **entry);
-int uvl_load_module (char *name);
+int uvl_load_elf (void *data, void **entry);
+int uvl_load_module_for_lib (char *lib_name);
 /** @}*/
 /** \name Helper functions
  *  @{
  */
 int uvl_elf_check_header (Elf32_Ehdr_t *hdr);
-int uvl_elf_get_module_info (PsvUID fd, PsvOff start_offset, Elf32_Ehdr_t *elf_hdr, module_info_t *mod_info);
+int uvl_elf_get_module_info (void *data, Elf32_Ehdr_t *elf_hdr, module_info_t **mod_info);
 int uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs, int count);
 /** @}*/
 

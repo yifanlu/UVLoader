@@ -23,7 +23,7 @@
  *  @{
  */
 #define INSTRUCTION_UNKNOWN     0       ///< Unknown/unsupported instruction
-#define INSTRUCTION_MOV         1       ///< MOV Rd, \#imm instruction
+#define INSTRUCTION_MOVW        1       ///< MOVW Rd, \#imm instruction
 #define INSTRUCTION_MOVT        2       ///< MOVT Rd, \#imm instruction
 #define INSTRUCTION_SYSCALL     3       ///< SVC \#imm instruction
 #define INSTRUCTION_BRANCH      4       ///< BX Rn instruction
@@ -48,7 +48,7 @@
 /** @}*/
 
 #define MAX_LOADED_MODS         128     ///< Maximum number of loaded modules
-#define MAX_RESOLVE_ENTRIES     0x1000  ///< Maximum number of resolves
+#define MAX_RESOLVE_ENTRIES     0x10000 ///< Maximum number of resolves
 #define STUB_FUNC_SIZE          0x10    ///< Size of stub functions
 
 /**
@@ -62,7 +62,7 @@ typedef struct resolve_entry
 {
     u32_t   nid;            ///< NID of entry
     u16_t   type;           ///< See defined "Type of entry"
-    u16_t   resolved;       ///< Is a resolved entry?
+    u16_t   reserved;       ///< For future use
     /**
      * \brief Value of the entry
      */
@@ -133,7 +133,7 @@ typedef struct module_exports // thanks roxfan
 typedef struct module_imports // thanks roxfan
 {
     u16_t   size;               // size of this structure; 0x34 for Vita 1.x
-    u8_t    lib_version[2];     //
+    u16_t   lib_version;        //
     u16_t   attribute;          //
     u16_t   num_functions;      // number of imported functions
     u16_t   num_vars;           // number of imported variables
@@ -149,6 +149,24 @@ typedef struct module_imports // thanks roxfan
     u32_t   *tls_nid_table;     // NIDs of the imported TLS variables (numTlsVars)
     void    **tls_entry_table;  // array of pointers to ???
 } module_imports_t;
+
+typedef struct module_imports_0945
+{
+    u16_t   size;               // size of this structure; 0x34 for Vita 1.x
+    u16_t   lib_version;        //
+    u16_t   attribute;          //
+    u16_t   num_functions;      // number of imported functions
+    u16_t   num_vars;           // number of imported variables
+    u16_t   num_tls_vars;       // number of imported TLS variables
+    u32_t   reserved1;          // ?
+    char    *lib_name;          // name of module
+    u32_t   *func_nid_table;    // array of function NIDs (numFuncs)
+    void    **func_entry_table; // parallel array of pointers to stubs; they're patched by the loader to jump to the final code
+    u32_t   *var_nid_table;     // NIDs of the imported variables (numVars)
+    void    **var_entry_table;  // array of pointers to "ref tables" for each variable
+    u32_t   *tls_nid_table;     // NIDs of the imported TLS variables (numTlsVars)
+    void    **tls_entry_table;  // array of pointers to ???
+} module_imports_0945_t;
 
 /**
  * \brief Either an SCE module import table or export table
@@ -204,13 +222,13 @@ typedef struct loaded_module_info
     u32_t           type;       // 6 = user-mode PRX?
 } loaded_module_info_t;
 
-// Resolve table deprecated (for now), trying live resolving 
-#if 0
 /** \name Interacting with the resolve table
  *  @{
  */
+int uvl_resolve_table_initialize ();
+int uvl_resolve_table_destroy ();
 int uvl_resolve_table_add (resolve_entry_t *entry);
-resolve_entry_t *uvl_resolve_table_get (u32_t nid, int forced_resolved);
+resolve_entry_t *uvl_resolve_table_get (u32_t nid);
 /** @}*/
 /** \name Estimating syscalls
  *  @{
@@ -220,7 +238,8 @@ resolve_entry_t *uvl_estimate_syscall (u32_t nid);
 /** \name Translating resolved stubs
  *  @{
  */
-int uvl_import_stub_to_entry (void *func, u32_t nid, resolve_entry_t *entry);
+int uvl_resolve_import_stub_to_entry (void *stub, u32_t nid, resolve_entry_t *entry);
+int uvl_resolve_entry_to_import_stub (resolve_entry_t *entry, void *stub);
 /** @}*/
 /** \name ARM instruction functions
  *  @{
@@ -231,17 +250,21 @@ u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg);
 /** \name Bulk add to resolve table
  *  @{
  */
-int uvl_add_resolved_imports (module_imports_t *imp_table, int syscalls_only);
-int uvl_add_unresolved_imports (module_imports_t *imp_table);
-int uvl_add_resolved_exports (module_exports_t *exp_table);
+int uvl_resolve_add_imports (module_imports_t *imp_table, int syscalls_only);
+//int uvl_add_unresolved_imports (module_imports_t *imp_table);
+int uvl_resolve_add_exports (module_exports_t *exp_table);
 /** @}*/
 /** \name Resolving entries
  *  @{
  */
-int uvl_resolve_all_unresolved ();
-int uvl_resolve_all_loaded_modules (int type);
+//int uvl_resolve_all_unresolved ();
+int uvl_resolve_add_all_modules (int type);
+int uvl_resolve_add_module (PsvUID modid, int type);
+int uvl_resolve_imports (module_imports_0945_t *import);
 /** @}*/
-#endif
+
+// live resolving too slow
+#if 0
 /** \name Resolving entries
  *  @{
  */
@@ -249,6 +272,7 @@ u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg);
 int uvl_resolve_stub (u32_t nid, void *stub, char *lib_name);
 int uvl_resolve_stub_from_module (u32_t nid, void *stub, char *lib_name, void *mod_start, module_info_t *mod_info);
 /** @}*/
+#endif
 
 #endif
 /// @}

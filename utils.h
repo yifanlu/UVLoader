@@ -79,7 +79,6 @@ int strcmp (const char *str1, const char *str2);
 int strncmp (const char *str1, const char *str2, u32_t num);
 void* memset (void *ptr, int value, u32_t num);
 u32_t strlen (const char *str);
-char* strstr (char *str1, const char *str2);
 /** @}*/
 
 /** \name stdio.h functions
@@ -93,9 +92,9 @@ int sprintf (char *str, const char *format, ...);
 /** \name Additional functions
  *  @{
  */
-char* memstr (char *needle, int n_length, char *haystack, int h_length);
+char* memstr (char *haystack, int h_length, char *needle, int n_length);
 uidiv_result_t uidiv (u32_t num, u32_t dem);
-void vitasetlog (void *log_func);
+void vita_init_log ();
 void vitalogf (char *file, int line, ...);
 /** @}*/
 

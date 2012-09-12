@@ -199,28 +199,6 @@ strlen(const char *str)
     return (s - str);
 }
 
-/*
- * Find the first occurrence of find in s.
- */
-char *
-strstr(char *s, const char *find)
-{
-    char c, sc;
-    u32_t len;
-
-    if ((c = *find++) != 0) {
-        len = strlen(find);
-        do {
-            do {
-                if ((sc = *s++) == 0)
-                    return (NULL);
-            } while (sc != c);
-        } while (strncmp(s, find, len) != 0);
-        s--;
-    }
-    return ((char *)s);
-}
-
 // Below is stolen from http://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string_search_algorithm
 
 #define ALPHABET_LEN 255
@@ -362,10 +340,10 @@ char* boyer_moore (char *string, u32_t stringlen, char *pat, u32_t patlen) {
  *  @a haystack
  ***********************************************/
 char* 
-memstr (char *needle,   ///< String to find
-         int n_length,  ///< Length of @a needle
-        char *haystack, ///< Where to search
-         int h_length)  ///< Length of @a haystack
+memstr (char *haystack, ///< Where to search
+         int h_length,  ///< Length of @a haystack
+        char *needle,   ///< String to find
+         int n_length)  ///< Length of @a needle
 {
     return boyer_moore (haystack, h_length, needle, n_length);
 }
@@ -539,16 +517,16 @@ int sprintf (char *str, const char *format, ...)
     return 0;
 }
 
-void (*g_writeline)(char *) = 0;
+int fd_log = 0;
 
 /********************************************//**
  *  \brief Sets the logging function
  ***********************************************/
 void
-vitasetlog (void *log_func) ///< Pointer to logging function
+vita_init_log ()
 {
     psvUnlockMem ();
-    g_writeline = log_func;
+    fd_log = sceIoOpen (LOG_PATH, PSP2_O_WRONLY | PSP2_O_CREAT | PSP2_O_TRUNC, PSP2_STM_RWU);
     psvLockMem ();
 }
 
@@ -574,9 +552,9 @@ vitalogf (char *file,   ///< Source file of code writing to log
     va_end (arg);
     // generate complete log entry
     sprintf (log_line, "%s:%u %s\n", file, line, processed_line);
-    if (g_writeline > 0)
+    if (fd_log > 0)
     {
-        g_writeline (log_line);
+        sceIoWrite (fd_log, log_line, strlen (log_line));
     }
     // TODO: print to screen
 }
