@@ -537,9 +537,9 @@ vita_init_log ()
  *  including log file, on screen, and console.
  ***********************************************/
 void
-vitalogf (char *file,   ///< Source file of code writing to log
-           int line,    ///< Line number of code writing to log
-               ...)     ///< Format and value(s) to write
+vita_logf (char *file,   ///< Source file of code writing to log
+            int line,    ///< Line number of code writing to log
+                ...)     ///< Format and value(s) to write
 {
     void (*writeline)(char *);
     char processed_line[MAX_LOG_LENGTH];

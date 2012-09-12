@@ -37,10 +37,6 @@ uvl_start ()
     }
 #endif
 
-    // WARNING: No error checks here
-    //IF_DEBUG LOG ("Resolving UVLoader.");
-    //uvl_scefuncs_resolve_all ();
-
     IF_DEBUG LOG ("Creating thread to run loader.");
     uvl_thread = sceKernelCreateThread ("uvloader", uvl_entry, 0x10000100, 0x00001000, 0, (0x01 << 16 | 0x02 << 16 | 0x04 << 16), NULL);
     if (uvl_thread < 0)
@@ -103,6 +99,9 @@ uvl_entry ()
     }
     // sceKernelRegisterCallbackToEvent on exit
     // TODO: Free allocated memory and unload code
-    IF_DEBUG LOG ("Passing control to homebrew.");
-    return start();
+    IF_DEBUG LOG ("Running the homebrew.");
+    start ();
+    IF_DEBUG LOG ("Homebrew ran.");
+    return 0;
+    //return start();
 }

@@ -87,8 +87,8 @@ uvl_resolve_table_add (resolve_entry_t *entry) ///< Entry to add
         LOG ("Resolve table full. Please recompile with larger table.");
         return -1;
     }
-    //IF_DEBUG LOG ("Adding entry #%u to resolve table.", g_resolve_table->length);
-    //IF_DEBUG LOG ("NID: 0x%08X, type: %u, value 0x%08X", entry->nid, entry->type, entry->value.value);
+    IF_VERBOSE LOG ("Adding entry #%u to resolve table.", g_resolve_table->length);
+    IF_VERBOSE LOG ("NID: 0x%08X, type: %u, value 0x%08X", entry->nid, entry->type, entry->value.value);
     memcpy (&g_resolve_table->table[g_resolve_table->length], entry, sizeof (resolve_entry_t));
     g_resolve_table->length++;
     return 0;
@@ -186,7 +186,7 @@ uvl_resolve_import_stub_to_entry (void *stub,  ///< Stub function to read
     }
     // put the finishing touches
     entry->nid = nid;
-    //IF_DEBUG LOG ("Mapped resolved import NID: 0x%X to 0x%X of type %u.", entry->nid, entry->value.value, entry->type);
+    IF_VERBOSE LOG ("Mapped resolved import NID: 0x%X to 0x%X of type %u.", entry->nid, entry->value.value, entry->type);
     return 0;
 }
 
@@ -382,7 +382,7 @@ uvl_resolve_add_imports (module_imports_t *imp_table,    ///< Module's import ta
     u32_t nid;
     int i;
     // get functions first
-    //IF_DEBUG LOG ("Found %u resolved function imports to copy.", imp_table->num_functions);
+    IF_VERBOSE LOG ("Found %u resolved function imports to copy.", imp_table->num_functions);
     for(i = 0; i < imp_table->num_functions; i++)
     {
         nid = imp_table->func_nid_table[i];
@@ -408,7 +408,7 @@ uvl_resolve_add_imports (module_imports_t *imp_table,    ///< Module's import ta
     }
     // get variables
     res_entry.type = RESOLVE_TYPE_VARIABLE;
-    //IF_DEBUG LOG ("Found %u resolved variable imports to copy.", imp_table->num_vars);
+    IF_VERBOSE LOG ("Found %u resolved variable imports to copy.", imp_table->num_vars);
     for(i = 0; i < imp_table->num_vars; i++)
     {
         res_entry.nid = imp_table->var_nid_table[i];
@@ -422,7 +422,7 @@ uvl_resolve_add_imports (module_imports_t *imp_table,    ///< Module's import ta
     // get TLS
     // TODO: Find out how this works
     res_entry.type = RESOLVE_TYPE_VARIABLE;
-    //IF_DEBUG LOG ("Found %u resolved tls imports to copy.", imp_table->num_tls_vars);
+    IF_VERBOSE LOG ("Found %u resolved tls imports to copy.", imp_table->num_tls_vars);
     for(i = 0; i < imp_table->num_tls_vars; i++)
     {
         res_entry.nid = imp_table->tls_nid_table[i];
@@ -514,7 +514,7 @@ uvl_resolve_add_exports (module_exports_t *exp_table) ///< Module's export table
 
     // get functions first
     res_entry.type = RESOLVE_TYPE_FUNCTION;
-    //IF_DEBUG LOG ("Found %u resolved function exports to copy.", exp_table->num_functions);
+    IF_VERBOSE LOG ("Found %u resolved function exports to copy.", exp_table->num_functions);
     for(i = 0; i < exp_table->num_functions; i++, offset++)
     {
         res_entry.nid = exp_table->nid_table[offset];
@@ -527,7 +527,7 @@ uvl_resolve_add_exports (module_exports_t *exp_table) ///< Module's export table
     }
     // get variables
     res_entry.type = RESOLVE_TYPE_VARIABLE;
-    //IF_DEBUG LOG ("Found %u resolved variable exports to copy.", exp_table->num_vars);
+    IF_VERBOSE LOG ("Found %u resolved variable exports to copy.", exp_table->num_vars);
     for(i = 0; i < exp_table->num_vars; i++, offset++)
     {
         res_entry.nid = exp_table->nid_table[offset];
@@ -677,19 +677,19 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
     module_imports_t *imports;
 
     m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
-    IF_DEBUG LOG ("Getting information for module UID: 0x%X.", modid);
+    IF_VERBOSE LOG ("Getting information for module UID: 0x%X.", modid);
     if (sceKernelGetModuleInfo (modid, &m_mod_info) < 0)
     {
         LOG ("Error getting info for mod 0x%08X", modid);
         return -1;
     }
-    IF_DEBUG LOG ("Module: %s, file: %s", m_mod_info.module_name, m_mod_info.file_path);
+    IF_VERBOSE LOG ("Module: %s, file: %s", m_mod_info.module_name, m_mod_info.file_path);
     mod_info = NULL;
     result = m_mod_info.segments[0].vaddr;
     segment_size = m_mod_info.segments[0].memsz;
     while (segment_size > 0)
     {
-        IF_DEBUG LOG ("Searching for module name in memory. Start 0x%X", result);
+        IF_VERBOSE LOG ("Searching for module name in memory. Start 0x%X", result);
         result = memstr (result, segment_size, m_mod_info.module_name, strlen (m_mod_info.module_name));
         if (result == NULL)
         {
@@ -698,10 +698,10 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
         }
         // try making this the one
         mod_info = (module_info_t*)((u32_t)result - 4);
-        IF_DEBUG LOG ("Possible module info struct at 0x%X", (u32_t)mod_info);
+        IF_VERBOSE LOG ("Possible module info struct at 0x%X", (u32_t)mod_info);
         if (mod_info->modattribute == MOD_INFO_VALID_ATTR && mod_info->modversion == MOD_INFO_VALID_VER) // TODO: Better check
         {
-            IF_DEBUG LOG ("Module export start at 0x%X import start at 0x%X", (u32_t)mod_info->ent_top + (u32_t)m_mod_info.segments[0].vaddr, (u32_t)mod_info->stub_top + (u32_t)m_mod_info.segments[0].vaddr);
+            IF_VERBOSE LOG ("Module export start at 0x%X import start at 0x%X", (u32_t)mod_info->ent_top + (u32_t)m_mod_info.segments[0].vaddr, (u32_t)mod_info->stub_top + (u32_t)m_mod_info.segments[0].vaddr);
             break; // we found it
         }
         else // that string just happened to appear
@@ -720,13 +720,13 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
     }
     if (BIT_SET (type, RESOLVE_MOD_EXPS))
     {
-        //IF_DEBUG LOG ("Adding exports to resolve table.");
+        IF_VERBOSE LOG ("Adding exports to resolve table.");
         for (exports = (module_exports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_top); 
             (u32_t)exports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_end); exports++)
         {
             if (exports->lib_name != NULL)
             {
-                //IF_DEBUG LOG ("Adding exports for %s", exports->lib_name);
+                IF_VERBOSE LOG ("Adding exports for %s", exports->lib_name);
             }
             if (uvl_resolve_add_exports (exports) < 0)
             {
@@ -737,11 +737,11 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
     }
     if (BIT_SET (type, RESOLVE_MOD_IMPS))
     {
-        //IF_DEBUG LOG ("Adding resolved imports to resolve table.");
+        IF_VERBOSE LOG ("Adding resolved imports to resolve table.");
         for (imports = (module_imports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_top); 
             (u32_t)imports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
         {
-            //IF_DEBUG LOG ("Adding imports for %s", imports->lib_name);
+            IF_VERBOSE LOG ("Adding imports for %s", imports->lib_name);
             if (uvl_resolve_add_imports (imports, BIT_SET (type, RESOLVE_IMPS_SVC_ONLY)) < 0)
             {
                 LOG ("Unable to resolve imports at 0x%08X. Continuing.", (u32_t)imports);
@@ -767,10 +767,10 @@ uvl_resolve_imports (module_imports_0945_t *import)   ///< Import table
     IF_DEBUG LOG ("Resolving import table at 0x%08X", (u32_t)import);
     for (i = 0; i < import->num_functions; i++)
     {
-        IF_DEBUG LOG ("Trying to resolve function NID: 0x%08X found in %s", import->func_nid_table[i], import->lib_name);
+        IF_VERBOSE LOG ("Trying to resolve function NID: 0x%08X found in %s", import->func_nid_table[i], import->lib_name);
         resolve = uvl_resolve_table_get (import->func_nid_table[i]);
         stub = import->func_entry_table[i];
-        IF_DEBUG LOG ("Stub located at: 0x%08X", (u32_t)stub);
+        IF_VERBOSE LOG ("Stub located at: 0x%08X", (u32_t)stub);
         if (resolve == NULL)
         {
             LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->func_nid_table[i]);
@@ -785,10 +785,10 @@ uvl_resolve_imports (module_imports_0945_t *import)   ///< Import table
     }
     for (i = 0; i < import->num_vars; i++)
     {
-        IF_DEBUG LOG ("Trying to resolve variable NID: 0x%08X found in %s", import->var_nid_table[i], import->lib_name);
+        IF_VERBOSE LOG ("Trying to resolve variable NID: 0x%08X found in %s", import->var_nid_table[i], import->lib_name);
         resolve = uvl_resolve_table_get (import->var_nid_table[i]);
         stub = import->var_entry_table[i];
-        IF_DEBUG LOG ("Stub located at: 0x%08X", (u32_t)stub);
+        IF_VERBOSE LOG ("Stub located at: 0x%08X", (u32_t)stub);
         if (resolve == NULL)
         {
             LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->var_nid_table[i]);
@@ -802,10 +802,10 @@ uvl_resolve_imports (module_imports_0945_t *import)   ///< Import table
     }
     for (i = 0; i < import->num_tls_vars; i++)
     {
-        IF_DEBUG LOG ("Trying to resolve tls NID: 0x%08X found in %s", import->tls_nid_table[i], import->lib_name);
+        IF_VERBOSE LOG ("Trying to resolve tls NID: 0x%08X found in %s", import->tls_nid_table[i], import->lib_name);
         resolve = uvl_resolve_table_get (import->tls_nid_table[i]);
         stub = import->tls_entry_table[i];
-        IF_DEBUG LOG ("Stub located at: 0x%08X", (u32_t)stub);
+        IF_VERBOSE LOG ("Stub located at: 0x%08X", (u32_t)stub);
         if (resolve == NULL)
         {
             LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->tls_nid_table[i]);

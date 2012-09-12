@@ -114,7 +114,7 @@ uvl_offset_import (module_imports_0945_t *import,   ///< Import table to modify
                                      int addend)    ///< Positive or negative number to add to all offsets
 {
     int i;
-    IF_DEBUG LOG ("Modifying import table offsets for 0x%08X", (u32_t)import);
+    IF_VERBOSE LOG ("Modifying import table offsets for 0x%08X", (u32_t)import);
     import->lib_name = (void*)((u32_t)import->lib_name + addend);
     import->func_nid_table = (void*)((u32_t)import->func_nid_table + addend);
     import->func_entry_table = (void*)((u32_t)import->func_entry_table + addend);
@@ -122,7 +122,7 @@ uvl_offset_import (module_imports_0945_t *import,   ///< Import table to modify
     import->var_entry_table = (void*)((u32_t)import->var_entry_table + addend);
     import->tls_nid_table = (void*)((u32_t)import->tls_nid_table + addend);
     import->tls_entry_table = (void*)((u32_t)import->tls_entry_table + addend);
-    IF_DEBUG LOG ("Modifying import table entries offsets for 0x%08X", (u32_t)import);
+    IF_VERBOSE LOG ("Modifying import table entries offsets for 0x%08X", (u32_t)import);
     for (i = 0; i < import->num_functions; i++)
     {
         import->func_entry_table[i] = (void*)((u32_t)import->func_entry_table[i] + addend);
@@ -153,7 +153,7 @@ uvl_load_elf (void *data,           ///< ELF data start
     *entry = NULL;
 
     // get headers
-    IF_DEBUG LOG ("Reading headers.");
+    IF_VERBOSE LOG ("Reading headers.");
     elf_hdr = data;
     IF_DEBUG LOG ("Checking headers.");
     if (uvl_elf_check_header (elf_hdr) < 0)
@@ -164,7 +164,7 @@ uvl_load_elf (void *data,           ///< ELF data start
 
     // get program headers
     Elf32_Phdr_t *prog_hdrs;
-    IF_DEBUG LOG ("Reading program headers.");
+    IF_VERBOSE LOG ("Reading program headers.");
     prog_hdrs = (void*)((u32_t)data + elf_hdr->e_phoff);
 
     // get mod_info
@@ -256,10 +256,9 @@ uvl_load_elf (void *data,           ///< ELF data start
         IF_DEBUG LOG ("Reading program section.");
         psvUnlockMem ();
         memcpy (blockaddr, (void*)((u32_t)data + prog_hdrs[i].p_offset), prog_hdrs[i].p_filesz);
-        psvLockMem ();
-
         IF_DEBUG LOG ("Zeroing %u remainder of memory.", prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
         memset ((void*)((u32_t)blockaddr + prog_hdrs[i].p_filesz), 0, prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
+        psvLockMem ();
     }
 
     // old resolve NIDs
@@ -467,7 +466,7 @@ uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs,   ///< Array of program headers
     u32_t length;
     int temp[2];
 
-    IF_DEBUG LOG ("Reading %u program headers.", count);
+    IF_VERBOSE LOG ("Reading %u program headers.", count);
     for (i = 0; i < count; i++)
     {
         if (prog_hdrs[i].p_vaddr < min_addr)
@@ -491,7 +490,7 @@ uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs,   ///< Array of program headers
     for (i = 0; i < num_loaded; i++)
     {
         m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
-        IF_DEBUG LOG ("Getting information for module #%u, UID: 0x%X.", i, mod_list[i]);
+        IF_VERBOSE LOG ("Getting information for module #%u, UID: 0x%X.", i, mod_list[i]);
         if (sceKernelGetModuleInfo (mod_list[i], &m_mod_info) < 0)
         {
             LOG ("Error getting info for mod 0x%08X, continuing", mod_list[i]);

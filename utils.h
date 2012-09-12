@@ -11,15 +11,26 @@
 #include "types.h"
 
 #ifdef DEBUG
-#define DEBUG_LOGGING   1                   ///< Enable debug logging
+    #define DEBUG_LOGGING       1                     ///< Enable debug logging
 #else
-#define DEBUG_LOGGING   0                   ///< Disable debug logging
+    #define DEBUG_LOGGING       0                     ///< Disable debug logging
 #endif
 
-#define MAX_LOG_LENGTH  0x100               ///< Any log entry larger than this will cause a buffer overflow!
-#define IF_DEBUG        if (DEBUG_LOGGING)  ///< Place before calling @c LOG to only show when debugging
+#ifndef VERBOSE_LOGGING
+    #define VERBOSE_LOGGING     0                     ///< Disable verbose logging
+#else
+    #undef VERBOSE_LOGGING
+    #ifndef DEBUG_LOGGING
+        #define DEBUG_LOGGING   1                     ///< Enabled automatically when verbose logging
+    #endif
+    #define VERBOSE_LOGGING     1                     ///< Enable verbose logging
+#endif
+
+#define MAX_LOG_LENGTH  0x100                 ///< Any log entry larger than this will cause a buffer overflow!
+#define IF_DEBUG        if (DEBUG_LOGGING)    ///< Place before calling @c LOG to only show when debugging
+#define IF_VERBOSE      if (VERBOSE_LOGGING)  ///< Place before calling @c LOG to only show when verbose output is enabled
 #define LOG(args...) \
-        vitalogf (__FILE__, __LINE__, args) ///< Write a log entry
+        vita_logf (__FILE__, __LINE__, args)  ///< Write a log entry
 
 /** \name stdarg.h functions
  *  See @c stdarg.h documentation for details.
@@ -95,7 +106,7 @@ int sprintf (char *str, const char *format, ...);
 char* memstr (char *haystack, int h_length, char *needle, int n_length);
 uidiv_result_t uidiv (u32_t num, u32_t dem);
 void vita_init_log ();
-void vitalogf (char *file, int line, ...);
+void vita_logf (char *file, int line, ...);
 /** @}*/
 
 #endif
