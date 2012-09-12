@@ -6,8 +6,8 @@
 #ifndef UVL_CONFIG
 #define UVL_CONFIG
 
-#define HOMEBREW_PATH               ""     ///< Where to load the homebrew.
-#define LOG_PATH                    ""      ///< Where to load the homebrew.
+#define UVL_HOMEBREW_PATH               ""     ///< Where to load the homebrew.
+#define UVL_LOG_PATH                    ""      ///< Where to load the homebrew.
 
 #endif
 /// @}
