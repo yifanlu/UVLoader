@@ -27,37 +27,6 @@
 #error "Must compile with -fPIE"
 #endif
 
-int module_test ()
-{
-    int (*sceSysmoduleLoadModule)(u16_t) = (void*)0x81217BBC;
-    loaded_module_info_t m_mod_info;
-    PsvUID mod_list[MAX_LOADED_MODS];
-    u32_t num_loaded = MAX_LOADED_MODS;
-    int i;
-    for (i = 0; i < 0xFF; i++)
-    {
-        LOG ("Loading 0x%04X: 0x%08X", i, sceSysmoduleLoadModule (i));
-    }
-    if (sceKernelGetModuleList (0xFF, mod_list, &num_loaded) < 0)
-    {
-        LOG ("Failed to get module list.");
-        return -1;
-    }
-    IF_DEBUG LOG ("Found %u loaded modules.", num_loaded);
-    for (i = 0; i < num_loaded; i++)
-    {
-        m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
-        IF_DEBUG LOG ("Getting information for module #%u, UID: 0x%X.", i, mod_list[i]);
-        if (sceKernelGetModuleInfo (mod_list[i], &m_mod_info) < 0)
-        {
-            LOG ("Error getting info for mod 0x%08X, continuing", mod_list[i]);
-            continue;
-        }
-        LOG ("Module: %s Path: %s Base: %08X", m_mod_info.module_name, m_mod_info.file_path, (u32_t)m_mod_info.segments[0].vaddr);
-    }
-    return 0;
-}
-
 /********************************************//**
  *  \brief Starting point from exploit
  *  
@@ -72,7 +41,6 @@ uvl_start ()
 {
     vita_init_log ();
     LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
-    return module_test ();
     PsvUID uvl_thread;
 
     IF_DEBUG LOG ("Creating thread to run loader.");
@@ -99,6 +67,14 @@ uvl_start ()
     return 0;
 }
 
+int
+uvl_exit (int status)
+{
+    IF_DEBUG LOG ("Exit called. Status: 0x%08X", status);
+    for(;;);
+    return 0;
+}
+
 /********************************************//**
  *  \brief Entry point of UVLoader
  *  
@@ -107,7 +83,8 @@ uvl_start ()
 int 
 uvl_entry ()
 {
-    int (*start)();
+    int (*start)(int argc, char* argv);
+    int ret_value;
 
     IF_DEBUG LOG ("Initializing resolve table.");
     if (uvl_resolve_table_initialize () < 0)
@@ -121,6 +98,19 @@ uvl_entry ()
         LOG ("Cannot cache all loaded entries.");
         return -1;
     }
+#if 0
+    IF_DEBUG LOG ("Adding custom exit() hook.");
+    resolve_entry_t exit_resolve;
+    exit_resolve.nid = 0x826BBBAF;
+    exit_resolve.type = RESOLVE_TYPE_FUNCTION;
+    exit_resolve.value.func_ptr = uvl_exit;
+    if (uvl_resolve_table_add (&exit_resolve) < 0)
+    {
+        LOG ("Cannot add resolve for exit().");
+        return -1;
+    }
+    IF_DEBUG LOG ("Exit at 0x%08X", exit_resolve.value.value);
+#endif
     IF_DEBUG LOG ("Loading homebrew.");
     if (uvl_load_exe (UVL_HOMEBREW_PATH, (void**)&start) < 0)
     {
@@ -130,7 +120,7 @@ uvl_entry ()
     // sceKernelRegisterCallbackToEvent on exit
     // TODO: Free allocated memory and unload code
     IF_DEBUG LOG ("Running the homebrew.");
-    start ();
-    IF_DEBUG LOG ("Homebrew ran.");
+    ret_value = start (0, NULL);
+    IF_DEBUG LOG ("Homebrew exited with value 0x%08X", ret_value);
     return 0;
 }

@@ -27,7 +27,7 @@
 int
 uvl_load_file (const char *filename,    ///< File to load
                      void **data,       ///< Output pointer to data
-                  PsvSSize *size)        ///< Output pointer to data size
+                  PsvSSize *size)       ///< Output pointer to data size
 {
     PsvUID fd;
     PsvUID memblock;
@@ -53,7 +53,7 @@ uvl_load_file (const char *filename,    ///< File to load
     *size = sceIoRead (fd, base, UVL_BIN_MAX_SIZE);
     if (*size < 0)
     {
-        LOG ("Failed to read %s.", filename);
+        LOG ("Failed to read %s: 0x%08X", filename, *size);
         return -1;
     }
     IF_DEBUG LOG ("Read %u bytes from %s", *size, filename);
@@ -62,8 +62,32 @@ uvl_load_file (const char *filename,    ///< File to load
         LOG ("Failed to close file.");
         return -1;
     }
+
     *data = base;
 
+    return 0;
+}
+
+/********************************************//**
+ *  \brief Frees data pointer created by load
+ *  
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+static inline int
+uvl_free_data (void *data)      ///< Data allocated by @c uvl_load_file
+{
+    PsvUID block;
+
+    block = sceKernelFindMemBlockByAddr (data, 0);
+    if (block < 0)
+    {
+        LOG ("Cannot find block id: 0x%08X", block);
+    }
+    if (sceKernelFreeMemBlock (block) < 0)
+    {
+        LOG ("Cannot free block: 0x%08X", block);
+        return -1;
+    }
     return 0;
 }
 
@@ -99,7 +123,11 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
         if (magic[1] == ELFMAG1 && magic[2] == ELFMAG2 && magic[3] == ELFMAG3)
         {
             IF_DEBUG LOG ("Found a ELF, loading.");
-            return uvl_load_elf (data, entry);
+            if (uvl_load_elf (data, entry) < 0)
+            {
+                LOG ("Cannot load ELF.");
+                return -1;
+            }
         }
     }
     else if (magic[0] == SCEMAG0)
@@ -107,7 +135,11 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
         if (magic[1] == SCEMAG1 && magic[2] == SCEMAG2 && magic[3] == SCEMAG3)
         {
             IF_DEBUG LOG ("Loading SELF.");
-            return uvl_load_elf ((void*)((u32_t)data + SCEHDR_LEN), entry);
+            if (uvl_load_elf ((void*)((u32_t)data + SCEHDR_LEN), entry) < 0)
+            {
+                LOG ("Cannot load SELF.");
+                return -1;
+            }
         }
     }
     else
@@ -115,19 +147,27 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
         LOG ("Invalid magic.");
         return -1;
     }
+
+    // free data
+    if (uvl_free_data (data) < 0)
+    {
+        LOG ("Cannot free data");
+        return -1;
+    }
+    return 0;
 }
 
 /********************************************//**
  *  \brief Changes import table's offsets 
  *  to loaded file in memory.
  *  
- *  This is an internal function which may be 
- *  removed when a better method of loading is 
- *  found.
+ *  This is only used when NIDs needs to be 
+ *  resolved before the program is loaded to 
+ *  it's proper location.
  ***********************************************/
 static inline void
-uvl_offset_import (module_imports_0945_t *import,   ///< Import table to modify
-                                     int addend)    ///< Positive or negative number to add to all offsets
+uvl_offset_import (module_imports_t *import,   ///< Import table to modify
+                                int addend)    ///< Positive or negative number to add to all offsets
 {
     int i;
     IF_VERBOSE LOG ("Modifying import table offsets for 0x%08X", (u32_t)import);
@@ -193,36 +233,6 @@ uvl_load_elf (void *data,           ///< ELF data start
     }
     IF_DEBUG LOG ("Module name: %s, export table offset: 0x%08X, import table offset: 0x%08X", mod_info->modname, mod_info->ent_top, mod_info->stub_top);
 
-    // resolve NIDs
-    // TODO: Put this AFTER loading to memory, as this is both what
-    // Sony does and also so we don't have to do weird things like 
-    // putting an addend on all offsets. However, the downside is that 
-    // we would have to keep unlocking and relocking the memory for each 
-    // entry, which could prove to be a problem in the future.
-    module_imports_0945_t *import;
-    void  *end;
-    addend = (int)((long int)data - UVL_LOAD_BASE) + prog_hdrs[0].p_offset; // temp loaded loc - 0x81000000 + program sec 1 offset
-    IF_DEBUG LOG ("Offset between offical base 0x%08X and temporary loaded location 0x%08X: 0x%08X", UVL_LOAD_BASE, (u32_t)data, addend);
-    IF_DEBUG LOG ("Resolving NID imports.");
-    import = (void*)((u32_t)data + mod_info->stub_top + prog_hdrs[0].p_offset);
-    end = (void*)((u32_t)data + mod_info->stub_end + prog_hdrs[0].p_offset);
-    for (i = 0; (void*)&import[i] < end; i++)
-    {
-        uvl_offset_import (&import[i], addend);
-        IF_DEBUG LOG ("Loading module for %s", import[i].lib_name);
-        if (uvl_load_module_for_lib (import[i].lib_name) < 0)
-        {
-            LOG ("Cannot load required module for %s. May still be possible to resolve with cached entries. Continuing.", import[i].lib_name);
-            continue;
-        }
-        IF_DEBUG LOG ("Resolving imports for %s", import[i].lib_name);
-        if (uvl_resolve_imports (&import[i]) < 0)
-        {
-            LOG ("Failed to resolve imports for %s", import[i].lib_name);
-            return -1;
-        }
-    }
-
     // free memory
     IF_DEBUG LOG ("Cleaning up memory.");
     if (uvl_elf_free_memory (prog_hdrs, elf_hdr->e_phnum) < 0)
@@ -233,12 +243,18 @@ uvl_load_elf (void *data,           ///< ELF data start
 
     // actually load the ELF
     PsvUID memblock;
+    PsvUID padblock;
     void *blockaddr;
     u32_t length;
+    if (elf_hdr->e_phnum < 1)
+    {
+        LOG ("No program sections to load!");
+        return -1;
+    }
     IF_DEBUG LOG ("Loading %u program sections.", elf_hdr->e_phnum);
     for (i = 0; i < elf_hdr->e_phnum; i++)
     {
-        if (prog_hdrs[i].p_type != PT_LOAD)
+        if (prog_hdrs[i].p_type != PT_LOAD || prog_hdrs[i].p_vaddr == 0)
         {
             IF_DEBUG LOG ("Section %u is not loadable. Skipping.", i);
             continue;
@@ -251,7 +267,10 @@ uvl_load_elf (void *data,           ///< ELF data start
         }
         else // data section
         {
+            // TODO: remove need for this
+            padblock = sceKernelAllocMemBlock ("UVLPadding", 0xC20D060, 0x1700000, NULL); // ~10MB of padding between us and data
             memblock = sceKernelAllocMemBlock ("UVLHomebrew", 0xC20D060, length, NULL);
+            sceKernelFreeMemBlock (padblock); // don't care about error, we tried our best
         }
         if (memblock < 0)
         {
@@ -267,9 +286,8 @@ uvl_load_elf (void *data,           ///< ELF data start
             LOG ("Error, section %u wants to be loaded to 0x%08X but we allocated 0x%08X", i, (u32_t)prog_hdrs[i].p_vaddr, (u32_t)blockaddr);
             //return -1;
         }
-        IF_DEBUG LOG ("Allocated memory at 0x%08X, attempting to load section %u.", (u32_t)blockaddr, i);
 
-        IF_DEBUG LOG ("Reading program section.");
+        IF_DEBUG LOG ("Allocated memory at 0x%08X, attempting to load section %u.", (u32_t)blockaddr, i);
         psvUnlockMem ();
         memcpy (blockaddr, (void*)((u32_t)data + prog_hdrs[i].p_offset), prog_hdrs[i].p_filesz);
         IF_DEBUG LOG ("Zeroing %u remainder of memory.", prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
@@ -277,56 +295,50 @@ uvl_load_elf (void *data,           ///< ELF data start
         psvLockMem ();
     }
 
-    // old resolve NIDs
-#if 0
-    module_imports_0945_t *import;
-    if (base_address == NULL)
+    // resolve NIDs
+    module_imports_t *import;
+    void  *end;
+    import = (void*)(prog_hdrs[0].p_vaddr + mod_info->stub_top);
+    end = (void*)(prog_hdrs[0].p_vaddr + mod_info->stub_end);
+    for (i = 0; (void*)&import[i] < end; i++)
     {
-        LOG ("Cannot find base address for executable.");
-        return -1;
-    }
-    IF_DEBUG LOG ("Resolving NID imports.");
-    for (import = (module_imports_0945_t*)((char*)base_address + mod_info.stub_top); (void*)import < (void*)((char*)base_address + mod_info.stub_end); import++)
-    {
-        IF_DEBUG LOG ("Loading required module %s.", import->lib_name);
-        if (uvl_load_module (import->lib_name) < 0)
+        IF_DEBUG LOG ("Loading module for %s", import[i].lib_name);
+        if (uvl_load_module_for_lib (import[i].lib_name) < 0)
         {
-            LOG ("Error loading required module: %s", import->lib_name);
+            LOG ("Cannot load required module for %s. May still be possible to resolve with cached entries. Continuing.", import[i].lib_name);
+            continue;
+        }
+        IF_DEBUG LOG ("Resolving imports for %s", import[i].lib_name);
+        if (uvl_resolve_imports (&import[i]) < 0)
+        {
+            LOG ("Failed to resolve imports for %s", import[i].lib_name);
             return -1;
         }
-        for (i = 0; i < import->num_functions; i++)
+    }
+
+    // find the entry point
+    module_exports_t *export;
+    u32_t j;
+    export = (void*)(prog_hdrs[0].p_vaddr + mod_info->ent_top);
+    end = (void*)(prog_hdrs[0].p_vaddr + mod_info->ent_end);
+    for (i = 0; (void*)&export[i] < end; i++)
+    {
+        if (export[i].attribute != ATTR_MOD_INFO)
         {
-            IF_DEBUG LOG ("Trying to resolve function NID: 0x%08X from %s", import->func_nid_table[i], import->lib_name);
-            if (uvl_resolve_stub (import->func_nid_table[i], import->func_entry_table[i], import->lib_name) < 0)
-            {
-                LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->func_nid_table[i]);
-                continue;
-            }
+            continue;
         }
-        for (i = 0; i < import->num_vars; i++)
+        for (j = 0; j < export[i].num_functions; j++)
         {
-            IF_DEBUG LOG ("Trying to resolve variable NID: 0x%08X from %s", import->var_nid_table[i], import->lib_name);
-            if (uvl_resolve_stub (import->var_nid_table[i], import->var_entry_table[i], import->lib_name) < 0)
+            if (export[i].nid_table[j] == ENTRY_NID)
             {
-                LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->var_nid_table[i]);
-                continue;
-            }
-        }
-        for (i = 0; i < import->num_tls_vars; i++)
-        {
-            IF_DEBUG LOG ("Trying to resolve tls NID: 0x%08X from %s", import->tls_nid_table[i], import->lib_name);
-            if (uvl_resolve_stub (import->tls_nid_table[i], import->tls_entry_table[i], import->lib_name) < 0)
-            {
-                LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->tls_nid_table[i]);
-                continue;
+                *entry = export[i].entry_table[j];
+                IF_DEBUG LOG ("Found application entry at 0x%08X", *entry);
+                return 0;
             }
         }
     }
-#endif
-
-    *entry = (void*)(UVL_LOAD_BASE + (u32_t)elf_hdr->e_entry);
-    IF_DEBUG LOG ("Application entry at 0x%08X", *entry);
-    return 0;
+    LOG ("Cannot find application entry.");
+    return -1;
 }
 
 /********************************************//**
@@ -342,6 +354,7 @@ int
 uvl_load_module_for_lib (char *lib_name) ///< Name of library for the module to load
 {
     // TODO: Get filename for mod name and load module
+    // First unload module if loaded 
     return 0;
 }
 
@@ -381,7 +394,7 @@ uvl_elf_check_header (Elf32_Ehdr_t *hdr) ///< ELF header to check
         return -1;
     }
     // type
-    if (!(hdr->e_type == ET_EXEC))
+    if (!(hdr->e_type == ET_EXEC || hdr->e_type == ET_SCE_EXEC))
     {
         LOG ("Only ET_EXEC files can be loaded currently.");
         return -1;
@@ -515,7 +528,7 @@ uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs,   ///< Array of program headers
         for (j = 0; j < 3; j++)
         {
             //if (m_mod_info.segments[j].vaddr > min_addr || (u32_t)m_mod_info.segments[j].vaddr + m_mod_info.segments[j].memsz > (u32_t)min_addr)
-            if (m_mod_info.segments[j].vaddr == (void*)UVL_LOAD_BASE)
+            if (m_mod_info.segments[j].vaddr == (void*)0x81000000)
             {
                 IF_DEBUG LOG ("Module %s segment %u (0x%08X, size %u) is in our address space. Attempting to unload.", m_mod_info.module_name, j, (u32_t)m_mod_info.segments[j].vaddr, m_mod_info.segments[j].memsz);
                 if (sceKernelStopUnloadModule (mod_list[i], 0, 0, 0, &temp[0], &temp[1]) < 0)

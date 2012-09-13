@@ -42,7 +42,8 @@ typedef u16_t   Elf32_Half;
 /** \name ELF object types
  *  @{
  */
-#define ET_EXEC     2
+#define ET_EXEC     0x0002
+#define ET_SCE_EXEC 0xFE00
 /** @}*/
 /** \name ELF machine types
  *  @{
@@ -80,12 +81,13 @@ typedef u16_t   Elf32_Half;
 #define SCEMAG1     'C'
 #define SCEMAG2     'E'
 #define SCEMAG3     0
-#define SCEHDR_LEN  0x800
+#define SCEHDR_LEN  0x900
 /** @}*/
 #define UVL_SEC_MODINFO        ".sceModuleInfo.rodata" ///< Name of module information section
-#define UVL_LOAD_BASE          0x81000000              ///< Where games are loaded to.
 #define UVL_SEC_MIN_ALIGN      0x100000                ///< Alignment of each section
-#define UVL_BIN_MAX_SIZE       0x200000                ///< 2MB max, change in the future
+#define UVL_BIN_MAX_SIZE       0x500000                ///< 5MB max, change in the future
+#define ATTR_MOD_INFO          0x8000                  ///< module_exports_t attribute
+#define ENTRY_NID              0x935CD196              ///< NID of entry function
 
 /** \name ELF structures
  *  See the ELF specification for more information.

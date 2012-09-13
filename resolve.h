@@ -150,24 +150,6 @@ typedef struct module_imports // thanks roxfan
     void    **tls_entry_table;  // array of pointers to ???
 } module_imports_t;
 
-typedef struct module_imports_0945
-{
-    u16_t   size;               // size of this structure; 0x34 for Vita 1.x
-    u16_t   lib_version;        //
-    u16_t   attribute;          //
-    u16_t   num_functions;      // number of imported functions
-    u16_t   num_vars;           // number of imported variables
-    u16_t   num_tls_vars;       // number of imported TLS variables
-    u32_t   reserved1;          // ?
-    char    *lib_name;          // name of module
-    u32_t   *func_nid_table;    // array of function NIDs (numFuncs)
-    void    **func_entry_table; // parallel array of pointers to stubs; they're patched by the loader to jump to the final code
-    u32_t   *var_nid_table;     // NIDs of the imported variables (numVars)
-    void    **var_entry_table;  // array of pointers to "ref tables" for each variable
-    u32_t   *tls_nid_table;     // NIDs of the imported TLS variables (numTlsVars)
-    void    **tls_entry_table;  // array of pointers to ???
-} module_imports_0945_t;
-
 /**
  * \brief Either an SCE module import table or export table
  * 
@@ -258,7 +240,7 @@ int uvl_resolve_add_exports (module_exports_t *exp_table);
  */
 int uvl_resolve_add_all_modules (int type);
 int uvl_resolve_add_module (PsvUID modid, int type);
-int uvl_resolve_imports (module_imports_0945_t *import);
+int uvl_resolve_imports (module_imports_t *import);
 /** @}*/
 
 // live resolving too slow
