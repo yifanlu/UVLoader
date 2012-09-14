@@ -56,6 +56,10 @@ uvl_load_file (const char *filename,    ///< File to load
         LOG ("Failed to read %s: 0x%08X", filename, *size);
         return -1;
     }
+    if (*size >= UVL_BIN_MAX_SIZE)
+    {
+        LOG ("Warning. Max homebrew size of %u bytes reached. File could be truncated.", UVL_BIN_MAX_SIZE);
+    }
     IF_DEBUG LOG ("Read %u bytes from %s", *size, filename);
     if (sceIoClose (fd) < 0)
     {
@@ -116,7 +120,7 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
     }
 
     magic = (char*)data;
-    IF_DEBUG LOG ("Magic number: 0x%02X 0x%02X 0x%02X 0x%02X", magic[0], magic[1], magic[2], magic[3]);
+    IF_VERBOSE LOG ("Magic number: 0x%02X 0x%02X 0x%02X 0x%02X", magic[0], magic[1], magic[2], magic[3]);
 
     if (magic[0] == ELFMAG0)
     {
@@ -243,7 +247,6 @@ uvl_load_elf (void *data,           ///< ELF data start
 
     // actually load the ELF
     PsvUID memblock;
-    PsvUID padblock;
     void *blockaddr;
     u32_t length;
     if (elf_hdr->e_phnum < 1)
@@ -267,10 +270,7 @@ uvl_load_elf (void *data,           ///< ELF data start
         }
         else // data section
         {
-            // TODO: remove need for this
-            padblock = sceKernelAllocMemBlock ("UVLPadding", 0xC20D060, 0x1700000, NULL); // ~10MB of padding between us and data
             memblock = sceKernelAllocMemBlock ("UVLHomebrew", 0xC20D060, length, NULL);
-            sceKernelFreeMemBlock (padblock); // don't care about error, we tried our best
         }
         if (memblock < 0)
         {
@@ -368,7 +368,7 @@ uvl_load_module_for_lib (char *lib_name) ///< Name of library for the module to 
 int 
 uvl_elf_check_header (Elf32_Ehdr_t *hdr) ///< ELF header to check
 {
-    IF_DEBUG LOG ("Magic number: 0x%02X 0x%02X 0x%02X 0x%02X", hdr->e_ident[EI_MAG0], hdr->e_ident[EI_MAG1], hdr->e_ident[EI_MAG2], hdr->e_ident[EI_MAG3]);
+    IF_VERBOSE LOG ("Magic number: 0x%02X 0x%02X 0x%02X 0x%02X", hdr->e_ident[EI_MAG0], hdr->e_ident[EI_MAG1], hdr->e_ident[EI_MAG2], hdr->e_ident[EI_MAG3]);
     // magic number
     if (!(hdr->e_ident[EI_MAG0] == ELFMAG0 && hdr->e_ident[EI_MAG1] == ELFMAG1 && hdr->e_ident[EI_MAG2] == ELFMAG2 && hdr->e_ident[EI_MAG3] == ELFMAG3))
     {
