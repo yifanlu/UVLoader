@@ -15,48 +15,40 @@
  * limitations under the License.
  **/
 #define GENERATE_STUBS
+#include "config.h"
 #include "resolve.h"
 #include "scefuncs.h"
 
-// old resolve table resolve code
-#if 0
-// There is no error check in this function. Hope code works.
+/********************************************//**
+ *  \brief Resolves UVLoader
+ *  
+ *  This function will try its best to resolve 
+ *  imported function given their NIDs. UVL 
+ *  only uses sceLibKernel API calls which 
+ *  should be imported by every game.
+ ***********************************************/
 void
-uvl_scefuncs_resolve_all ()
+uvl_scefuncs_resolve_loader ()
 {
-    // First create a macro for adding stubs
-    resolve_entry_t entry;
-#define ADD_RESOLVE_STUB(_stub, _nid) \
-    entry.nid = _nid; \
-    entry.type = RESOLVE_TYPE_FUNCTION; \
-    entry.resolved = 0; \
-    entry.value.func_ptr = _stub; \
-    uvl_resolve_table_add (&entry);
+    #define RESOLVE_STUB(_stub, _nid) uvl_resolve_loader (_nid, (void*)UVL_LIBKERN_BASE, _stub);
 
-    // now add the stubs
+    RESOLVE_STUB(sceKernelStopUnloadModule, 0x2415F8A4);
+    RESOLVE_STUB(sceKernelFindMemBlockByAddr, 0xA33B99D1);
+    RESOLVE_STUB(sceKernelFreeMemBlock, 0xA91E15EE);
+    RESOLVE_STUB(sceKernelGetMemBlockBase, 0xB8EF5818);
+    RESOLVE_STUB(sceKernelAllocMemBlock, 0xB9D5EBDE);
+    RESOLVE_STUB(sceKernelExitDeleteThread, 0x1D17DECF);
+    RESOLVE_STUB(sceKernelGetModuleList, 0x2EF2581F);
+    RESOLVE_STUB(sceKernelGetModuleInfo, 0x36585DAF);
+    RESOLVE_STUB(sceIoWrite, 0x34EFD876);
+    RESOLVE_STUB(sceIoClose, 0xC70B8886);
+    RESOLVE_STUB(sceIoRead, 0xFDB32293);
+    RESOLVE_STUB(sceIoOpen, 0x6C60AC61);
+    RESOLVE_STUB(sceKernelStartThread, 0xF08DE149);
+    RESOLVE_STUB(sceKernelCreateThread, 0xC5C11EE7);
 
-    // make sure our macro isn't used elsewhere
-#undef ADD_RESOLVE_STUB
+    // TODO: Remove need for this
+    for(u32_t i = 0; i < 0xFFFFF; i++); // must wait for changes to take place
 
-    // finally resolve all
-    // TODO: Resolve code
+    #undef RESOLVE_STUB
 }
-#endif
-
-#if 0
-// There is no error check in this function. Hope code works.
-void
-uvl_scefuncs_resolve_all ()
-{
-    // First create a macro for adding stubs
-#define ADD_RESOLVE_STUB(_stub, _addr) \
-    ((u32_t*)_stub)[0] = uvl_encode_arm_inst (INSTRUCTION_MOVW, (u16_t)(u32_t)_addr, 12); \
-    ((u32_t*)_stub)[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)((u32_t)_addr >> 16), 12); \
-    ((u32_t*)_stub)[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 12);
-
-    // now resolve the stubs
-
-    // make sure our macro isn't used elsewhere
-#undef ADD_RESOLVE_STUB
-}
-#endif

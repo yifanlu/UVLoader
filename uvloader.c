@@ -39,6 +39,7 @@
 int START_SECTION
 uvl_start ()
 {
+    uvl_scefuncs_resolve_loader (); // must be first
     vita_init_log ();
     LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
     PsvUID uvl_thread;
@@ -63,15 +64,7 @@ uvl_start ()
         return -1;
     }
     // should not reach here
-    IF_DEBUG LOG ("Error removing old thread.");
-    return 0;
-}
-
-int
-uvl_exit (int status)
-{
-    IF_DEBUG LOG ("Exit called. Status: 0x%08X", status);
-    for(;;);
+    IF_DEBUG LOG ("Error removing thread.");
     return 0;
 }
 
@@ -98,29 +91,51 @@ uvl_entry ()
         LOG ("Cannot cache all loaded entries.");
         return -1;
     }
-#if 0
     IF_DEBUG LOG ("Adding custom exit() hook.");
-    resolve_entry_t exit_resolve;
-    exit_resolve.nid = 0x826BBBAF;
-    exit_resolve.type = RESOLVE_TYPE_FUNCTION;
-    exit_resolve.value.func_ptr = uvl_exit;
+    resolve_entry_t exit_resolve = { EXIT_NID, RESOLVE_TYPE_FUNCTION, 0, uvl_exit };
     if (uvl_resolve_table_add (&exit_resolve) < 0)
     {
         LOG ("Cannot add resolve for exit().");
         return -1;
     }
     IF_DEBUG LOG ("Exit at 0x%08X", exit_resolve.value.value);
-#endif
     IF_DEBUG LOG ("Loading homebrew.");
     if (uvl_load_exe (UVL_HOMEBREW_PATH, (void**)&start) < 0)
     {
         LOG ("Cannot load homebrew.");
         return -1;
     }
-    // sceKernelRegisterCallbackToEvent on exit
-    // TODO: Free allocated memory and unload code
+    IF_DEBUG LOG ("Freeing resolve table.");
+    if (uvl_resolve_table_destroy () < 0)
+    {
+        LOG ("Cannot destroy resolve table.");
+        return -1;
+    }
     IF_DEBUG LOG ("Running the homebrew.");
     ret_value = start (0, NULL);
+    // should not reach here
     IF_DEBUG LOG ("Homebrew exited with value 0x%08X", ret_value);
+    return 0;
+}
+
+/********************************************//**
+ *  \brief Exiting point for loaded application
+ *  
+ *  This hooks on to exit() call and cleans up 
+ *  after the application is unloaded.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int
+uvl_exit (int status)
+{
+    IF_DEBUG LOG ("Exit called with status: 0x%08X", status);
+    IF_DEBUG LOG ("Removing application thread.");
+    if (sceKernelExitDeleteThread (0) < 0)
+    {
+        LOG ("Cannot delete application thread.");
+        return -1;
+    }
+    // should not reach here
+    IF_DEBUG LOG ("Error removing thread.");
     return 0;
 }

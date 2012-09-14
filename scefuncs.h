@@ -29,8 +29,8 @@
 /** @}*/
 
 #ifdef GENERATE_STUBS
-#define STUB_FUNCTION(type, name, high, low) \
-    type __attribute__((naked, section(".sceStub.text.uvl"))) name () \
+#define STUB_FUNCTION_FILLED(type, name, high, low) \
+    type __attribute__((naked, section(".sceStub.text.filled"))) name () \
     { \
         __asm__ ("movw r12, #" #low" \n" \
                  "movt r12, #" #high" \n" \
@@ -38,11 +38,39 @@
                  "nop"); \
     }
 #else
-#define STUB_FUNCTION(type, name, high, low) type __attribute__((naked)) name ()
+#define STUB_FUNCTION_FILLED(type, name, high, low) type __attribute__((naked)) name ()
 #endif
 
-// some names from https://github.com/pspdev/pspsdk
+#ifdef GENERATE_STUBS
+#define STUB_FUNCTION(type, name) \
+    type __attribute__((naked, section(".sceStub.text.uvl"))) name () \
+    { \
+        __asm__ ("movw r0, #0xffff\n" \
+                 "movt r0, #0xffff\n" \
+                 "bx lr\n" \
+                 "nop"); \
+    }
+#else
+#define STUB_FUNCTION(type, name) type __attribute__((naked)) name ()
+#endif
 
-void uvl_scefuncs_resolve_all ();
+
+// some names from https://github.com/pspdev/pspsdk
+STUB_FUNCTION(int, sceKernelStopUnloadModule);
+STUB_FUNCTION(int, sceKernelFindMemBlockByAddr);
+STUB_FUNCTION(int, sceKernelFreeMemBlock);
+STUB_FUNCTION(int, sceKernelGetMemBlockBase);
+STUB_FUNCTION(int, sceKernelAllocMemBlock);
+STUB_FUNCTION(int, sceKernelExitDeleteThread);
+STUB_FUNCTION(int, sceKernelGetModuleList);
+STUB_FUNCTION(int, sceKernelGetModuleInfo);
+STUB_FUNCTION(PsvSSize, sceIoWrite);
+STUB_FUNCTION(int, sceIoClose);
+STUB_FUNCTION(PsvOff, sceIoRead);
+STUB_FUNCTION(PsvUID, sceIoOpen);
+STUB_FUNCTION(int, sceKernelStartThread);
+STUB_FUNCTION(PsvUID, sceKernelCreateThread);
+
+void uvl_scefuncs_resolve_loader ();
 
 #endif

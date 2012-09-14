@@ -50,6 +50,7 @@
 #define MAX_LOADED_MODS         128     ///< Maximum number of loaded modules
 #define MAX_RESOLVE_ENTRIES     0x10000 ///< Maximum number of resolves
 #define STUB_FUNC_SIZE          0x10    ///< Size of stub functions
+#define UVL_LIBKERN_MAX_SIZE    0xE000  ///< Maximum size of sceLibKernel (for resolving loader)
 
 /**
  * \brief Resolve table entry
@@ -68,8 +69,8 @@ typedef struct resolve_entry
      */
     union value
     {
-        u32_t   value;      ///< Any double-word value for resolved
         void*   ptr;        ///< A pointer value for unresolved pointing to where to write resolved value
+        u32_t   value;      ///< Any double-word value for resolved
         void*   func_ptr;   ///< A pointer to stub function for unresolved or function to call for resolved
         u32_t   syscall;    ///< A syscall number
     } value;
@@ -241,6 +242,7 @@ int uvl_resolve_add_exports (module_exports_t *exp_table);
 int uvl_resolve_add_all_modules (int type);
 int uvl_resolve_add_module (PsvUID modid, int type);
 int uvl_resolve_imports (module_imports_t *import);
+int uvl_resolve_loader (u32_t nid, void *libkernel_base, void *stub);
 /** @}*/
 
 // live resolving too slow

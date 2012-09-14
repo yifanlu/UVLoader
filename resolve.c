@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-#include "config.h"
 #include "resolve.h"
 #include "scefuncs.h"
 #include "utils.h"
@@ -778,4 +777,69 @@ uvl_resolve_imports (module_imports_t *import)   ///< Import table
         }
     }
     return 0;
+}
+
+/********************************************//**
+ *  \brief Resolves UVLoader imported function
+ *  
+ *  UVLoader only depends on functions exported 
+ *  and imported by sceLibKernel. This function 
+ *  is a simplified version of the main resolver 
+ *  and does not use and external functions.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int
+uvl_resolve_loader (u32_t nid, void *libkernel_base, void *stub)
+{
+    void *result;
+    module_info_t *mod_info;
+    module_exports_t *exports;
+    module_imports_t *imports;
+    u32_t i;
+
+    //LOG ("Resolving 0x%08X for 0x%08X", nid, (u32_t)stub);
+
+    // Should always be first occurance of string
+    result = memstr (libkernel_base, UVL_LIBKERN_MAX_SIZE, "SceLibKernel", strlen ("SceLibKernel"));
+    mod_info = (module_info_t*)((u32_t)result - 4);
+
+    // look in exports
+    for (exports = (module_exports_t*)((u32_t)libkernel_base + mod_info->ent_top); 
+            (u32_t)exports < ((u32_t)libkernel_base + mod_info->ent_end); exports++)
+    {
+        for (i = 0; i < exports->num_functions; i++)
+        {
+            if (exports->nid_table[i] == nid)
+            {
+                //LOG ("Resolved at export 0x%08X", (u32_t)exports->entry_table[i]);
+                psvUnlockMem ();
+                ((u32_t*)stub)[0] = uvl_encode_arm_inst (INSTRUCTION_MOVW, (u16_t)(u32_t)exports->entry_table[i], 12);
+                ((u32_t*)stub)[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)((u32_t)exports->entry_table[i] >> 16), 12);
+                ((u32_t*)stub)[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 12);
+                psvLockMem ();
+                return 0;
+            }
+        }
+    }
+
+    // look in imports
+    for (imports = (module_imports_t*)((u32_t)libkernel_base + mod_info->stub_top); 
+            (u32_t)imports < ((u32_t)libkernel_base + mod_info->stub_end); imports++)
+    {
+        for (i = 0; i < imports->num_functions; i++)
+        {
+            if (imports->func_nid_table[i] == nid)
+            {
+                //LOG ("Resolved at import 0x%08X", (u32_t)imports->func_entry_table[i]);
+                psvUnlockMem ();
+                memcpy (stub, imports->func_entry_table[i], STUB_FUNC_SIZE);
+                psvLockMem ();
+                return 0;
+            }
+        }
+    }
+
+    //LOG ("Cannot resolve.");
+
+    return -1;
 }
