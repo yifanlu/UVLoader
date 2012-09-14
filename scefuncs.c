@@ -47,8 +47,5 @@ uvl_scefuncs_resolve_loader ()
     RESOLVE_STUB(sceKernelStartThread, 0xF08DE149);
     RESOLVE_STUB(sceKernelCreateThread, 0xC5C11EE7);
 
-    // TODO: Remove need for this
-    for(u32_t i = 0; i < 0xFFFFF; i++); // must wait for changes to take place
-
     #undef RESOLVE_STUB
 }
