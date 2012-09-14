@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -64,7 +65,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -86,19 +87,60 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga40e31599e4cb4688e0abe4aee28f8449"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga40e31599e4cb4688e0abe4aee28f8449"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>uvl_cleanup_memory</b> ()</td></tr>
+<tr class="memitem:ga40e31599e4cb4688e0abe4aee28f8449"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cleanup.html#ga40e31599e4cb4688e0abe4aee28f8449">uvl_cleanup_memory</a> ()</td></tr>
+<tr class="memdesc:ga40e31599e4cb4688e0abe4aee28f8449"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free up the RAM.  <a href="#ga40e31599e4cb4688e0abe4aee28f8449"></a><br/></td></tr>
 <tr class="separator:ga40e31599e4cb4688e0abe4aee28f8449"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacdf3d78a81236d5e08ad5bd0516802a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gacdf3d78a81236d5e08ad5bd0516802a5"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>uvl_unload_all_modules</b> ()</td></tr>
+<tr class="memitem:gacdf3d78a81236d5e08ad5bd0516802a5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cleanup.html#gacdf3d78a81236d5e08ad5bd0516802a5">uvl_unload_all_modules</a> ()</td></tr>
+<tr class="memdesc:gacdf3d78a81236d5e08ad5bd0516802a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unloads loaded modules.  <a href="#gacdf3d78a81236d5e08ad5bd0516802a5"></a><br/></td></tr>
 <tr class="separator:gacdf3d78a81236d5e08ad5bd0516802a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Frees memory before loading. </p>
+<h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="ga40e31599e4cb4688e0abe4aee28f8449"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int uvl_cleanup_memory </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Free up the RAM. </p>
+<p>cleanup.c - Frees used memory by the game Copyright 2012 Yifan Lu</p>
+<p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at</p>
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. Frees up memory used by the loaded game. </p>
+<dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gacdf3d78a81236d5e08ad5bd0516802a5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int uvl_unload_all_modules </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Unloads loaded modules. </p>
+<dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Sep 13 2012 19:58:21 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

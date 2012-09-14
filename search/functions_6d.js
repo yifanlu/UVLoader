@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['memstr',['memstr',['../group__library.html#ga97029ca6c0bd64182210e485e0dbda99',1,'memstr(char *needle, int n_length, char *haystack, int h_length):&#160;utils.c'],['../group__library.html#ga97029ca6c0bd64182210e485e0dbda99',1,'memstr(char *needle, int n_length, char *haystack, int h_length):&#160;utils.c']]]
+  ['memstr',['memstr',['../group__library.html#gaecc9fa35d7d34bdcfd05993f8e10b2d8',1,'memstr(char *haystack, int h_length, char *needle, int n_length):&#160;utils.c'],['../group__library.html#gaecc9fa35d7d34bdcfd05993f8e10b2d8',1,'memstr(char *haystack, int h_length, char *needle, int n_length):&#160;utils.c']]]
 ];

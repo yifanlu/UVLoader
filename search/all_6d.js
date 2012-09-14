@@ -1,9 +1,13 @@
 var searchData=
 [
   ['memory_20cleanup',['Memory Cleanup',['../group__cleanup.html',1,'']]],
+  ['mappedbase',['mappedBase',['../struct_sce_kernel_mem_block_info.html#affe705c77f5eb9f5841f35636c742342',1,'SceKernelMemBlockInfo']]],
+  ['mappedsize',['mappedSize',['../struct_sce_kernel_mem_block_info.html#a391b3150fc4fb67a57112edb6abc04cd',1,'SceKernelMemBlockInfo']]],
   ['max_5floaded_5fmods',['MAX_LOADED_MODS',['../group__resolve.html#ga24103fb1608c06075c1e7b7bbf8a1290',1,'resolve.h']]],
   ['max_5flog_5flength',['MAX_LOG_LENGTH',['../group__library.html#ga704c232e88487ac8c32c6b6c8795bb2d',1,'utils.h']]],
-  ['memstr',['memstr',['../group__library.html#ga97029ca6c0bd64182210e485e0dbda99',1,'memstr(char *needle, int n_length, char *haystack, int h_length):&#160;utils.c'],['../group__library.html#ga97029ca6c0bd64182210e485e0dbda99',1,'memstr(char *needle, int n_length, char *haystack, int h_length):&#160;utils.c']]],
+  ['max_5fresolve_5fentries',['MAX_RESOLVE_ENTRIES',['../group__resolve.html#ga970b7233f342da68ab1f9ae170425afd',1,'resolve.h']]],
+  ['memorytype',['memoryType',['../struct_sce_kernel_mem_block_info.html#ab279e2fdfb7e2efef893eed64c9f4bde',1,'SceKernelMemBlockInfo']]],
+  ['memstr',['memstr',['../group__library.html#gaecc9fa35d7d34bdcfd05993f8e10b2d8',1,'memstr(char *haystack, int h_length, char *needle, int n_length):&#160;utils.c'],['../group__library.html#gaecc9fa35d7d34bdcfd05993f8e10b2d8',1,'memstr(char *haystack, int h_length, char *needle, int n_length):&#160;utils.c']]],
   ['modname',['modname',['../structmodule__info.html#a683ed1490908fb006b3bb9f8f43160b7',1,'module_info']]],
   ['module_5fexports',['module_exports',['../structmodule__exports.html',1,'']]],
   ['module_5fexports_5ft',['module_exports_t',['../group__resolve.html#gaafd39a5e46050931f66e6fa20307005d',1,'resolve.h']]],

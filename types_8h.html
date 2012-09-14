@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
@@ -69,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -89,55 +90,55 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Types used in UVLoader.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;stdint.h&gt;</code><br/>
-</div>
+
 <p><a href="types_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a070d2ce7b6bb7e5c05602aa8c308d0c4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a070d2ce7b6bb7e5c05602aa8c308d0c4"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>NULL</b>&#160;&#160;&#160;0</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:a070d2ce7b6bb7e5c05602aa8c308d0c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">For NULL pointers. <br/></td></tr>
 <tr class="separator:a070d2ce7b6bb7e5c05602aa8c308d0c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr><td colspan="2"><div class="groupHeader">Fixed width integers</div></td></tr>
-<tr class="memitem:a4caecabca98b43919dd11be1c0d4cd8e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4caecabca98b43919dd11be1c0d4cd8e"></a>
-typedef uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a4caecabca98b43919dd11be1c0d4cd8e">u8_t</a></td></tr>
-<tr class="memdesc:a4caecabca98b43919dd11be1c0d4cd8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsigned 8-bit type. <br/></td></tr>
-<tr class="separator:a4caecabca98b43919dd11be1c0d4cd8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77570ac4fcab86864fa1916e55676da2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77570ac4fcab86864fa1916e55676da2"></a>
-typedef uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a77570ac4fcab86864fa1916e55676da2">u16_t</a></td></tr>
-<tr class="memdesc:a77570ac4fcab86864fa1916e55676da2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsigned 16-bit type. <br/></td></tr>
-<tr class="separator:a77570ac4fcab86864fa1916e55676da2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c14294869aceba3ef9d4c0c302d0f33"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c14294869aceba3ef9d4c0c302d0f33"></a>
-typedef uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a></td></tr>
-<tr class="memdesc:a4c14294869aceba3ef9d4c0c302d0f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsigned 32-bit type. <br/></td></tr>
-<tr class="separator:a4c14294869aceba3ef9d4c0c302d0f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa63c762b1d59d368446b45a38950c691"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa63c762b1d59d368446b45a38950c691"></a>
-typedef uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#aa63c762b1d59d368446b45a38950c691">u64_t</a></td></tr>
-<tr class="memdesc:aa63c762b1d59d368446b45a38950c691"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsigned 64-bit type. <br/></td></tr>
-<tr class="separator:aa63c762b1d59d368446b45a38950c691"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae081489b4906f65a3cb18e9fbe9f8d23"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae081489b4906f65a3cb18e9fbe9f8d23"></a>
+typedef unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#ae081489b4906f65a3cb18e9fbe9f8d23">u8_t</a></td></tr>
+<tr class="memdesc:ae081489b4906f65a3cb18e9fbe9f8d23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsigned 8-bit type. <br/></td></tr>
+<tr class="separator:ae081489b4906f65a3cb18e9fbe9f8d23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0f2044e80549923fce3e32ea0bf2eba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af0f2044e80549923fce3e32ea0bf2eba"></a>
+typedef unsigned short int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#af0f2044e80549923fce3e32ea0bf2eba">u16_t</a></td></tr>
+<tr class="memdesc:af0f2044e80549923fce3e32ea0bf2eba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsigned 16-bit type. <br/></td></tr>
+<tr class="separator:af0f2044e80549923fce3e32ea0bf2eba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c0a490ab7fa397be6c764a935cc5ea4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c0a490ab7fa397be6c764a935cc5ea4"></a>
+typedef unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a0c0a490ab7fa397be6c764a935cc5ea4">u32_t</a></td></tr>
+<tr class="memdesc:a0c0a490ab7fa397be6c764a935cc5ea4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsigned 32-bit type. <br/></td></tr>
+<tr class="separator:a0c0a490ab7fa397be6c764a935cc5ea4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d6d1bfd2782e04854a0ac22eddd80b2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0d6d1bfd2782e04854a0ac22eddd80b2"></a>
+typedef unsigned long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a0d6d1bfd2782e04854a0ac22eddd80b2">u64_t</a></td></tr>
+<tr class="memdesc:a0d6d1bfd2782e04854a0ac22eddd80b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsigned 64-bit type. <br/></td></tr>
+<tr class="separator:a0d6d1bfd2782e04854a0ac22eddd80b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">SCE standard types</div></td></tr>
-<tr class="memitem:a9c036549fd8cfd554ba3aa26a397b663"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c036549fd8cfd554ba3aa26a397b663"></a>
-typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a9c036549fd8cfd554ba3aa26a397b663">SceUID</a></td></tr>
-<tr class="memdesc:a9c036549fd8cfd554ba3aa26a397b663"><td class="mdescLeft">&#160;</td><td class="mdescRight">SceUID type. <br/></td></tr>
-<tr class="separator:a9c036549fd8cfd554ba3aa26a397b663"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6721a7b110c9ad5f7fcaca99bf4b51a9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6721a7b110c9ad5f7fcaca99bf4b51a9"></a>
-typedef <a class="el" href="types_8h.html#aa63c762b1d59d368446b45a38950c691">u64_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a6721a7b110c9ad5f7fcaca99bf4b51a9">SceOff</a></td></tr>
-<tr class="memdesc:a6721a7b110c9ad5f7fcaca99bf4b51a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">SceOff type. <br/></td></tr>
-<tr class="separator:a6721a7b110c9ad5f7fcaca99bf4b51a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abed425d1d37747659f03f11b65d4ff2a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abed425d1d37747659f03f11b65d4ff2a"></a>
-typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#abed425d1d37747659f03f11b65d4ff2a">SceSSize</a></td></tr>
-<tr class="memdesc:abed425d1d37747659f03f11b65d4ff2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">SceSSize type. <br/></td></tr>
-<tr class="separator:abed425d1d37747659f03f11b65d4ff2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a716fe3f1aee16db3699270e8908e12b0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a716fe3f1aee16db3699270e8908e12b0"></a>
+typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a716fe3f1aee16db3699270e8908e12b0">PsvUID</a></td></tr>
+<tr class="memdesc:a716fe3f1aee16db3699270e8908e12b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">PsvUID type. <br/></td></tr>
+<tr class="separator:a716fe3f1aee16db3699270e8908e12b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09362b8a15e7700e14ca3961dd295411"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a09362b8a15e7700e14ca3961dd295411"></a>
+typedef long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#a09362b8a15e7700e14ca3961dd295411">PsvOff</a></td></tr>
+<tr class="memdesc:a09362b8a15e7700e14ca3961dd295411"><td class="mdescLeft">&#160;</td><td class="mdescRight">PsvOff type. <br/></td></tr>
+<tr class="separator:a09362b8a15e7700e14ca3961dd295411"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7f0ccf1363cdc39599cb6ff8b50bbeb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af7f0ccf1363cdc39599cb6ff8b50bbeb"></a>
+typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="types_8h.html#af7f0ccf1363cdc39599cb6ff8b50bbeb">PsvSSize</a></td></tr>
+<tr class="memdesc:af7f0ccf1363cdc39599cb6ff8b50bbeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">PsvSSize type. <br/></td></tr>
+<tr class="separator:af7f0ccf1363cdc39599cb6ff8b50bbeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Types used in UVLoader. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Sep 13 2012 19:58:21 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

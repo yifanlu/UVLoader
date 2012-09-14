@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
@@ -69,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -105,10 +106,26 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga57bddf746dc6726fd088870195b6fd07"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga57bddf746dc6726fd088870195b6fd07"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#ga57bddf746dc6726fd088870195b6fd07">SEC_MODINFO</a>&#160;&#160;&#160;&quot;.sceModuleInfo.rodata&quot;</td></tr>
-<tr class="memdesc:ga57bddf746dc6726fd088870195b6fd07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of module information section. <br/></td></tr>
-<tr class="separator:ga57bddf746dc6726fd088870195b6fd07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf2065f7aed4dfff6fd23069fb847249d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf2065f7aed4dfff6fd23069fb847249d"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gaf2065f7aed4dfff6fd23069fb847249d">UVL_SEC_MODINFO</a>&#160;&#160;&#160;&quot;.sceModuleInfo.rodata&quot;</td></tr>
+<tr class="memdesc:gaf2065f7aed4dfff6fd23069fb847249d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of module information section. <br/></td></tr>
+<tr class="separator:gaf2065f7aed4dfff6fd23069fb847249d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaad7c8aeaecbc5a0dd9dae70608709478"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaad7c8aeaecbc5a0dd9dae70608709478"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gaad7c8aeaecbc5a0dd9dae70608709478">UVL_SEC_MIN_ALIGN</a>&#160;&#160;&#160;0x100000</td></tr>
+<tr class="memdesc:gaad7c8aeaecbc5a0dd9dae70608709478"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alignment of each section. <br/></td></tr>
+<tr class="separator:gaad7c8aeaecbc5a0dd9dae70608709478"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab239e83d7eb747878d4f9b229d27ac0f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gab239e83d7eb747878d4f9b229d27ac0f"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gab239e83d7eb747878d4f9b229d27ac0f">UVL_BIN_MAX_SIZE</a>&#160;&#160;&#160;0x200000</td></tr>
+<tr class="memdesc:gab239e83d7eb747878d4f9b229d27ac0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">2MB max, change in the future <br/></td></tr>
+<tr class="separator:gab239e83d7eb747878d4f9b229d27ac0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga06af784fd5f9ac775914a4325cb8b831"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga06af784fd5f9ac775914a4325cb8b831"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#ga06af784fd5f9ac775914a4325cb8b831">ATTR_MOD_INFO</a>&#160;&#160;&#160;0x8000</td></tr>
+<tr class="memdesc:ga06af784fd5f9ac775914a4325cb8b831"><td class="mdescLeft">&#160;</td><td class="mdescRight">module_exports_t attribute <br/></td></tr>
+<tr class="separator:ga06af784fd5f9ac775914a4325cb8b831"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaefd34be58d5f03c89452612594c93d42"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaefd34be58d5f03c89452612594c93d42"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__load.html#gaefd34be58d5f03c89452612594c93d42">ENTRY_NID</a>&#160;&#160;&#160;0x935CD196</td></tr>
+<tr class="memdesc:gaefd34be58d5f03c89452612594c93d42"><td class="mdescLeft">&#160;</td><td class="mdescRight">NID of entry function. <br/></td></tr>
+<tr class="separator:gaefd34be58d5f03c89452612594c93d42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">ELF identification</div></td></tr>
 <tr class="memitem:gae407130db14180c6737390604ba7c1fe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gae407130db14180c6737390604ba7c1fe"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>EI_NIDENT</b>&#160;&#160;&#160;16</td></tr>
@@ -157,8 +174,11 @@ Macros</h2></td></tr>
 <tr class="separator:gaf66303c799da18c8aec282ea8592e7e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">ELF object types</div></td></tr>
 <tr class="memitem:ga942478985eb016311380dee473cc8c3e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga942478985eb016311380dee473cc8c3e"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ET_EXEC</b>&#160;&#160;&#160;2</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>ET_EXEC</b>&#160;&#160;&#160;0x0002</td></tr>
 <tr class="separator:ga942478985eb016311380dee473cc8c3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9d33af1570e1a0600e168b361e1c10f4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga9d33af1570e1a0600e168b361e1c10f4"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>ET_SCE_EXEC</b>&#160;&#160;&#160;0xFE00</td></tr>
+<tr class="separator:ga9d33af1570e1a0600e168b361e1c10f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">ELF machine types</div></td></tr>
 <tr class="memitem:gad8fac71aae0d2fbfab30f278a79c941a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gad8fac71aae0d2fbfab30f278a79c941a"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>EM_ARM</b>&#160;&#160;&#160;40</td></tr>
@@ -167,6 +187,27 @@ Macros</h2></td></tr>
 <tr class="memitem:ga8085a255e82173046afefd2a1c6de930"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8085a255e82173046afefd2a1c6de930"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>EV_CURRENT</b>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:ga8085a255e82173046afefd2a1c6de930"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">ELF sh section type</div></td></tr>
+<tr class="memitem:gabf2fc2781a2869352c2ffa0555f34118"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gabf2fc2781a2869352c2ffa0555f34118"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SHT_RELA</b>&#160;&#160;&#160;4</td></tr>
+<tr class="separator:gabf2fc2781a2869352c2ffa0555f34118"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2aea2ed985f81f13a157fe2da02a621a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga2aea2ed985f81f13a157fe2da02a621a"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SHT_REL</b>&#160;&#160;&#160;9</td></tr>
+<tr class="separator:ga2aea2ed985f81f13a157fe2da02a621a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">ELF ph section type</div></td></tr>
+<tr class="memitem:ga84d7768fd6c6ece599d297090900cf92"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga84d7768fd6c6ece599d297090900cf92"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>PT_LOAD</b>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:ga84d7768fd6c6ece599d297090900cf92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">ELF ph formats</div></td></tr>
+<tr class="memitem:ga1780bfb8eae34d26e52459699877c640"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga1780bfb8eae34d26e52459699877c640"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>PF_X</b>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:ga1780bfb8eae34d26e52459699877c640"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga20892094358e21f49ab6e5f8c4e29ae6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga20892094358e21f49ab6e5f8c4e29ae6"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>PF_W</b>&#160;&#160;&#160;2</td></tr>
+<tr class="separator:ga20892094358e21f49ab6e5f8c4e29ae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae529f935e58c029768c06fbc98b2ba8c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gae529f935e58c029768c06fbc98b2ba8c"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>PF_R</b>&#160;&#160;&#160;4</td></tr>
+<tr class="separator:gae529f935e58c029768c06fbc98b2ba8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">SCE identification</div></td></tr>
 <tr class="memitem:gaa7e622d9c8c0613148666be53bd18159"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa7e622d9c8c0613148666be53bd18159"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>MAGIC_LEN</b>&#160;&#160;&#160;4</td></tr>
@@ -184,7 +225,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>SCEMAG3</b>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:ga7f3ee0beb2c919ae9338e3511ed25fa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga540f4ec5cb5943464ff078966ccd9354"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga540f4ec5cb5943464ff078966ccd9354"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SCEHDR_LEN</b>&#160;&#160;&#160;0xA0</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SCEHDR_LEN</b>&#160;&#160;&#160;0x1000</td></tr>
 <tr class="separator:ga540f4ec5cb5943464ff078966ccd9354"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -194,16 +235,16 @@ Typedefs</h2></td></tr>
 typedef void *&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Addr</b></td></tr>
 <tr class="separator:ga1129d364d15c4ff5cf37cd8dc9395465"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8316d362b808a6e6e26c8f1710db37c4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8316d362b808a6e6e26c8f1710db37c4"></a>
-typedef <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Off</b></td></tr>
+typedef <a class="el" href="types_8h.html#a0c0a490ab7fa397be6c764a935cc5ea4">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Off</b></td></tr>
 <tr class="separator:ga8316d362b808a6e6e26c8f1710db37c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3cd9a896498613cfb255f583adcb7d75"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga3cd9a896498613cfb255f583adcb7d75"></a>
-typedef <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Sword</b></td></tr>
+typedef <a class="el" href="types_8h.html#a0c0a490ab7fa397be6c764a935cc5ea4">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Sword</b></td></tr>
 <tr class="separator:ga3cd9a896498613cfb255f583adcb7d75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4bce045aa841f781558c5760f9523bba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga4bce045aa841f781558c5760f9523bba"></a>
-typedef <a class="el" href="types_8h.html#a4c14294869aceba3ef9d4c0c302d0f33">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Word</b></td></tr>
+typedef <a class="el" href="types_8h.html#a0c0a490ab7fa397be6c764a935cc5ea4">u32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Word</b></td></tr>
 <tr class="separator:ga4bce045aa841f781558c5760f9523bba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf44790ca34bcb4a238bc8af9565a265c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf44790ca34bcb4a238bc8af9565a265c"></a>
-typedef <a class="el" href="types_8h.html#a77570ac4fcab86864fa1916e55676da2">u16_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Half</b></td></tr>
+typedef <a class="el" href="types_8h.html#af0f2044e80549923fce3e32ea0bf2eba">u16_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Elf32_Half</b></td></tr>
 <tr class="separator:gaf44790ca34bcb4a238bc8af9565a265c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">ELF structures</div></td></tr>
 <tr><td colspan="2"><div class="groupText"><p>See the ELF specification for more information. </p>
@@ -223,7 +264,7 @@ typedef struct <a class="el" href="struct_elf32___phdr.html">Elf32_Phdr</a>&#160
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Sep 13 2012 19:58:21 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
@@ -78,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -89,23 +90,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="contents">
 &#160;<ul>
-<li>_start()
-: <a class="el" href="group__uvloader.html#ga66a5732f2cd6c2580a14fa76643be418">uvloader.h</a>
-</li>
 <li>memstr()
-: <a class="el" href="group__library.html#ga97029ca6c0bd64182210e485e0dbda99">utils.h</a>
+: <a class="el" href="group__library.html#gaecc9fa35d7d34bdcfd05993f8e10b2d8">utils.h</a>
+</li>
+<li>sprintf()
+: <a class="el" href="group__library.html#ga3082155ec11e7229f7a20439b31a169e">utils.h</a>
 </li>
 <li>uidiv()
 : <a class="el" href="group__library.html#gaeaeefe8a4c67a5715bcca8bc3baefe68">utils.h</a>
 </li>
-<li>uvl_add_resolved_exports()
-: <a class="el" href="group__resolve.html#ga45b2a5222f04f5161e3a99cd7c4e0950">resolve.h</a>
-</li>
-<li>uvl_add_resolved_imports()
-: <a class="el" href="group__resolve.html#gaf7228ac2bde434429b21069af6481ed4">resolve.h</a>
-</li>
-<li>uvl_add_unresolved_imports()
-: <a class="el" href="group__resolve.html#ga01991322367b73c6a864eb26fc1dd554">resolve.h</a>
+<li>uvl_cleanup_memory()
+: <a class="el" href="group__cleanup.html#ga40e31599e4cb4688e0abe4aee28f8449">cleanup.h</a>
 </li>
 <li>uvl_decode_arm_inst()
 : <a class="el" href="group__resolve.html#gadb10e9420cec4396f0425a69087780ec">resolve.h</a>
@@ -119,29 +114,59 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>uvl_estimate_syscall()
 : <a class="el" href="group__resolve.html#gaabfb47b563fcd701fc0e158e67ae4e2b">resolve.h</a>
 </li>
-<li>uvl_import_stub_to_entry()
-: <a class="el" href="group__resolve.html#gab796d28d6e7d20b7a94e97f3e25368c4">resolve.h</a>
+<li>uvl_resolve_add_all_modules()
+: <a class="el" href="group__resolve.html#gadcfb44899e80bf159ae58770bc6fc921">resolve.h</a>
 </li>
-<li>uvl_resolve_all_loaded_modules()
-: <a class="el" href="group__resolve.html#ga3981415d1f50d6549e60e00bb334a2b1">resolve.h</a>
+<li>uvl_resolve_add_exports()
+: <a class="el" href="group__resolve.html#gade2091decdf8e60d7bbc161770cb0589">resolve.h</a>
 </li>
-<li>uvl_resolve_all_unresolved()
-: <a class="el" href="group__resolve.html#gaad9694ce1b95a7a9f29f82a810039c93">resolve.h</a>
+<li>uvl_resolve_add_imports()
+: <a class="el" href="group__resolve.html#gaea000d03ae25a36e2d8d368f49a94169">resolve.h</a>
+</li>
+<li>uvl_resolve_add_module()
+: <a class="el" href="group__resolve.html#gaaf9555823b9bb60ac5ee43ebb2d999de">resolve.h</a>
+</li>
+<li>uvl_resolve_entry_to_import_stub()
+: <a class="el" href="group__resolve.html#gab6f64b7624063787d06d643d775264ad">resolve.h</a>
+</li>
+<li>uvl_resolve_import_stub_to_entry()
+: <a class="el" href="group__resolve.html#ga3be3e95221ae8f25f027ed4ac7700f3f">resolve.h</a>
+</li>
+<li>uvl_resolve_imports()
+: <a class="el" href="group__resolve.html#ga98531c7febe0f1bc731aeb31efb5b759">resolve.h</a>
 </li>
 <li>uvl_resolve_table_add()
 : <a class="el" href="group__resolve.html#ga529cd85b11b7e7ae9ce0eef561b32032">resolve.h</a>
 </li>
-<li>uvl_resolve_table_get()
-: <a class="el" href="group__resolve.html#gad7a69325cba8d52e9c75750b3c908cfc">resolve.h</a>
+<li>uvl_resolve_table_destroy()
+: <a class="el" href="group__resolve.html#ga700034b9caafee8cc5b6d93fb397e426">resolve.h</a>
 </li>
-<li>vitalogf()
-: <a class="el" href="group__library.html#gab0389e3647126922c0bc9a416e23e368">utils.h</a>
+<li>uvl_resolve_table_get()
+: <a class="el" href="group__resolve.html#ga65b1ba04daa04e798f1f516d1acdc070">resolve.h</a>
+</li>
+<li>uvl_resolve_table_initialize()
+: <a class="el" href="group__resolve.html#ga1045598b28c7c363de52328fec0f8a26">resolve.h</a>
+</li>
+<li>uvl_start()
+: <a class="el" href="group__uvloader.html#ga019c9ecbd207e78bdcb4038ec855c9d7">uvloader.h</a>
+</li>
+<li>uvl_unload_all_modules()
+: <a class="el" href="group__cleanup.html#gacdf3d78a81236d5e08ad5bd0516802a5">cleanup.h</a>
+</li>
+<li>vita_init_log()
+: <a class="el" href="group__library.html#ga5591c7905a55a464a59e611cff89ecb7">utils.h</a>
+</li>
+<li>vita_logf()
+: <a class="el" href="group__library.html#gadd481a3c20363bf15b5e93491313baf4">utils.h</a>
+</li>
+<li>vsprintf()
+: <a class="el" href="group__library.html#ga0ad7f31113bb0434c5e3be298d2a8f18">utils.h</a>
 </li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Sep 13 2012 19:58:21 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -89,91 +90,67 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="types_8h.html" title="Types used in UVLoader.">types.h</a>&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">/* flags */</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define SCE_FREAD       (0x0001)  </span><span class="comment">/* readable */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FWRITE      (0x0002)  </span><span class="comment">/* writable */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FNBLOCK     (0x0004)  </span><span class="comment">/*   Reserved: non-blocking reads */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FDIRO       (0x0008)  </span><span class="comment">/* internal use for dopen */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FRLOCK      (0x0010)  </span><span class="comment">/*   Reserved: read locked (non-shared) */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FWLOCK      (0x0020)  </span><span class="comment">/*   Reserved: write locked (non-shared) */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FAPPEND     (0x0100)  </span><span class="comment">/* append on each write */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FCREAT      (0x0200)  </span><span class="comment">/* create if nonexistant */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FTRUNC      (0x0400)  </span><span class="comment">/* truncate to zero length */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_EXCL        (0x0800)  </span><span class="comment">/* exclusive create */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FSCAN       (0x1000)  </span><span class="comment">/*   Reserved: scan type */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FRCOM       (0x2000)  </span><span class="comment">/*   Reserved: remote command entry */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FNBUF       (0x4000)  </span><span class="comment">/* no device buffer */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FASYNC      (0x8000)  </span><span class="comment">/*   Reserved: asyncronous i/o */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FFDEXCL     (0x01000000)        </span><span class="comment">/* exclusive access */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_FGAMEDATA   (0x40000000)</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">/* Flag for sceIoOpen() */</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#define SCE_O_RDONLY    (SCE_FREAD)</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_WRONLY    (SCE_FWRITE)</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_RDWR      (SCE_FREAD|SCE_FWRITE)</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_NBLOCK    (SCE_FNBLOCK) </span><span class="comment">/*   Reserved: Non-Blocking I/O */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_APPEND    (SCE_FAPPEND) </span><span class="comment">/* append (writes guaranteed at the end) */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_CREAT     (SCE_FCREAT)  </span><span class="comment">/* open with file create */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_TRUNC     (SCE_FTRUNC)  </span><span class="comment">/* open with truncation */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_EXCL      (SCE_EXCL)    </span><span class="comment">/* exclusive create */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_NOBUF     (SCE_FNBUF)   </span><span class="comment">/* no device buffer */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_NOWAIT    (SCE_FASYNC)  </span><span class="comment">/*   Reserved: asyncronous i/o */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_FDEXCL    (SCE_FFDEXCL) </span><span class="comment">/* exclusive access */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_PWLOCK    (SCE_FPWLOCK) </span><span class="comment">/* power control lock */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_O_FGAMEDATA (SCE_FGAMEDATA)</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">/* Flag for sceIoLseek() */</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#define SCE_SEEK_SET    (0)</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_SEEK_CUR    (1)</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_SEEK_END    (2)</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">/* Filetypes and Protection bits */</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#define SCE_STM_FMT         (0xf  &lt;&lt;  12)</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_FLNK        (0x4  &lt;&lt;  12)   </span><span class="comment">/* symbolic link */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_FREG        (0x2  &lt;&lt;  12)   </span><span class="comment">/* regular file */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_FDIR        (0x1  &lt;&lt;  12)   </span><span class="comment">/* directory */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_ISLNK(m)    (((m) &amp; SCE_STM_FMT) == SCE_STM_FLNK)</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_ISREG(m)    (((m) &amp; SCE_STM_FMT) == SCE_STM_FREG)</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_ISDIR(m)    (((m) &amp; SCE_STM_FMT) == SCE_STM_FDIR)</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#define SCE_STM_RWXU        00700</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_RUSR        00400</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_WUSR        00200</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_XUSR        00100</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_RWU         (SCE_STM_RUSR|SCE_STM_WUSR)</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SCE_STM_RU          (SCE_STM_RUSR)</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#ifdef GENERATE_STUBS</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define STUB_FUNCTION(type, name) \</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">    type __attribute__((naked, aligned(16))) name () \</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">    { \</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">        __asm__ (&quot;mov r12, #0\n&quot; \</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">                 &quot;movt r12, #0\n&quot; \</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">                 &quot;bx r12\n&quot; \</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">                 &quot;nop&quot;); \</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">    }</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define STUB_FUNCTION(type, name) type __attribute__((naked)) name ()</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;STUB_FUNCTION(<a class="code" href="types_8h.html#a9c036549fd8cfd554ba3aa26a397b663" title="SceUID type.">SceUID</a>, sceIoOpen);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceIoClose);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;STUB_FUNCTION(<a class="code" href="types_8h.html#a6721a7b110c9ad5f7fcaca99bf4b51a9" title="SceOff type.">SceOff</a>, sceIoLseek);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;STUB_FUNCTION(<a class="code" href="types_8h.html#a6721a7b110c9ad5f7fcaca99bf4b51a9" title="SceOff type.">SceOff</a>, sceIoRead);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelGetModuleList);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelGetModuleInfo);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;STUB_FUNCTION(<a class="code" href="types_8h.html#a9c036549fd8cfd554ba3aa26a397b663" title="SceUID type.">SceUID</a>, sceKernelCreateThread);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelStartThread);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelExitDeleteThread);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelStopUnloadModule);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="keywordtype">void</span> uvl_scefuncs_resolve_all ();</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define PSP2_SEEK_SET    0</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_SEEK_CUR    1</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_SEEK_END    2</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_O_RDONLY    0x0001</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_O_WRONLY    0x0002</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_O_RDWR      (PSP2_O_RDONLY | PSP2_O_WRONLY)</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_O_NBLOCK    0x0004</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_O_DIROPEN   0x0008</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_O_APPEND    0x0100</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_O_CREAT     0x0200</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_O_TRUNC     0x0400</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_O_EXCL      0x0800</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_O_NOWAIT    0x8000</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_STM_RWXU    00700</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_STM_RUSR    00400</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_STM_WUSR    00200</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_STM_XUSR    00100</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_STM_RWU     (PSP2_STM_RUSR | PSP2_STM_WUSR)</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PSP2_STM_RU      (PSP2_STM_RUSR)</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#ifdef GENERATE_STUBS</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define STUB_FUNCTION(type, name, high, low) \</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">    type __attribute__((naked, section(&quot;.sceStub.text.uvl&quot;))) name () \</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">    { \</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">        __asm__ (&quot;movw r12, #&quot; #low&quot; \n&quot; \</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">                 &quot;movt r12, #&quot; #high&quot; \n&quot; \</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">                 &quot;bx r12\n&quot; \</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">                 &quot;nop&quot;); \</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">    }</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define STUB_FUNCTION(type, name, high, low) type __attribute__((naked)) name ()</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">// some names from https://github.com/pspdev/pspsdk</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, psvUnlockMem, 0x83D4, 0xDBB8);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, psvLockMem, 0x83D4, 0xDC08);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;STUB_FUNCTION(<a class="code" href="types_8h.html#a716fe3f1aee16db3699270e8908e12b0" title="PsvUID type.">PsvUID</a>, sceIoOpen, 0xE000, 0xAFE5);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceIoClose, 0xE000, 0x6224);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;STUB_FUNCTION(<a class="code" href="types_8h.html#af7f0ccf1363cdc39599cb6ff8b50bbeb" title="PsvSSize type.">PsvSSize</a>, sceIoWrite, 0xE000, 0x60F4);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">//STUB_FUNCTION(PsvOff, sceIoLseek, 0xE000, 0xAFF5);</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;STUB_FUNCTION(<a class="code" href="types_8h.html#a09362b8a15e7700e14ca3961dd295411" title="PsvOff type.">PsvOff</a>, sceIoRead, 0xE000, 0x62B4);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">//STUB_FUNCTION(PsvSSize, sceIoPread, 0xE000, 0xB1B1);</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelGetModuleList, 0xE000, 0x5F94);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelGetModuleInfo, 0xE000, 0x5FA4);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;STUB_FUNCTION(<a class="code" href="types_8h.html#a716fe3f1aee16db3699270e8908e12b0" title="PsvUID type.">PsvUID</a>, sceKernelCreateThread, 0xE000, 0xB6B9);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelStartThread, 0xE000, 0xB291);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelExitDeleteThread, 0xE000, 0x5A54);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelStopUnloadModule, 0xE000, 0x11F9);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelAllocMemBlock, 0xE004, 0x0570);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelAllocCodeMemBlock, 0x82B3, 0x9BD0);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelGetMemBlockBase, 0xE004, 0x0560);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelFreeMemBlock, 0xE004, 0x0550);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;STUB_FUNCTION(<span class="keywordtype">int</span>, sceKernelFindMemBlockByAddr, 0xE000, 0x5934);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keywordtype">void</span> uvl_scefuncs_resolve_all ();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 4 2012 22:05:29 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Sep 13 2012 19:58:21 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>
