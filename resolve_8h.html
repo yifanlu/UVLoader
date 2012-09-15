@@ -141,6 +141,10 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#ga7a565e507767ae615c0fa6e5abda0028">STUB_FUNC_SIZE</a>&#160;&#160;&#160;0x10</td></tr>
 <tr class="memdesc:ga7a565e507767ae615c0fa6e5abda0028"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of stub functions. <br/></td></tr>
 <tr class="separator:ga7a565e507767ae615c0fa6e5abda0028"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga54019542c91bc3eeb53a9c89af47d452"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga54019542c91bc3eeb53a9c89af47d452"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#ga54019542c91bc3eeb53a9c89af47d452">UVL_LIBKERN_MAX_SIZE</a>&#160;&#160;&#160;0xE000</td></tr>
+<tr class="memdesc:ga54019542c91bc3eeb53a9c89af47d452"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum size of sceLibKernel (for resolving loader) <br/></td></tr>
+<tr class="separator:ga54019542c91bc3eeb53a9c89af47d452"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Type of entry</div></td></tr>
 <tr class="memitem:ga8a9740def6902f32378050ad2e3d8310"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8a9740def6902f32378050ad2e3d8310"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#ga8a9740def6902f32378050ad2e3d8310">RESOLVE_TYPE_UNKNOWN</a>&#160;&#160;&#160;0</td></tr>
@@ -277,13 +281,16 @@ Functions</h2></td></tr>
 <tr class="memitem:ga98531c7febe0f1bc731aeb31efb5b759"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#ga98531c7febe0f1bc731aeb31efb5b759">uvl_resolve_imports</a> (<a class="el" href="group__resolve.html#ga20463a47a726f6cefae202891c8e278b">module_imports_t</a> *import)</td></tr>
 <tr class="memdesc:ga98531c7febe0f1bc731aeb31efb5b759"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves an import table.  <a href="group__resolve.html#ga98531c7febe0f1bc731aeb31efb5b759"></a><br/></td></tr>
 <tr class="separator:ga98531c7febe0f1bc731aeb31efb5b759"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga97aebf84258f46b55bbecffc9160390c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__resolve.html#ga97aebf84258f46b55bbecffc9160390c">uvl_resolve_loader</a> (<a class="el" href="types_8h.html#a0c0a490ab7fa397be6c764a935cc5ea4">u32_t</a> nid, void *libkernel_base, void *stub)</td></tr>
+<tr class="memdesc:ga97aebf84258f46b55bbecffc9160390c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves UVLoader imported function.  <a href="group__resolve.html#ga97aebf84258f46b55bbecffc9160390c"></a><br/></td></tr>
+<tr class="separator:ga97aebf84258f46b55bbecffc9160390c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions to resolve NIDs and syscalls. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Sep 13 2012 19:58:21 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 14 2012 20:41:49 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

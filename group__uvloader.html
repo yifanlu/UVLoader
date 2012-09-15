@@ -91,6 +91,10 @@ Macros</h2></td></tr>
 <tr class="memitem:ga085cc4c1fb868a8261a13fb5a0158510"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga085cc4c1fb868a8261a13fb5a0158510"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>START_SECTION</b>&#160;&#160;&#160;__attribute__ ((section (&quot;.text.start&quot;)))</td></tr>
 <tr class="separator:ga085cc4c1fb868a8261a13fb5a0158510"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8e21ea237f954556349572648bb90fca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8e21ea237f954556349572648bb90fca"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uvloader.html#ga8e21ea237f954556349572648bb90fca">EXIT_NID</a>&#160;&#160;&#160;0x826BBBAF</td></tr>
+<tr class="memdesc:ga8e21ea237f954556349572648bb90fca"><td class="mdescLeft">&#160;</td><td class="mdescRight">NID of C exit() call. <br/></td></tr>
+<tr class="separator:ga8e21ea237f954556349572648bb90fca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -100,6 +104,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga7319a09b22039644c46a8b5931ae2d44"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uvloader.html#ga7319a09b22039644c46a8b5931ae2d44">uvl_entry</a> ()</td></tr>
 <tr class="memdesc:ga7319a09b22039644c46a8b5931ae2d44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Entry point of UVLoader.  <a href="#ga7319a09b22039644c46a8b5931ae2d44"></a><br/></td></tr>
 <tr class="separator:ga7319a09b22039644c46a8b5931ae2d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab258eeb1f2b90ef9ca0cab0f9a3f2c39"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uvloader.html#gab258eeb1f2b90ef9ca0cab0f9a3f2c39">uvl_exit</a> (int status)</td></tr>
+<tr class="memdesc:gab258eeb1f2b90ef9ca0cab0f9a3f2c39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exiting point for loaded application.  <a href="#gab258eeb1f2b90ef9ca0cab0f9a3f2c39"></a><br/></td></tr>
+<tr class="separator:gab258eeb1f2b90ef9ca0cab0f9a3f2c39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 UVLoader version information</h2></td></tr>
@@ -108,11 +115,11 @@ UVLoader version information</h2></td></tr>
 <tr class="memdesc:ga7622b3b85629e46e1f82d56df632c57e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Major version. <br/></td></tr>
 <tr class="separator:ga7622b3b85629e46e1f82d56df632c57e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4aad85c010ae900e4d28c81efc6c98a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga4aad85c010ae900e4d28c81efc6c98a3"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uvloader.html#ga4aad85c010ae900e4d28c81efc6c98a3">UVL_VER_MINOR</a>&#160;&#160;&#160;0</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uvloader.html#ga4aad85c010ae900e4d28c81efc6c98a3">UVL_VER_MINOR</a>&#160;&#160;&#160;1</td></tr>
 <tr class="memdesc:ga4aad85c010ae900e4d28c81efc6c98a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minor version. <br/></td></tr>
 <tr class="separator:ga4aad85c010ae900e4d28c81efc6c98a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0f19d234f3c1a24037ce14d9aee19f44"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga0f19d234f3c1a24037ce14d9aee19f44"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uvloader.html#ga0f19d234f3c1a24037ce14d9aee19f44">UVL_VER_REV</a>&#160;&#160;&#160;1</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uvloader.html#ga0f19d234f3c1a24037ce14d9aee19f44">UVL_VER_REV</a>&#160;&#160;&#160;0</td></tr>
 <tr class="memdesc:ga0f19d234f3c1a24037ce14d9aee19f44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Revision. <br/></td></tr>
 <tr class="separator:ga0f19d234f3c1a24037ce14d9aee19f44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -133,6 +140,26 @@ UVLoader version information</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Entry point of UVLoader. </p>
+<dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gab258eeb1f2b90ef9ca0cab0f9a3f2c39"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int uvl_exit </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>status</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Exiting point for loaded application. </p>
+<p>This hooks on to exit() call and cleans up after the application is unloaded. </p>
 <dl class="section return"><dt>Returns</dt><dd>Zero on success, otherwise error </dd></dl>
 
 </div>
@@ -162,7 +189,7 @@ UVLoader version information</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Sep 13 2012 19:58:21 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Sep 14 2012 20:41:49 for UVLoader by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>
