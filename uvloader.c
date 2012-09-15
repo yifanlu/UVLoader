@@ -1,4 +1,4 @@
-/**
+/*
  * uvloader.c - Userland Vita Loader entry point
  * Copyright 2012 Yifan Lu
  * 
@@ -13,7 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- **/
+ */
 #include "cleanup.h"
 #include "config.h"
 #include "load.h"

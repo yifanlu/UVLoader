@@ -50,6 +50,7 @@
 #define MAX_LOADED_MODS         128     ///< Maximum number of loaded modules
 #define MAX_RESOLVE_ENTRIES     0x10000 ///< Maximum number of resolves
 #define STUB_FUNC_SIZE          0x10    ///< Size of stub functions
+#define UVL_LIBKERN_BASE        0xE0000000   ///< sceLibKernel is where we import API calls from
 #define UVL_LIBKERN_MAX_SIZE    0xE000  ///< Maximum size of sceLibKernel (for resolving loader)
 
 /**
