@@ -533,7 +533,7 @@ int sprintf (char *str, const char *format, ...)
     return 0;
 }
 
-int fd_log = 0;
+int g_fd_log = 0;
 
 /********************************************//**
  *  \brief Sets the logging function
@@ -542,7 +542,7 @@ void
 vita_init_log ()
 {
     psvUnlockMem ();
-    fd_log = sceIoOpen (UVL_LOG_PATH, PSP2_O_WRONLY | PSP2_O_CREAT | PSP2_O_TRUNC, PSP2_STM_RWU);
+    g_fd_log = sceIoOpen (UVL_LOG_PATH, PSP2_O_WRONLY | PSP2_O_CREAT | PSP2_O_TRUNC, PSP2_STM_RWU);
     psvLockMem ();
 }
 
@@ -568,9 +568,9 @@ vita_logf (char *file,   ///< Source file of code writing to log
     va_end (arg);
     // generate complete log entry
     sprintf (log_line, "%s:%u %s\n", file, line, processed_line);
-    if (fd_log > 0)
+    if (g_fd_log > 0)
     {
-        sceIoWrite (fd_log, log_line, strlen (log_line));
+        sceIoWrite (g_fd_log, log_line, strlen (log_line));
     }
     // TODO: print to screen
 }

@@ -196,8 +196,8 @@ uvl_resolve_import_stub_to_entry (void *stub,  ///< Stub function to read
     }
     if (entry->value.value == 0) // false alarm
     {
-        LOG ("Stub 0x%08X has not been resolved yet. Skipping.", (u32_t)stub);
-        return -1;
+        IF_VERBOSE LOG ("Stub 0x%08X has not been resolved yet. Skipping.", (u32_t)stub);
+        return 0;
     }
     // put the finishing touches
     entry->nid = nid;
