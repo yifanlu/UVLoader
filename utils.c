@@ -541,8 +541,9 @@ int g_fd_log = 0;
 void
 vita_init_log ()
 {
+    int fd = sceIoOpen (UVL_LOG_PATH, PSP2_O_WRONLY | PSP2_O_CREAT | PSP2_O_TRUNC, PSP2_STM_RWU);
     psvUnlockMem ();
-    g_fd_log = sceIoOpen (UVL_LOG_PATH, PSP2_O_WRONLY | PSP2_O_CREAT | PSP2_O_TRUNC, PSP2_STM_RWU);
+    g_fd_log = fd;
     psvLockMem ();
 }
 
