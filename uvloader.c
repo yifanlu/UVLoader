@@ -45,7 +45,7 @@ uvl_start ()
     PsvUID uvl_thread;
 
     IF_DEBUG LOG ("Creating thread to run loader.");
-    uvl_thread = sceKernelCreateThread ("uvloader", uvl_entry, 0x10000100, 0x00001000, 0, (0x01 << 16 | 0x02 << 16 | 0x04 << 16), NULL);
+    uvl_thread = sceKernelCreateThread ("uvloader", uvl_entry, 0, 0x00040000, 0, 0, NULL);
     if (uvl_thread < 0)
     {
         LOG ("Cannot create UVLoader thread.");
