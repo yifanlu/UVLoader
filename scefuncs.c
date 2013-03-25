@@ -30,7 +30,8 @@
 void
 uvl_scefuncs_resolve_loader ()
 {
-    #define RESOLVE_STUB(_stub, _nid) uvl_resolve_loader (_nid, (void*)UVL_LIBKERN_BASE, _stub);
+    void *base = (void*)(0xE0000000 | ((u32_t)*(u8_t*)UVL_RESOLVE_PBASE << 16));
+    #define RESOLVE_STUB(_stub, _nid) uvl_resolve_loader (_nid, base, _stub);
 
     RESOLVE_STUB(sceKernelStopUnloadModule, 0x2415F8A4);
     RESOLVE_STUB(sceKernelFindMemBlockByAddr, 0xA33B99D1);

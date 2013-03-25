@@ -558,7 +558,6 @@ vita_logf (char *file,   ///< Source file of code writing to log
             int line,    ///< Line number of code writing to log
                 ...)     ///< Format and value(s) to write
 {
-    void (*writeline)(char *);
     char processed_line[MAX_LOG_LENGTH];
     char log_line[MAX_LOG_LENGTH];
     va_list arg;
