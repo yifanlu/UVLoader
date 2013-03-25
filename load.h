@@ -81,7 +81,6 @@ typedef u16_t   Elf32_Half;
 #define SCEMAG1     'C'
 #define SCEMAG2     'E'
 #define SCEMAG3     0
-#define SCEHDR_LEN  0x1000
 /** @}*/
 #define UVL_SEC_MODINFO        ".sceModuleInfo.rodata" ///< Name of module information section
 #define UVL_SEC_MIN_ALIGN      0x100000                ///< Alignment of each section

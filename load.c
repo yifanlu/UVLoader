@@ -110,6 +110,7 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
     void *data;
     PsvSSize size;
     char *magic;
+    u32_t offset;
 
     *entry = NULL;
     IF_DEBUG LOG ("Opening %s for reading.", filename);
@@ -138,10 +139,11 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
     {
         if (magic[1] == SCEMAG1 && magic[2] == SCEMAG2 && magic[3] == SCEMAG3)
         {
-            IF_DEBUG LOG ("Loading SELF.");
-            if (uvl_load_elf ((void*)((u32_t)data + SCEHDR_LEN), entry) < 0)
+            offset = ((u32_t*)data)[4];
+            IF_DEBUG LOG ("Loading FSELF. ELF offset at 0x%08X", offset);
+            if (uvl_load_elf ((void*)((u32_t)data + offset), entry) < 0)
             {
-                LOG ("Cannot load SELF.");
+                LOG ("Cannot load FSELF.");
                 return -1;
             }
         }
