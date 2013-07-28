@@ -42,10 +42,10 @@ uvl_start ()
     uvl_scefuncs_resolve_loader (); // must be first
     vita_init_log ();
     LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
+#ifdef UVL_NEW_THREAD
     PsvUID uvl_thread;
-
     IF_DEBUG LOG ("Creating thread to run loader.");
-    uvl_thread = sceKernelCreateThread ("uvloader", uvl_entry, 0, 0x00040000, 0, 0, NULL);
+    uvl_thread = sceKernelCreateThread ("uvloader", uvl_entry, 0, 0x00040000, 0, 0x00070000, NULL);
     if (uvl_thread < 0)
     {
         LOG ("Cannot create UVLoader thread.");
@@ -65,7 +65,10 @@ uvl_start ()
     }
     // should not reach here
     IF_DEBUG LOG ("Error removing thread.");
-    return 0;
+    return -1;
+#else
+    return uvl_entry ();
+#endif
 }
 
 /********************************************//**

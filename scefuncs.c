@@ -30,8 +30,14 @@
 void
 uvl_scefuncs_resolve_loader ()
 {
-    void *base = (void*)(0xE0000000 | ((u32_t)*(u8_t*)UVL_RESOLVE_PBASE << 16));
-    #define RESOLVE_STUB(_stub, _nid) uvl_resolve_loader (_nid, base, _stub);
+    // we must first find the relocated sceLibKernel base
+    // by resolving the first 
+    resolve_entry_t kernel_base;
+    // unfortunally, we can't do error checks yet so let's pray
+    // it doesn't crash
+    uvl_resolve_import_stub_to_entry ((void*)UVL_RESOLVE_PBASE, 0, &kernel_base);
+    kernel_base.value.value &= (~0 - 1); // unset first bit (entry is thumb code)
+    #define RESOLVE_STUB(_stub, _nid) uvl_resolve_loader (_nid, kernel_base.value.ptr, _stub);
 
     RESOLVE_STUB(sceKernelStopUnloadModule, 0x2415F8A4);
     RESOLVE_STUB(sceKernelFindMemBlockByAddr, 0xA33B99D1);
