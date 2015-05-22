@@ -157,7 +157,7 @@ int uvl_load_module_for_lib (char *lib_name);
  */
 int uvl_elf_check_header (Elf32_Ehdr_t *hdr);
 int uvl_elf_get_module_info (Elf32_Ehdr_t *elf_hdr, Elf32_Phdr_t *elf_phdrs, module_info_t **mod_info);
-int uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs, int count);
+//int uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs, int count);
 /** @}*/
 
 #endif

@@ -278,8 +278,8 @@ uvl_load_elf (void *data,           ///< ELF data start
             prog_hdrs[i].p_vaddr = blockaddr;
 
             IF_DEBUG LOG ("Allocated memory at 0x%08X, attempting to load section %u.", (u32_t)blockaddr, i);
+            uvl_segment_write (&prog_hdrs[i], 0, (void*)((u32_t)data + prog_hdrs[i].p_offset), prog_hdrs[i].p_filesz);
             psvUnlockMem ();
-            memcpy (blockaddr, (void*)((u32_t)data + prog_hdrs[i].p_offset), prog_hdrs[i].p_filesz);
             IF_DEBUG LOG ("Zeroing %u remainder of memory.", prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
             memset ((void*)((u32_t)blockaddr + prog_hdrs[i].p_filesz), 0, prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
             psvLockMem ();

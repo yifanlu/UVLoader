@@ -73,6 +73,7 @@ typedef struct Elf32_Phdr Elf32_Phdr_t;
 /** \name Relocation functions
  *  @{
  */
+int uvl_segment_write (Elf32_Phdr_t *seg, u32_t offset, void *value, u32_t size);
 int uvl_relocate (void *reloc, u32_t size, Elf32_Phdr_t *segs);
 /** @}*/
 

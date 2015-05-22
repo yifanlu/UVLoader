@@ -24,7 +24,7 @@
  *  
  *  \returns Zero on success, otherwise error
  ***********************************************/
-static int
+int
 uvl_segment_write (Elf32_Phdr_t *seg,   ///< Where to write
                     u32_t offset,       ///< Offset to write to
                     void *value,        ///< What to write
