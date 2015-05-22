@@ -42,8 +42,9 @@ typedef u16_t   Elf32_Half;
 /** \name ELF object types
  *  @{
  */
-#define ET_EXEC     0x0002
-#define ET_SCE_EXEC 0xFE00
+#define ET_EXEC         0x0002
+#define ET_SCE_EXEC     0xFE00
+#define ET_SCE_RELEXEC  0xFE04
 /** @}*/
 /** \name ELF machine types
  *  @{
@@ -65,6 +66,7 @@ typedef u16_t   Elf32_Half;
  *  @{
  */
 #define PT_LOAD     1
+#define PT_SCE_RELA 0x60000000
 /** @}*/
 /** \name ELF ph formats
  *  @{

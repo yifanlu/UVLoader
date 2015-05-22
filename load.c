@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #include "load.h"
+#include "relocate.h"
 #include "resolve.h"
 #include "scefuncs.h"
 #include "utils.h"
@@ -259,42 +260,47 @@ uvl_load_elf (void *data,           ///< ELF data start
     IF_DEBUG LOG ("Loading %u program sections.", elf_hdr->e_phnum);
     for (i = 0; i < elf_hdr->e_phnum; i++)
     {
-        if (prog_hdrs[i].p_type != PT_LOAD || prog_hdrs[i].p_vaddr == 0)
+        if (prog_hdrs[i].p_type == PT_LOAD)
         {
-            IF_DEBUG LOG ("Section %u is not loadable. Skipping.", i);
+            length = prog_hdrs[i].p_memsz;
+            length = (length + 0xFFFFF) & ~0xFFFFF; // Align to 1MB
+            if (prog_hdrs[i].p_flags & PF_X == PF_X) // executable section
+            {
+                memblock = sceKernelAllocCodeMemBlock ("UVLHomebrew", length);
+            }
+            else // data section
+            {
+                memblock = sceKernelAllocMemBlock ("UVLHomebrew", 0xC20D060, length, NULL);
+            }
+            if (memblock < 0)
+            {
+                LOG ("Error allocating memory. 0x%08X", memblock);
+                return -1;
+            }
+            if (sceKernelGetMemBlockBase (memblock, &blockaddr) < 0)
+            {
+                LOG ("Error getting memory block address.");
+            }
+
+            // remember where we're loaded
+            prog_hdrs[i].p_vaddr = blockaddr;
+
+            IF_DEBUG LOG ("Allocated memory at 0x%08X, attempting to load section %u.", (u32_t)blockaddr, i);
+            psvUnlockMem ();
+            memcpy (blockaddr, (void*)((u32_t)data + prog_hdrs[i].p_offset), prog_hdrs[i].p_filesz);
+            IF_DEBUG LOG ("Zeroing %u remainder of memory.", prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
+            memset ((void*)((u32_t)blockaddr + prog_hdrs[i].p_filesz), 0, prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
+            psvLockMem ();
+        }
+        else if (prog_hdrs[i].p_type == PT_SCE_RELA)
+        {
+            uvl_relocate ((void*)((u32_t)data + prog_hdrs[i].p_offset), prog_hdrs[i].p_filesz, prog_hdrs);
+        }
+        else
+        {
+            IF_DEBUG LOG ("Segment %u is not loadable. Skipping.", i);
             continue;
         }
-        length = prog_hdrs[i].p_memsz;
-        length = (length + 0xFFFFF) & ~0xFFFFF; // Align to 1MB
-        if (prog_hdrs[i].p_flags & PF_X == PF_X) // executable section
-        {
-            memblock = sceKernelAllocCodeMemBlock ("UVLHomebrew", length);
-        }
-        else // data section
-        {
-            memblock = sceKernelAllocMemBlock ("UVLHomebrew", 0xC20D060, length, NULL);
-        }
-        if (memblock < 0)
-        {
-            LOG ("Error allocating memory. 0x%08X", memblock);
-            return -1;
-        }
-        if (sceKernelGetMemBlockBase (memblock, &blockaddr) < 0)
-        {
-            LOG ("Error getting memory block address.");
-        }
-        if ((u32_t)blockaddr != (u32_t)prog_hdrs[i].p_vaddr)
-        {
-            LOG ("Error, section %u wants to be loaded to 0x%08X but we allocated 0x%08X", i, (u32_t)prog_hdrs[i].p_vaddr, (u32_t)blockaddr);
-            //return -1;
-        }
-
-        IF_DEBUG LOG ("Allocated memory at 0x%08X, attempting to load section %u.", (u32_t)blockaddr, i);
-        psvUnlockMem ();
-        memcpy (blockaddr, (void*)((u32_t)data + prog_hdrs[i].p_offset), prog_hdrs[i].p_filesz);
-        IF_DEBUG LOG ("Zeroing %u remainder of memory.", prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
-        memset ((void*)((u32_t)blockaddr + prog_hdrs[i].p_filesz), 0, prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
-        psvLockMem ();
     }
 
     // resolve NIDs
@@ -396,9 +402,9 @@ uvl_elf_check_header (Elf32_Ehdr_t *hdr) ///< ELF header to check
         return -1;
     }
     // type
-    if (!(hdr->e_type == ET_EXEC || hdr->e_type == ET_SCE_EXEC))
+    if (!hdr->e_type == ET_SCE_RELEXEC)
     {
-        LOG ("Only ET_EXEC files can be loaded currently.");
+        LOG ("Only ET_SCE_RELEXEC files are supported.");
         return -1;
     }
     // machine
