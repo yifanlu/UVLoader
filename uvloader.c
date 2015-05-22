@@ -37,9 +37,9 @@
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int START_SECTION
-uvl_start ()
+uvl_start (void *anchor)    ///< Pass in pointer to an SceLibKernel import to defeat ASLR
 {
-    uvl_scefuncs_resolve_loader (); // must be first
+    uvl_scefuncs_resolve_loader (anchor); // must be first
     vita_init_log ();
     LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
 #ifdef UVL_NEW_THREAD

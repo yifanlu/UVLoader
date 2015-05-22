@@ -71,6 +71,6 @@ STUB_FUNCTION(PsvUID, sceIoOpen);
 STUB_FUNCTION(int, sceKernelStartThread);
 STUB_FUNCTION(PsvUID, sceKernelCreateThread);
 
-void uvl_scefuncs_resolve_loader ();
+void uvl_scefuncs_resolve_loader (void *anchor);
 
 #endif
