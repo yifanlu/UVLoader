@@ -572,5 +572,8 @@ vita_logf (char *file,   ///< Source file of code writing to log
     {
         sceIoWrite (g_fd_log, log_line, strlen (log_line));
     }
-    // TODO: print to screen
+    if (dbglog)
+    {
+        dbglog (log_line);
+    }
 }

@@ -19,6 +19,24 @@
 #include "resolve.h"
 #include "scefuncs.h"
 
+void *(*psvCodeAllocMem)(unsigned int *p_len) = NULL;
+void (*psvUnlockMem)(void) = NULL;
+void (*psvLockMem)(void) = NULL;
+int (*dbglog)(const char *) = NULL;
+
+/********************************************//**
+ *  \brief Wrapper to allocate code memory block
+ *  
+ *  Wrapper function to allocate code memory and 
+ *  return a block id.
+ *  \returns Block id for code memory
+ ***********************************************/
+int sceKernelAllocCodeMemBlock(const char *name,    ///< Block name
+                             unsigned int length)   ///< Allocate size
+{
+    return sceKernelFindMemBlockByAddr(psvCodeAllocMem(&length), 0);
+}
+
 /********************************************//**
  *  \brief Resolves UVLoader
  *  

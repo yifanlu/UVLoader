@@ -27,6 +27,8 @@
 #error "Must compile with -fPIE"
 #endif
 
+static void uvl_init_from_context (uvl_context_t *ctx);
+
 /********************************************//**
  *  \brief Starting point from exploit
  *  
@@ -37,9 +39,10 @@
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int START_SECTION
-uvl_start (void *anchor)    ///< Pass in pointer to an SceLibKernel import to defeat ASLR
+uvl_start (uvl_context_t *ctx)    ///< Pass in context information
 {
-    uvl_scefuncs_resolve_loader (anchor); // must be first
+    uvl_scefuncs_resolve_loader (ctx->libkernel_anchor); // must be first
+    uvl_init_from_context (ctx);
     vita_init_log ();
     LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
 #ifdef UVL_NEW_THREAD
@@ -69,6 +72,20 @@ uvl_start (void *anchor)    ///< Pass in pointer to an SceLibKernel import to de
 #else
     return uvl_entry ();
 #endif
+}
+
+/********************************************//**
+ *  \brief Sets up hooks from context buffer
+ ***********************************************/
+static void
+uvl_init_from_context (uvl_context_t *ctx)  ///< Context buffer
+{
+    ctx->psvUnlockMem ();
+    psvCodeAllocMem = ctx->psvCodeAllocMem;
+    psvUnlockMem = ctx->psvUnlockMem;
+    psvLockMem = ctx->psvLockMem;
+    dbglog = ctx->dbglog;
+    ctx->psvLockMem ();
 }
 
 /********************************************//**
