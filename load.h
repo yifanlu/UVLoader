@@ -88,7 +88,6 @@ typedef u16_t   Elf32_Half;
 #define UVL_SEC_MIN_ALIGN      0x100000                ///< Alignment of each section
 #define UVL_BIN_MAX_SIZE       0x200000                ///< 2MB max, change in the future
 #define ATTR_MOD_INFO          0x8000                  ///< module_exports_t attribute
-#define ENTRY_NID              0x935CD196              ///< NID of entry function
 
 /** \name ELF structures
  *  See the ELF specification for more information.
@@ -157,7 +156,7 @@ int uvl_load_module_for_lib (char *lib_name);
  *  @{
  */
 int uvl_elf_check_header (Elf32_Ehdr_t *hdr);
-int uvl_elf_get_module_info (void *data, Elf32_Ehdr_t *elf_hdr, module_info_t **mod_info);
+int uvl_elf_get_module_info (Elf32_Ehdr_t *elf_hdr, Elf32_Phdr_t *elf_phdrs, module_info_t **mod_info);
 int uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs, int count);
 /** @}*/
 

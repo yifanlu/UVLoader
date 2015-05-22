@@ -230,16 +230,7 @@ uvl_load_elf (void *data,           ///< ELF data start
     IF_VERBOSE LOG ("Reading program headers.");
     prog_hdrs = (void*)((u32_t)data + elf_hdr->e_phoff);
 
-    // get mod_info
-    module_info_t *mod_info;
-    IF_DEBUG LOG ("Getting module info.");
-    if (uvl_elf_get_module_info (data, elf_hdr, &mod_info) < 0)
-    {
-        LOG ("Cannot find module info section.");
-        return -1;
-    }
-    IF_DEBUG LOG ("Module name: %s, export table offset: 0x%08X, import table offset: 0x%08X", mod_info->modname, mod_info->ent_top, mod_info->stub_top);
-
+    /* No longer needed
     // free memory
     IF_DEBUG LOG ("Cleaning up memory.");
     if (uvl_elf_free_memory (prog_hdrs, elf_hdr->e_phnum) < 0)
@@ -247,6 +238,7 @@ uvl_load_elf (void *data,           ///< ELF data start
         LOG ("Error freeing memory.");
         return -1;
     }
+    */
 
     // actually load the ELF
     PsvUID memblock;
@@ -303,11 +295,22 @@ uvl_load_elf (void *data,           ///< ELF data start
         }
     }
 
+    // get mod_info
+    module_info_t *mod_info;
+    int idx;
+    IF_DEBUG LOG ("Getting module info.");
+    if ((idx = uvl_elf_get_module_info (elf_hdr, prog_hdrs, &mod_info)) < 0)
+    {
+        LOG ("Cannot find module info section.");
+        return -1;
+    }
+    IF_DEBUG LOG ("Module name: %s, export table offset: 0x%08X, import table offset: 0x%08X", mod_info->modname, mod_info->ent_top, mod_info->stub_top);
+
     // resolve NIDs
     module_imports_t *import;
     void  *end;
-    import = (void*)(prog_hdrs[0].p_vaddr + mod_info->stub_top);
-    end = (void*)(prog_hdrs[0].p_vaddr + mod_info->stub_end);
+    import = (void*)(prog_hdrs[idx].p_vaddr + mod_info->stub_top);
+    end = (void*)(prog_hdrs[idx].p_vaddr + mod_info->stub_end);
     for (i = 0; (void*)&import[i] < end; i++)
     {
         IF_DEBUG LOG ("Loading module for %s", import[i].lib_name);
@@ -325,28 +328,14 @@ uvl_load_elf (void *data,           ///< ELF data start
     }
 
     // find the entry point
-    module_exports_t *export;
-    u32_t j;
-    export = (void*)(prog_hdrs[0].p_vaddr + mod_info->ent_top);
-    end = (void*)(prog_hdrs[0].p_vaddr + mod_info->ent_end);
-    for (i = 0; (void*)&export[i] < end; i++)
+    *entry = (void*)(prog_hdrs[idx].p_vaddr + mod_info->mod_start);
+    if (*entry == NULL)
     {
-        if (export[i].attribute != ATTR_MOD_INFO)
-        {
-            continue;
-        }
-        for (j = 0; j < export[i].num_functions; j++)
-        {
-            if (export[i].nid_table[j] == ENTRY_NID)
-            {
-                *entry = export[i].entry_table[j];
-                IF_DEBUG LOG ("Found application entry at 0x%08X", *entry);
-                return 0;
-            }
-        }
+        LOG ("Invalid module entry function.\n");
+        return -1;
     }
-    LOG ("Cannot find application entry.");
-    return -1;
+
+    return 0;
 }
 
 /********************************************//**
@@ -437,51 +426,35 @@ uvl_elf_check_header (Elf32_Ehdr_t *hdr) ///< ELF header to check
 /********************************************//**
  *  \brief Finds SCE module info
  *  
- *  This function locates the strings table 
- *  and finds the section where the module 
- *  information resides. Then it reads the 
- *  module information. This function will 
- *  move the pointer in the file descriptor.
- *  \returns Zero on success, otherwise error
+ *  This finds the module_info_t for this SCE 
+ *  ELF.
+ *  \returns -1 on error, index of segment 
+ *      containing module info on success.
  ***********************************************/
 int 
-uvl_elf_get_module_info (void *data,            ///< ELF data start
-                 Elf32_Ehdr_t *elf_hdr,         ///< ELF header
+uvl_elf_get_module_info (Elf32_Ehdr_t *elf_hdr, ///< ELF header
+                 Elf32_Phdr_t *elf_phdrs,       ///< ELF program headers
                 module_info_t **mod_info)       ///< Where to read information to
 {
-    Elf32_Shdr_t *sec_hdr;
-    // find strings table
-    IF_DEBUG LOG ("Reading strings table header.");
-    sec_hdr = (void*)((u32_t)data + elf_hdr->e_shoff + elf_hdr->e_shstrndx * elf_hdr->e_shentsize);
+    u32_t offset;
+    u32_t index;
 
-    IF_DEBUG LOG ("String table at %08X for %08X", sec_hdr->sh_offset, sec_hdr->sh_size);
-    char *strings;
-    int name_idx;
-    strings = (void*)((u32_t)data + sec_hdr->sh_offset);
-    name_idx = memstr (strings, sec_hdr->sh_size, UVL_SEC_MODINFO, strlen (UVL_SEC_MODINFO)) - strings;
-    if (name_idx <= 0)
+    index = ((u32_t)elf_hdr->e_entry & 0xC0000000) >> 30;
+    offset = (u32_t)elf_hdr->e_entry & 0x3FFFFFFF;
+
+    if (elf_phdrs[index].p_vaddr == NULL)
     {
-        LOG ("Cannot find section %s in string table.", UVL_SEC_MODINFO);
+        LOG ("Invalid segment index %d\n", index);
         return -1;
     }
-    IF_DEBUG LOG ("Index of %s: %u", UVL_SEC_MODINFO, name_idx);
-    // find sceModuleInfo section
-    int i;
-    IF_DEBUG LOG ("Reading %u sections.", elf_hdr->e_shnum);
-    for (i = 0; i < elf_hdr->e_shnum; i++)
-    {
-        sec_hdr = (void*)((u32_t)data + elf_hdr->e_shoff + i * sizeof (Elf32_Shdr_t));
-        if (sec_hdr->sh_name == name_idx) // we want this section
-        {
-            IF_DEBUG LOG ("Found requested section %u.", i);
-            IF_DEBUG LOG ("Reading section at offset 0x%08X. Size: %u", sec_hdr->sh_offset, sec_hdr->sh_size);
-            *mod_info = (void*)((u32_t)data + sec_hdr->sh_offset);
-            return 0;
-        }
-    }
-    return -1;
+
+    *mod_info = (module_info_t *)((char *)elf_phdrs[index].p_vaddr + offset);
+
+    return 0;
 }
 
+// No longer needed for relocatable ELFs
+#if 0
 /********************************************//**
  *  \brief Frees memory of where we want to load
  *  
@@ -550,3 +523,4 @@ uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs,   ///< Array of program headers
     }
     return 0;
 }
+#endif
