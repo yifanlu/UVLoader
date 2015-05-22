@@ -14,8 +14,8 @@
 /** \name UVLoader version information
  *  @{
  */
-#define UVL_VER_MAJOR   0   ///< Major version
-#define UVL_VER_MINOR   1   ///< Minor version
+#define UVL_VER_MAJOR   1   ///< Major version
+#define UVL_VER_MINOR   0   ///< Minor version
 #define UVL_VER_REV     0   ///< Revision
 /** @}*/
 
