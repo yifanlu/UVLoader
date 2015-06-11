@@ -790,8 +790,9 @@ uvl_resolve_imports (module_imports_t *import)   ///< Import table
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int
-uvl_resolve_loader (u32_t nid, void *libkernel_base, void *stub)
+uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
 {
+    void *base;
     void *result;
     module_info_t *mod_info;
     module_exports_t *exports;
@@ -801,12 +802,13 @@ uvl_resolve_loader (u32_t nid, void *libkernel_base, void *stub)
     //LOG ("Resolving 0x%08X for 0x%08X", nid, (u32_t)stub);
 
     // Should always be first occurance of string
-    result = memstr (libkernel_base, UVL_LIBKERN_MAX_SIZE, "SceLibKernel", strlen ("SceLibKernel"));
+    result = memstr (libkernel, UVL_LIBKERN_MAX_SIZE, "SceLibKernel", strlen ("SceLibKernel"));
     mod_info = (module_info_t*)((u32_t)result - 4);
+    base = (char *)mod_info - mod_info->ent_top + sizeof (module_info_t);
 
     // look in exports
-    for (exports = (module_exports_t*)((u32_t)libkernel_base + mod_info->ent_top); 
-            (u32_t)exports < ((u32_t)libkernel_base + mod_info->ent_end); exports++)
+    for (exports = (module_exports_t*)((u32_t)base + mod_info->ent_top); 
+            (u32_t)exports < ((u32_t)base + mod_info->ent_end); exports++)
     {
         for (i = 0; i < exports->num_functions; i++)
         {
@@ -824,8 +826,8 @@ uvl_resolve_loader (u32_t nid, void *libkernel_base, void *stub)
     }
 
     // look in imports
-    for (imports = (module_imports_t*)((u32_t)libkernel_base + mod_info->stub_top); 
-            (u32_t)imports < ((u32_t)libkernel_base + mod_info->stub_end); imports++)
+    for (imports = (module_imports_t*)((u32_t)base + mod_info->stub_top); 
+            (u32_t)imports < ((u32_t)base + mod_info->stub_end); imports++)
     {
         for (i = 0; i < imports->num_functions; i++)
         {
