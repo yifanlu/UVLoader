@@ -169,7 +169,7 @@ uvl_entry ()
         LOG ("Cannot destroy resolve table.");
         return -1;
     }
-    IF_DEBUG LOG ("Running the homebrew.");
+    IF_DEBUG LOG ("Running the homebrew: entry at 0x%08X", start);
     ret_value = start (0, NULL);
     // should not reach here
     IF_DEBUG LOG ("Homebrew exited with value 0x%08X", ret_value);
