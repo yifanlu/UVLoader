@@ -31,9 +31,9 @@ uvl_segment_write (Elf32_Phdr_t *seg,   ///< Where to write
                     void *value,        ///< What to write
                     u32_t size)         ///< How much
 {
-    if (seg->p_filesz > offset+size) // don't overflow me plz
+    if (offset+size > seg->p_filesz) // don't overflow me plz
     {
-        LOG ("Relocation overflows segment\n");
+        LOG ("Relocation overflows segment");
         return -1;
     }
     if (seg->p_flags & PF_X)
@@ -148,7 +148,7 @@ uvl_relocate (void *reloc,          ///< Base address of relocation segment
 
                     if (offset <= (s32_t)0xff000000 ||
                         offset >= (s32_t)0x01000000) {
-                        LOG ("reloc %x out of range: 0x%08X\n", pos, symval);
+                        LOG ("reloc %x out of range: 0x%08X", pos, symval);
                         break;
                     }
 
@@ -161,7 +161,7 @@ uvl_relocate (void *reloc,          ///< Base address of relocation segment
                               (j1 << 13) | (j2 << 11) |
                               ((offset >> 1) & 0x07ff));
 
-                    value = ((u32_t)upper << 16) | lower;
+                    value = ((u32_t)lower << 16) | upper;
                 }
                 break;
             case R_ARM_CALL:
@@ -170,7 +170,7 @@ uvl_relocate (void *reloc,          ///< Base address of relocation segment
                     offset = r_addend + symval - loc;
                     if (offset <= (s32_t)0xfe000000 ||
                         offset >= (s32_t)0x02000000) {
-                        LOG ("reloc %x out of range: 0x%08X\n", pos, symval);
+                        LOG ("reloc %x out of range: 0x%08X", pos, symval);
                         break;
                     }
 
@@ -227,12 +227,12 @@ uvl_relocate (void *reloc,          ///< Base address of relocation segment
                               ((offset & 0x0700) << 4) |
                               (offset & 0x00ff));
 
-                    value = ((u32_t)upper << 16) | lower;
+                    value = ((u32_t)lower << 16) | upper;
                 }
                 break;
             default:
                 {
-                    LOG ("Unknown relocation code %d\n", r_code);
+                    LOG ("Unknown relocation code %d", r_code);
                 }
             case R_ARM_NONE:
                 continue;
