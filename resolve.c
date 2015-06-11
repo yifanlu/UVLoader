@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "nidcache.h"
 #include "resolve.h"
 #include "scefuncs.h"
 #include "utils.h"
@@ -131,19 +132,49 @@ uvl_resolve_table_get (u32_t nid)               ///< NID to resolve
     return NULL;
 }
 
-// TODO: Implement this
 /********************************************//**
- *  \brief Estimates an unknown syscall
+ *  \brief Use import NID cache if available
  *  
- *  Estimates a syscall for a given NID based 
- *  on information of existing syscalls in the 
- *  resolve table.
- *  \returns Entry on success, NULL on error
+ *  \returns Pointer to NID table
  ***********************************************/
-resolve_entry_t *
-uvl_estimate_syscall (u32_t nid) ///< NID to resolve
+static const u32_t *
+uvl_get_import_fnid_cache (module_info_t *mod_info, ///< Module containing import
+                        module_imports_t *imports)  ///< Import table to read
 {
-    return NULL;
+    int off;
+    const nid_cache_db *header;
+    const u32_t *func_nid_table;
+
+    func_nid_table = NULL;
+    if (mod_info->module_nid == LIBKERNEL_LIB_NID) // SceLibKernel
+    {
+        off = 0;
+        for (header = &libkernel_nid_cache_header[0]; header->module_nid; header++)
+        {
+            if (header->module_nid == imports->module_nid)
+            {
+                if (header->entries != imports->num_functions)
+                {
+                    LOG ("Warning: Import for %s in %s has %u entries but only %u cached.", 
+                        imports->lib_name, mod_info->modname, 
+                        imports->num_functions, header->entries);
+                }
+                else
+                {
+                    IF_VERBOSE LOG ("Using NID cache for %s -> %s", imports->lib_name, mod_info->modname);
+                }
+                func_nid_table = &libkernel_nid_cache[off];
+                break;
+            }
+            off += header->entries;
+        }
+    }
+    if (!func_nid_table)
+    {
+        func_nid_table = imports->func_nid_table;
+    }
+
+    return func_nid_table;
 }
 
 /********************************************//**
@@ -396,19 +427,23 @@ uvl_encode_arm_inst (u8_t type,  ///< See defined "Supported ARM instruction typ
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int 
-uvl_resolve_add_imports (module_imports_t *imp_table,    ///< Module's import table to read from
-                                       int syscalls_only) ///< If set, will only add resolved syscalls and nothing else
+uvl_resolve_add_imports (module_info_t    *mod_info,     ///< Module with import table
+                         module_imports_t *imp_table,    ///< Module's import table to read from
+                                      int syscalls_only) ///< If set, will only add resolved syscalls and nothing else
 {
     // this should be called BEFORE cleanup
     resolve_entry_t res_entry;
     u32_t *memory;
     u32_t nid;
     int i;
+    const u32_t *func_nid_table;
+
     // get functions first
     IF_VERBOSE LOG ("Found %u resolved function imports to copy.", imp_table->num_functions);
+    func_nid_table = uvl_get_import_fnid_cache (mod_info, imp_table);
     for(i = 0; i < imp_table->num_functions; i++)
     {
-        nid = imp_table->func_nid_table[i];
+        nid = func_nid_table[i];
         memory = imp_table->func_entry_table[i];
         if (uvl_resolve_import_stub_to_entry (memory, nid, &res_entry) < 0)
         {
@@ -702,7 +737,7 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
             (u32_t)imports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
         {
             IF_VERBOSE LOG ("Adding imports for %s", imports->lib_name);
-            if (uvl_resolve_add_imports (imports, BIT_SET (type, RESOLVE_IMPS_SVC_ONLY)) < 0)
+            if (uvl_resolve_add_imports (mod_info, imports, BIT_SET (type, RESOLVE_IMPS_SVC_ONLY)) < 0)
             {
                 LOG ("Unable to resolve imports at 0x%08X. Continuing.", (u32_t)imports);
                 continue;
@@ -798,6 +833,7 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
     module_exports_t *exports;
     module_imports_t *imports;
     u32_t i;
+    const u32_t *func_nid_table;
 
     //LOG ("Resolving 0x%08X for 0x%08X", nid, (u32_t)stub);
 
@@ -829,9 +865,10 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
     for (imports = (module_imports_t*)((u32_t)base + mod_info->stub_top); 
             (u32_t)imports < ((u32_t)base + mod_info->stub_end); imports++)
     {
+        func_nid_table = uvl_get_import_fnid_cache (mod_info, imports);
         for (i = 0; i < imports->num_functions; i++)
         {
-            if (imports->func_nid_table[i] == nid)
+            if (func_nid_table[i] == nid)
             {
                 //LOG ("Resolved at import 0x%08X", (u32_t)imports->func_entry_table[i]);
                 uvl_unlock_mem ();

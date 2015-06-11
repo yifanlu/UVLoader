@@ -233,7 +233,7 @@ u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg);
 /** \name Bulk add to resolve table
  *  @{
  */
-int uvl_resolve_add_imports (module_imports_t *imp_table, int syscalls_only);
+int uvl_resolve_add_imports (module_info_t *mod_info, module_imports_t *imp_table, int syscalls_only);
 int uvl_resolve_add_exports (module_exports_t *exp_table);
 /** @}*/
 /** \name Resolving entries
