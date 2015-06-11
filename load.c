@@ -278,7 +278,7 @@ uvl_load_elf (void *data,           ///< ELF data start
             // remember where we're loaded
             prog_hdrs[i].p_vaddr = blockaddr;
 
-            IF_DEBUG LOG ("Allocated memory at 0x%08X, attempting to load section %u.", (u32_t)blockaddr, i);
+            IF_DEBUG LOG ("Allocated memory at 0x%08X, attempting to load segment %u.", (u32_t)blockaddr, i);
             uvl_segment_write (&prog_hdrs[i], 0, (void*)((u32_t)data + prog_hdrs[i].p_offset), prog_hdrs[i].p_filesz);
             uvl_unlock_mem ();
             IF_DEBUG LOG ("Zeroing %u remainder of memory.", prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
