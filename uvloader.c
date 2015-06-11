@@ -27,6 +27,8 @@
 #error "Must compile with -fPIE"
 #endif
 
+static uvl_context_t *g_context;
+
 static void uvl_init_from_context (uvl_context_t *ctx);
 
 /********************************************//**
@@ -41,8 +43,8 @@ static void uvl_init_from_context (uvl_context_t *ctx);
 int START_SECTION
 uvl_start (uvl_context_t *ctx)    ///< Pass in context information
 {
-    uvl_scefuncs_resolve_loader (ctx->libkernel_anchor); // must be first
     uvl_init_from_context (ctx);
+    uvl_scefuncs_resolve_loader (ctx->libkernel_anchor); // must be first
     vita_init_log ();
     LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
 #ifdef UVL_NEW_THREAD
@@ -81,11 +83,47 @@ static void
 uvl_init_from_context (uvl_context_t *ctx)  ///< Context buffer
 {
     ctx->psvUnlockMem ();
-    psvCodeAllocMem = ctx->psvCodeAllocMem;
-    psvUnlockMem = ctx->psvUnlockMem;
-    psvLockMem = ctx->psvLockMem;
-    dbglog = ctx->dbglog;
+    g_context = ctx;
     ctx->psvLockMem ();
+}
+
+/********************************************//**
+ *  \brief From context buffer
+ ***********************************************/
+void *
+uvl_alloc_code_mem (unsigned int *p_len)
+{
+    return g_context->psvCodeAllocMem (p_len);
+}
+
+/********************************************//**
+ *  \brief From context buffer
+ ***********************************************/
+void
+uvl_unlock_mem (void)
+{
+    g_context->psvUnlockMem ();
+}
+
+/********************************************//**
+ *  \brief From context buffer
+ ***********************************************/
+void
+uvl_lock_mem (void)
+{
+    g_context->psvLockMem ();
+}
+
+/********************************************//**
+ *  \brief From context buffer
+ ***********************************************/
+int
+uvl_debug_log (const char *line)
+{
+    if (g_context->dbglog)
+        return g_context->dbglog (line);
+    else
+        return 0;
 }
 
 /********************************************//**

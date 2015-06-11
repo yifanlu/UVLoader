@@ -18,6 +18,7 @@
 #include "relocate.h"
 #include "scefuncs.h"
 #include "utils.h"
+#include "uvloader.h"
 
 /********************************************//**
  *  \brief Write to loaded segment at offset
@@ -37,12 +38,12 @@ uvl_segment_write (Elf32_Phdr_t *seg,   ///< Where to write
     }
     if (seg->p_flags & PF_X)
     {
-        psvUnlockMem ();
+        uvl_unlock_mem ();
     }
     memcpy ((char *)seg->p_vaddr + offset, value, size);
     if (seg->p_flags & PF_X)
     {
-        psvLockMem ();
+        uvl_lock_mem ();
     }
     return 0;
 }

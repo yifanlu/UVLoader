@@ -19,6 +19,7 @@
 #include "resolve.h"
 #include "scefuncs.h"
 #include "utils.h"
+#include "uvloader.h"
 
 /********************************************//**
  *  \brief Loads file to memory
@@ -279,10 +280,10 @@ uvl_load_elf (void *data,           ///< ELF data start
 
             IF_DEBUG LOG ("Allocated memory at 0x%08X, attempting to load section %u.", (u32_t)blockaddr, i);
             uvl_segment_write (&prog_hdrs[i], 0, (void*)((u32_t)data + prog_hdrs[i].p_offset), prog_hdrs[i].p_filesz);
-            psvUnlockMem ();
+            uvl_unlock_mem ();
             IF_DEBUG LOG ("Zeroing %u remainder of memory.", prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
             memset ((void*)((u32_t)blockaddr + prog_hdrs[i].p_filesz), 0, prog_hdrs[i].p_memsz - prog_hdrs[i].p_filesz);
-            psvLockMem ();
+            uvl_lock_mem ();
         }
         else if (prog_hdrs[i].p_type == PT_SCE_RELA)
         {

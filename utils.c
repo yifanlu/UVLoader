@@ -17,6 +17,7 @@
 #include "config.h"
 #include "scefuncs.h"
 #include "utils.h"
+#include "uvloader.h"
 
 // Below is stolen from Android's Bionic
 
@@ -533,7 +534,7 @@ int sprintf (char *str, const char *format, ...)
     return 0;
 }
 
-int g_fd_log = 0;
+static int g_fd_log = 0;
 
 /********************************************//**
  *  \brief Sets the logging function
@@ -542,9 +543,9 @@ void
 vita_init_log ()
 {
     int fd = sceIoOpen (UVL_LOG_PATH, PSP2_O_WRONLY | PSP2_O_CREAT | PSP2_O_TRUNC, PSP2_STM_RWU);
-    psvUnlockMem ();
+    uvl_unlock_mem ();
     g_fd_log = fd;
-    psvLockMem ();
+    uvl_lock_mem ();
 }
 
 /********************************************//**
@@ -572,8 +573,5 @@ vita_logf (char *file,   ///< Source file of code writing to log
     {
         sceIoWrite (g_fd_log, log_line, strlen (log_line));
     }
-    if (dbglog)
-    {
-        dbglog (log_line);
-    }
+    uvl_debug_log (log_line);
 }

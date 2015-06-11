@@ -17,6 +17,7 @@
 #include "resolve.h"
 #include "scefuncs.h"
 #include "utils.h"
+#include "uvloader.h"
 
 /** Checks if a bit is set in a given member */
 #define BIT_SET(i, b) (i & (0x1 << b))
@@ -54,9 +55,9 @@ uvl_resolve_table_initialize ()
         return -1;
     }
     IF_DEBUG LOG ("Block UID 0x%08X allocated at 0x%08X", (u32_t)block, (u32_t)base);
-    psvUnlockMem ();
+    uvl_unlock_mem ();
     g_resolve_table = base;
-    psvLockMem ();
+    uvl_lock_mem ();
     g_resolve_table->block_uid = block;
     g_resolve_table->length = 0;
     return 0;
@@ -82,9 +83,9 @@ uvl_resolve_table_destroy ()
         LOG ("Error freeing resolve table.");
         return -1;
     }
-    psvUnlockMem ();
+    uvl_unlock_mem ();
     g_resolve_table = NULL;
-    psvLockMem ();
+    uvl_lock_mem ();
     return 0;
 }
 
@@ -218,23 +219,23 @@ uvl_resolve_entry_to_import_stub (resolve_entry_t *entry,   ///< Entry to read f
     switch (entry->type)
     {
         case RESOLVE_TYPE_FUNCTION:
-            psvUnlockMem ();
+            uvl_unlock_mem ();
             memloc[0] = uvl_encode_arm_inst (INSTRUCTION_MOVW, (u16_t)entry->value.value, 12);
             memloc[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)(entry->value.value >> 16), 12);
             memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 12);
-            psvLockMem ();
+            uvl_lock_mem ();
             break;
         case RESOLVE_TYPE_SYSCALL:
-            psvUnlockMem ();
+            uvl_unlock_mem ();
             memloc[0] = uvl_encode_arm_inst (INSTRUCTION_MOVW, (u16_t)entry->value.value, 12);
             memloc[1] = uvl_encode_arm_inst (INSTRUCTION_SYSCALL, 0, 0);
             memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 14);
-            psvLockMem ();
+            uvl_lock_mem ();
             break;
         case RESOLVE_TYPE_VARIABLE:
-            psvUnlockMem ();
+            uvl_unlock_mem ();
             memloc[0] = entry->value.value;
-            psvLockMem ();
+            uvl_lock_mem ();
             break;
         case RESOLVE_TYPE_UNKNOWN:
         default:
@@ -812,11 +813,11 @@ uvl_resolve_loader (u32_t nid, void *libkernel_base, void *stub)
             if (exports->nid_table[i] == nid)
             {
                 //LOG ("Resolved at export 0x%08X", (u32_t)exports->entry_table[i]);
-                psvUnlockMem ();
+                uvl_unlock_mem ();
                 ((u32_t*)stub)[0] = uvl_encode_arm_inst (INSTRUCTION_MOVW, (u16_t)(u32_t)exports->entry_table[i], 12);
                 ((u32_t*)stub)[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)((u32_t)exports->entry_table[i] >> 16), 12);
                 ((u32_t*)stub)[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 12);
-                psvLockMem ();
+                uvl_lock_mem ();
                 return 0;
             }
         }
@@ -831,9 +832,9 @@ uvl_resolve_loader (u32_t nid, void *libkernel_base, void *stub)
             if (imports->func_nid_table[i] == nid)
             {
                 //LOG ("Resolved at import 0x%08X", (u32_t)imports->func_entry_table[i]);
-                psvUnlockMem ();
+                uvl_unlock_mem ();
                 memcpy (stub, imports->func_entry_table[i], STUB_FUNC_SIZE);
-                psvLockMem ();
+                uvl_lock_mem ();
                 return 0;
             }
         }

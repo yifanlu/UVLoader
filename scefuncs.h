@@ -55,13 +55,7 @@
 #endif
 
 // functions for writing executable code
-extern void *(*psvCodeAllocMem)(unsigned int *p_len);
-extern void (*psvUnlockMem)(void);
-extern void (*psvLockMem)(void);
 int sceKernelAllocCodeMemBlock(const char *name, unsigned int length);
-
-// debug logging from bootstrap
-extern int (*dbglog)(const char *);
 
 // some names from https://github.com/pspdev/pspsdk
 STUB_FUNCTION(int, sceKernelStopUnloadModule);

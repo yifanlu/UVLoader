@@ -35,9 +35,14 @@ typedef struct uvl_context
     void *libkernel_anchor;                        ///< Any imported SceLibKernel function
 } uvl_context_t;
 
-int START_SECTION uvl_start ();
+int START_SECTION uvl_start (uvl_context_t *ctx);
 int uvl_entry ();
 int uvl_exit (int status);
+
+void *uvl_alloc_code_mem (unsigned int *p_len);
+void uvl_unlock_mem ();
+void uvl_lock_mem ();
+int uvl_debug_log (const char *line);
 
 #endif
 /// @}
