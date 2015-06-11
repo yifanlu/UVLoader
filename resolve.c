@@ -427,9 +427,10 @@ uvl_encode_arm_inst (u8_t type,  ///< See defined "Supported ARM instruction typ
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int 
-uvl_resolve_add_imports (module_info_t    *mod_info,     ///< Module with import table
-                         module_imports_t *imp_table,    ///< Module's import table to read from
-                                      int syscalls_only) ///< If set, will only add resolved syscalls and nothing else
+uvl_resolve_add_imports (module_info_t    *mod_info,         ///< Module with import table
+                         module_imports_t *reload_imp_table, ///< If not null, reloaded version of module with NIDs intact
+                         module_imports_t *imp_table,        ///< Module's import table to read from
+                                      int syscalls_only)     ///< If set, will only add resolved syscalls and nothing else
 {
     // this should be called BEFORE cleanup
     resolve_entry_t res_entry;
@@ -440,7 +441,14 @@ uvl_resolve_add_imports (module_info_t    *mod_info,     ///< Module with import
 
     // get functions first
     IF_VERBOSE LOG ("Found %u resolved function imports to copy.", imp_table->num_functions);
-    func_nid_table = uvl_get_import_fnid_cache (mod_info, imp_table);
+    if (reload_imp_table) // first attempt: try reloaded module
+    {
+        func_nid_table = reload_imp_table->func_nid_table;
+    }
+    else // second attempt: try cached NID database
+    {
+        func_nid_table = uvl_get_import_fnid_cache (mod_info, imp_table);
+    }
     for(i = 0; i < imp_table->num_functions; i++)
     {
         nid = func_nid_table[i];
@@ -651,6 +659,52 @@ uvl_resolve_add_all_modules (int type) ///< An OR combination of flags (see defi
 }
 
 /********************************************//**
+ *  \brief Take a loaded module info, and return 
+ *  the module info in loaded memory.
+ *  
+ *  \returns module_info_t, NULL on error
+ ***********************************************/
+static module_info_t *
+uvl_find_module_info (loaded_module_info_t *m_mod_info) ///< Loaded module information
+{
+    module_info_t *mod_info;
+    void *result;
+    u32_t segment_size;
+
+    mod_info = NULL;
+    result = m_mod_info->segments[0].vaddr;
+    segment_size = m_mod_info->segments[0].memsz;
+    while (segment_size > 0)
+    {
+        IF_VERBOSE LOG ("Searching for module name in memory. Start 0x%X", result);
+        result = memstr (result, segment_size, m_mod_info->module_name, strlen (m_mod_info->module_name));
+        if (result == NULL)
+        {
+            IF_DEBUG LOG ("Cannot find module name in memory.");
+            break; // not found
+        }
+        // try making this the one
+        mod_info = (module_info_t*)((u32_t)result - 4);
+        IF_VERBOSE LOG ("Possible module info struct at 0x%X", (u32_t)mod_info);
+        if (mod_info->modattribute == MOD_INFO_VALID_ATTR && mod_info->modversion == MOD_INFO_VALID_VER) // TODO: Better check
+        {
+            IF_VERBOSE LOG ("Module export start at 0x%X import start at 0x%X", (u32_t)mod_info->ent_top + (u32_t)m_mod_info->segments[0].vaddr, (u32_t)mod_info->stub_top + (u32_t)m_mod_info->segments[0].vaddr);
+            break; // we found it
+        }
+        else // that string just happened to appear
+        {
+            IF_DEBUG LOG ("False alarm, found name is not in module info structure.");
+            mod_info = NULL;
+            segment_size -= ((u32_t)result - (u32_t)m_mod_info->segments[0].vaddr) + strlen (m_mod_info->module_name); // subtract length
+            result = (void*)((u32_t)result + strlen (m_mod_info->module_name)); // start after name
+            continue;
+        }
+    }
+
+    return mod_info;
+}
+
+/********************************************//**
  *  \brief Adds entries from a loaded module to 
  *  resolve table
  *  
@@ -666,10 +720,13 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
 {
     loaded_module_info_t m_mod_info;
     module_info_t *mod_info;
-    void *result;
-    u32_t segment_size;
     module_exports_t *exports;
     module_imports_t *imports;
+    PsvUID reload_mod;
+    int opt;
+    loaded_module_info_t m_reload_mod_info;
+    module_info_t *reload_mod_info;
+    module_imports_t *reload_imports;
 
     m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
     IF_VERBOSE LOG ("Getting information for module UID: 0x%X.", modid);
@@ -679,41 +736,12 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
         return -1;
     }
     IF_VERBOSE LOG ("Module: %s, file: %s", m_mod_info.module_name, m_mod_info.file_path);
-    mod_info = NULL;
-    result = m_mod_info.segments[0].vaddr;
-    segment_size = m_mod_info.segments[0].memsz;
-    while (segment_size > 0)
-    {
-        IF_VERBOSE LOG ("Searching for module name in memory. Start 0x%X", result);
-        result = memstr (result, segment_size, m_mod_info.module_name, strlen (m_mod_info.module_name));
-        if (result == NULL)
-        {
-            IF_DEBUG LOG ("Cannot find module name in memory.");
-            break; // not found
-        }
-        // try making this the one
-        mod_info = (module_info_t*)((u32_t)result - 4);
-        IF_VERBOSE LOG ("Possible module info struct at 0x%X", (u32_t)mod_info);
-        if (mod_info->modattribute == MOD_INFO_VALID_ATTR && mod_info->modversion == MOD_INFO_VALID_VER) // TODO: Better check
-        {
-            IF_VERBOSE LOG ("Module export start at 0x%X import start at 0x%X", (u32_t)mod_info->ent_top + (u32_t)m_mod_info.segments[0].vaddr, (u32_t)mod_info->stub_top + (u32_t)m_mod_info.segments[0].vaddr);
-            break; // we found it
-        }
-        else // that string just happened to appear
-        {
-            IF_DEBUG LOG ("False alarm, found name is not in module info structure.");
-            mod_info = NULL;
-            segment_size -= ((u32_t)result - (u32_t)m_mod_info.segments[0].vaddr) + strlen (m_mod_info.module_name); // subtract length
-            result = (void*)((u32_t)result + strlen (m_mod_info.module_name)); // start after name
-            continue;
-        }
-    }
-    if (mod_info == NULL)
+    if ((mod_info = uvl_find_module_info (&m_mod_info)) == NULL)
     {
         LOG ("Can't get module information for %s.", m_mod_info.module_name);
         return -1;
     }
-    if (BIT_SET (type, RESOLVE_MOD_EXPS))
+    if (type & RESOLVE_MOD_EXPS)
     {
         IF_VERBOSE LOG ("Adding exports to resolve table.");
         for (exports = (module_exports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_top); 
@@ -730,18 +758,47 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
             }
         }
     }
-    if (BIT_SET (type, RESOLVE_MOD_IMPS))
+    if (type & RESOLVE_MOD_IMPS)
     {
+        reload_mod_info = NULL;
+        reload_imports = NULL;
+        if (type & RESOLVE_RELOAD_MOD)
+        {
+            opt = sizeof (opt);
+            IF_DEBUG LOG ("Attempting to reload: %s", m_mod_info.file_path);
+            reload_mod = sceKernelLoadModule (m_mod_info.file_path, 0, &opt);
+            m_reload_mod_info.size = sizeof (loaded_module_info_t);
+            if (sceKernelGetModuleInfo (reload_mod, &m_reload_mod_info) >= 0)
+            {
+                reload_mod_info = uvl_find_module_info (&m_reload_mod_info);
+            }
+            if (reload_mod_info)
+            {
+                LOG ("Reloaded %s", mod_info->modname);
+                reload_imports = (module_imports_t*)((u32_t)m_reload_mod_info.segments[0].vaddr + reload_mod_info->stub_top);
+            }
+        }
+
         IF_VERBOSE LOG ("Adding resolved imports to resolve table.");
         for (imports = (module_imports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_top); 
             (u32_t)imports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
         {
             IF_VERBOSE LOG ("Adding imports for %s", imports->lib_name);
-            if (uvl_resolve_add_imports (mod_info, imports, BIT_SET (type, RESOLVE_IMPS_SVC_ONLY)) < 0)
+            if (reload_imports)
+            {
+                reload_imports++;
+            }
+            if (uvl_resolve_add_imports (mod_info, reload_imports, imports, type & RESOLVE_IMPS_SVC_ONLY) < 0)
             {
                 LOG ("Unable to resolve imports at 0x%08X. Continuing.", (u32_t)imports);
                 continue;
             }
+        }
+
+        if (reload_mod_info)
+        {
+            IF_VERBOSE LOG ("Closing reloaded module.");
+            sceKernelUnloadModule (reload_mod);
         }
     }
     return 0;

@@ -38,6 +38,7 @@
 #define RESOLVE_MOD_IMPS        0x1     ///< Add entry from import function stubs
 #define RESOLVE_MOD_EXPS        0x2     ///< Add entry from exported information
 #define RESOLVE_IMPS_SVC_ONLY   0x4     ///< Used with @c RESOLVE_MOD_IMPS but only add syscalls for import entries
+#define RESOLVE_RELOAD_MOD      0x8     ///< Load module again to get unpoisoned import NID table
 /** @}*/
 
 /** \name Module infomation check
@@ -233,7 +234,7 @@ u32_t uvl_encode_arm_inst (u8_t type, u16_t immed, u16_t reg);
 /** \name Bulk add to resolve table
  *  @{
  */
-int uvl_resolve_add_imports (module_info_t *mod_info, module_imports_t *imp_table, int syscalls_only);
+int uvl_resolve_add_imports (module_info_t *mod_info, module_imports_t *reload_imp_table, module_imports_t *imp_table, int syscalls_only);
 int uvl_resolve_add_exports (module_exports_t *exp_table);
 /** @}*/
 /** \name Resolving entries

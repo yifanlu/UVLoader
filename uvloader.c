@@ -144,7 +144,7 @@ uvl_entry ()
         return -1;
     }
     IF_DEBUG LOG ("Filling resolve table.");
-    if (uvl_resolve_add_all_modules (RESOLVE_MOD_IMPS | RESOLVE_MOD_EXPS | RESOLVE_IMPS_SVC_ONLY) < 0)
+    if (uvl_resolve_add_all_modules (RESOLVE_MOD_IMPS | RESOLVE_MOD_EXPS | RESOLVE_IMPS_SVC_ONLY | RESOLVE_RELOAD_MOD) < 0)
     {
         LOG ("Cannot cache all loaded entries.");
         return -1;
