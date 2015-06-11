@@ -1,5 +1,18 @@
-Userland Vita Loader
+Userland Vita Loader 1.0.0
 ===============================================================================
+
+## What's new?
+
+### Version 1.0.0
+
+* Relocatable ELF (ET_SCE_RELEXEC) support
+* ARM relocation resolving
+* SceLibKernel NID cache database (for NID poison bypass)
+* Library reloading (another NID poison bypass technique)
+
+### Version 0.1.0
+
+* Initial release
 
 ## What is this?
 
