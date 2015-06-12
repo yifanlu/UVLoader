@@ -21,6 +21,8 @@
 #include "utils.h"
 #include "uvloader.h"
 
+#define BLOCK_SIZE 0x10000
+
 /********************************************//**
  *  \brief Loads file to memory
  *  
@@ -34,6 +36,9 @@ uvl_load_file (const char *filename,    ///< File to load
     PsvUID fd;
     PsvUID memblock;
     void *base;
+    PsvOff filesz;
+    PsvOff nread;
+    PsvSSize nbytes;
 
     fd = sceIoOpen (filename, PSP2_O_RDONLY, 0);
     if (fd < 0)
@@ -41,7 +46,14 @@ uvl_load_file (const char *filename,    ///< File to load
         LOG ("Failed to open %s for reading.", filename);
         return -1;
     }
-    memblock = sceKernelAllocMemBlock ("UVLTemp", 0xC20D060, UVL_BIN_MAX_SIZE, NULL);
+    filesz = sceIoLseek (fd, 0LL, PSP2_SEEK_END);
+    if (filesz < 0)
+    {
+        LOG ("Failed to find file size: 0x%X", filesz);
+        return -1;
+    }
+    sceIoLseek (fd, 0LL, PSP2_SEEK_SET);
+    memblock = sceKernelAllocMemBlock ("UVLTemp", 0xC20D060, (filesz + 0xFFF) & ~0xFFF, NULL);
     if (memblock < 0)
     {
         LOG ("Failed allocate %u bytes of memory.", memblock);
@@ -52,17 +64,17 @@ uvl_load_file (const char *filename,    ///< File to load
         LOG ("Failed to locate base for block 0x%08X.", memblock);
         return -1;
     }
-    *size = sceIoRead (fd, base, UVL_BIN_MAX_SIZE);
-    if (*size < 0)
+    nbytes = 0;
+    while ((nread = sceIoRead (fd, base+nbytes, BLOCK_SIZE)) > 0)
     {
-        LOG ("Failed to read %s: 0x%08X", filename, *size);
+        nbytes += nread;
+    }
+    if (nbytes < 0)
+    {
+        LOG ("Failed to read %s: 0x%08X", filename, nbytes);
         return -1;
     }
-    if (*size >= UVL_BIN_MAX_SIZE)
-    {
-        LOG ("Warning. Max homebrew size of %u bytes reached. File could be truncated.", UVL_BIN_MAX_SIZE);
-    }
-    IF_DEBUG LOG ("Read %u bytes from %s", *size, filename);
+    IF_DEBUG LOG ("Read %u bytes from %s", nbytes, filename);
     if (sceIoClose (fd) < 0)
     {
         LOG ("Failed to close file.");
@@ -70,6 +82,7 @@ uvl_load_file (const char *filename,    ///< File to load
     }
 
     *data = base;
+    *size = nbytes;
 
     return 0;
 }
@@ -312,18 +325,18 @@ uvl_load_elf (void *data,           ///< ELF data start
     void  *end;
     import = (void*)(prog_hdrs[idx].p_vaddr + mod_info->stub_top);
     end = (void*)(prog_hdrs[idx].p_vaddr + mod_info->stub_end);
-    for (i = 0; (void*)&import[i] < end; i++)
+    for (; (void *)import < end; import = IMP_GET_NEXT (import))
     {
-        IF_DEBUG LOG ("Loading module for %s", import[i].lib_name);
-        if (uvl_load_module_for_lib (import[i].lib_name) < 0)
+        IF_DEBUG LOG ("Loading module for %s", IMP_GET_NAME (import));
+        if (uvl_load_module_for_lib (IMP_GET_NAME (import)) < 0)
         {
-            LOG ("Cannot load required module for %s. May still be possible to resolve with cached entries. Continuing.", import[i].lib_name);
+            LOG ("Cannot load required module for %s. May still be possible to resolve with cached entries. Continuing.", IMP_GET_NAME (import));
             continue;
         }
-        IF_DEBUG LOG ("Resolving imports for %s", import[i].lib_name);
-        if (uvl_resolve_imports (&import[i]) < 0)
+        IF_DEBUG LOG ("Resolving imports for %s", IMP_GET_NAME (import));
+        if (uvl_resolve_imports (import) < 0)
         {
-            LOG ("Failed to resolve imports for %s", import[i].lib_name);
+            LOG ("Failed to resolve imports for %s", IMP_GET_NAME (import));
             return -1;
         }
     }

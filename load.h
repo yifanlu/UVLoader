@@ -86,7 +86,6 @@ typedef u16_t   Elf32_Half;
 /** @}*/
 #define UVL_SEC_MODINFO        ".sceModuleInfo.rodata" ///< Name of module information section
 #define UVL_SEC_MIN_ALIGN      0x100000                ///< Alignment of each section
-#define UVL_BIN_MAX_SIZE       0x200000                ///< 2MB max, change in the future
 #define ATTR_MOD_INFO          0x8000                  ///< module_exports_t attribute
 
 /** \name ELF structures
