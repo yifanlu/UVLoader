@@ -151,17 +151,17 @@ uvl_get_import_fnid_cache (module_info_t *mod_info, ///< Module containing impor
         off = 0;
         for (header = &libkernel_nid_cache_header[0]; header->module_nid; header++)
         {
-            if (header->module_nid == imports->module_nid)
+            if (header->module_nid == IMP_GET_NID (imports))
             {
-                if (header->entries != imports->num_functions)
+                if (header->entries != IMP_GET_FUNC_COUNT (imports))
                 {
                     LOG ("Warning: Import for %s in %s has %u entries but only %u cached.", 
-                        imports->lib_name, mod_info->modname, 
-                        imports->num_functions, header->entries);
+                        IMP_GET_NAME (imports), mod_info->modname, 
+                        IMP_GET_FUNC_COUNT (imports), header->entries);
                 }
                 else
                 {
-                    IF_VERBOSE LOG ("Using NID cache for %s -> %s", imports->lib_name, mod_info->modname);
+                    IF_VERBOSE LOG ("Using NID cache for %s -> %s", IMP_GET_NAME (imports), mod_info->modname);
                 }
                 func_nid_table = &libkernel_nid_cache[off];
                 break;
@@ -171,7 +171,7 @@ uvl_get_import_fnid_cache (module_info_t *mod_info, ///< Module containing impor
     }
     if (!func_nid_table)
     {
-        func_nid_table = imports->func_nid_table;
+        func_nid_table = IMP_GET_FUNC_TABLE (imports);
     }
 
     return func_nid_table;
@@ -440,19 +440,19 @@ uvl_resolve_add_imports (module_info_t    *mod_info,         ///< Module with im
     const u32_t *func_nid_table;
 
     // get functions first
-    IF_VERBOSE LOG ("Found %u resolved function imports to copy.", imp_table->num_functions);
+    IF_VERBOSE LOG ("Found %u resolved function imports to copy.", IMP_GET_FUNC_COUNT (imp_table));
     if (reload_imp_table) // first attempt: try reloaded module
     {
-        func_nid_table = reload_imp_table->func_nid_table;
+        func_nid_table = IMP_GET_FUNC_TABLE (reload_imp_table);
     }
     else // second attempt: try cached NID database
     {
         func_nid_table = uvl_get_import_fnid_cache (mod_info, imp_table);
     }
-    for(i = 0; i < imp_table->num_functions; i++)
+    for(i = 0; i < IMP_GET_FUNC_COUNT (imp_table); i++)
     {
         nid = func_nid_table[i];
-        memory = imp_table->func_entry_table[i];
+        memory = IMP_GET_FUNC_ENTRIES (imp_table)[i];
         if (uvl_resolve_import_stub_to_entry (memory, nid, &res_entry) < 0)
         {
             LOG ("Error generating entry from import stub. Continuing.");
@@ -474,11 +474,11 @@ uvl_resolve_add_imports (module_info_t    *mod_info,         ///< Module with im
     }
     // get variables
     res_entry.type = RESOLVE_TYPE_VARIABLE;
-    IF_VERBOSE LOG ("Found %u resolved variable imports to copy.", imp_table->num_vars);
-    for(i = 0; i < imp_table->num_vars; i++)
+    IF_VERBOSE LOG ("Found %u resolved variable imports to copy.", IMP_GET_VARS_COUNT (imp_table));
+    for(i = 0; i < IMP_GET_VARS_COUNT (imp_table); i++)
     {
-        res_entry.nid = imp_table->var_nid_table[i];
-        res_entry.value.value = *(u32_t*)imp_table->var_entry_table[i];
+        res_entry.nid = IMP_GET_VARS_TABLE (imp_table)[i];
+        res_entry.value.value = *(u32_t*)IMP_GET_VARS_ENTRIES (imp_table)[i];
         if (uvl_resolve_table_add (&res_entry) < 0)
         {
             LOG ("Error adding entry to table.");
@@ -783,12 +783,12 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
 
         IF_VERBOSE LOG ("Adding resolved imports to resolve table.");
         for (imports = (module_imports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_top); 
-            (u32_t)imports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_end); imports++)
+            (u32_t)imports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_end); imports = IMP_GET_NEXT (imports))
         {
-            IF_VERBOSE LOG ("Adding imports for %s", imports->lib_name);
+            IF_VERBOSE LOG ("Adding imports for %s", IMP_GET_NAME (imports));
             if (reload_imports)
             {
-                reload_imports++;
+                reload_imports = IMP_GET_NEXT (reload_imports);
             }
             if (uvl_resolve_add_imports (mod_info, reload_imports, imports, type & RESOLVE_IMPS_SVC_ONLY) < 0)
             {
@@ -819,15 +819,15 @@ uvl_resolve_imports (module_imports_t *import)   ///< Import table
     u32_t *stub;
 
     IF_DEBUG LOG ("Resolving import table at 0x%08X", (u32_t)import);
-    for (i = 0; i < import->num_functions; i++)
+    for (i = 0; i < IMP_GET_FUNC_COUNT (import); i++)
     {
-        IF_VERBOSE LOG ("Trying to resolve function NID: 0x%08X found in %s", import->func_nid_table[i], import->lib_name);
-        resolve = uvl_resolve_table_get (import->func_nid_table[i]);
-        stub = import->func_entry_table[i];
+        IF_VERBOSE LOG ("Trying to resolve function NID: 0x%08X found in %s", IMP_GET_FUNC_TABLE (import)[i], IMP_GET_NAME (import));
+        resolve = uvl_resolve_table_get (IMP_GET_FUNC_TABLE (import)[i]);
+        stub = IMP_GET_FUNC_ENTRIES (import)[i];
         IF_VERBOSE LOG ("Stub located at: 0x%08X", (u32_t)stub);
         if (resolve == NULL)
         {
-            LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->func_nid_table[i]);
+            LOG ("Cannot resolve NID: 0x%08X. Continuing.", IMP_GET_FUNC_ENTRIES (import)[i]);
             continue;
         }
         if (uvl_resolve_entry_to_import_stub (resolve, stub) < 0)
@@ -837,15 +837,15 @@ uvl_resolve_imports (module_imports_t *import)   ///< Import table
         }
 
     }
-    for (i = 0; i < import->num_vars; i++)
+    for (i = 0; i < IMP_GET_VARS_COUNT (import); i++)
     {
-        IF_VERBOSE LOG ("Trying to resolve variable NID: 0x%08X found in %s", import->var_nid_table[i], import->lib_name);
-        resolve = uvl_resolve_table_get (import->var_nid_table[i]);
-        stub = import->var_entry_table[i];
+        IF_VERBOSE LOG ("Trying to resolve variable NID: 0x%08X found in %s", IMP_GET_VARS_TABLE (import)[i], IMP_GET_NAME (import));
+        resolve = uvl_resolve_table_get (IMP_GET_VARS_TABLE (import)[i]);
+        stub = IMP_GET_VARS_ENTRIES (import)[i];
         IF_VERBOSE LOG ("Stub located at: 0x%08X", (u32_t)stub);
         if (resolve == NULL)
         {
-            LOG ("Cannot resolve NID: 0x%08X. Continuing.", import->var_nid_table[i]);
+            LOG ("Cannot resolve NID: 0x%08X. Continuing.", IMP_GET_VARS_TABLE (import)[i]);
             continue;
         }
         if (uvl_resolve_entry_to_import_stub (resolve, stub) < 0)
@@ -924,16 +924,16 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
 
     // look in imports
     for (imports = (module_imports_t*)((u32_t)base + mod_info->stub_top); 
-            (u32_t)imports < ((u32_t)base + mod_info->stub_end); imports++)
+            (u32_t)imports < ((u32_t)base + mod_info->stub_end); imports = IMP_GET_NEXT (imports))
     {
         func_nid_table = uvl_get_import_fnid_cache (mod_info, imports);
-        for (i = 0; i < imports->num_functions; i++)
+        for (i = 0; i < IMP_GET_FUNC_COUNT (imports); i++)
         {
             if (func_nid_table[i] == nid)
             {
                 //LOG ("Resolved at import 0x%08X", (u32_t)imports->func_entry_table[i]);
                 uvl_unlock_mem ();
-                memcpy (stub, imports->func_entry_table[i], STUB_FUNC_SIZE);
+                memcpy (stub, IMP_GET_FUNC_ENTRIES (imports)[i], STUB_FUNC_SIZE);
                 uvl_lock_mem ();
                 return 0;
             }

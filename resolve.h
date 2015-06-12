@@ -127,12 +127,12 @@ typedef struct module_exports // thanks roxfan
 } module_exports_t;
 
 /**
- * \brief SCE module import table
+ * \brief SCE module import table (< 3.0 format)
  * 
  * Can be found in an ELF file or loaded in 
  * memory.
  */
-typedef struct module_imports // thanks roxfan
+typedef struct module_imports_2x // thanks roxfan
 {
     u16_t   size;               // size of this structure; 0x34 for Vita 1.x
     u16_t   lib_version;        //
@@ -150,7 +150,49 @@ typedef struct module_imports // thanks roxfan
     void    **var_entry_table;  // array of pointers to "ref tables" for each variable
     u32_t   *tls_nid_table;     // NIDs of the imported TLS variables (numTlsVars)
     void    **tls_entry_table;  // array of pointers to ???
+} module_imports_2x_t;
+
+/**
+ * \brief SCE module import table (>= 3.x format)
+ * 
+ * Can be found in an ELF file or loaded in 
+ * memory.
+ */
+typedef struct module_imports_3x
+{
+    u16_t   size;               // size of this structure; 0x24 for Vita 3.x
+    u16_t   lib_version;        //
+    u16_t   attribute;          //
+    u16_t   num_functions;      // number of imported functions
+    u16_t   num_vars;           // number of imported variables
+    u16_t   unknown1;
+    u32_t   module_nid;         // NID of the module to link to
+    char    *lib_name;          // name of module
+    u32_t   *func_nid_table;    // array of function NIDs (numFuncs)
+    void    **func_entry_table; // parallel array of pointers to stubs; they're patched by the loader to jump to the final code
+    u32_t   *var_nid_table;     // NIDs of the imported variables (numVars)
+    void    **var_entry_table;  // array of pointers to "ref tables" for each variable
+} module_imports_3x_t;
+
+/**
+ * \brief SCE module import table
+ */
+typedef union module_imports
+{
+    u16_t size;
+    module_imports_2x_t old_version;
+    module_imports_3x_t new_version;
 } module_imports_t;
+
+#define IMP_GET_NEXT(imp) ((module_imports_t *)((char *)imp + imp->size))
+#define IMP_GET_FUNC_COUNT(imp) (imp->size == sizeof (module_imports_3x_t) ? imp->new_version.num_functions : imp->old_version.num_functions)
+#define IMP_GET_VARS_COUNT(imp) (imp->size == sizeof (module_imports_3x_t) ? imp->new_version.num_vars : imp->old_version.num_vars)
+#define IMP_GET_NID(imp) (imp->size == sizeof (module_imports_3x_t) ? imp->new_version.module_nid : imp->old_version.module_nid)
+#define IMP_GET_NAME(imp) (imp->size == sizeof (module_imports_3x_t) ? imp->new_version.lib_name : imp->old_version.lib_name)
+#define IMP_GET_FUNC_TABLE(imp) (imp->size == sizeof (module_imports_3x_t) ? imp->new_version.func_nid_table : imp->old_version.func_nid_table)
+#define IMP_GET_FUNC_ENTRIES(imp) (imp->size == sizeof (module_imports_3x_t) ? imp->new_version.func_entry_table : imp->old_version.func_entry_table)
+#define IMP_GET_VARS_TABLE(imp) (imp->size == sizeof (module_imports_3x_t) ? imp->new_version.var_nid_table : imp->old_version.var_nid_table)
+#define IMP_GET_VARS_ENTRIES(imp) (imp->size == sizeof (module_imports_3x_t) ? imp->new_version.var_entry_table : imp->old_version.var_entry_table)
 
 /**
  * \brief Either an SCE module import table or export table
