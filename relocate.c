@@ -232,7 +232,7 @@ uvl_relocate (void *reloc,          ///< Base address of relocation segment
                 break;
             default:
                 {
-                    LOG ("Unknown relocation code %d", r_code);
+                    LOG ("Unknown relocation code %u at %x", r_code, pos);
                 }
             case R_ARM_NONE:
                 continue;

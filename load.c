@@ -179,42 +179,6 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
 }
 
 /********************************************//**
- *  \brief Changes import table's offsets 
- *  to loaded file in memory.
- *  
- *  This is only used when NIDs needs to be 
- *  resolved before the program is loaded to 
- *  it's proper location.
- ***********************************************/
-static inline void
-uvl_offset_import (module_imports_t *import,   ///< Import table to modify
-                                int addend)    ///< Positive or negative number to add to all offsets
-{
-    int i;
-    IF_VERBOSE LOG ("Modifying import table offsets for 0x%08X", (u32_t)import);
-    import->lib_name = (void*)((u32_t)import->lib_name + addend);
-    import->func_nid_table = (void*)((u32_t)import->func_nid_table + addend);
-    import->func_entry_table = (void*)((u32_t)import->func_entry_table + addend);
-    import->var_nid_table = (void*)((u32_t)import->var_nid_table + addend);
-    import->var_entry_table = (void*)((u32_t)import->var_entry_table + addend);
-    import->tls_nid_table = (void*)((u32_t)import->tls_nid_table + addend);
-    import->tls_entry_table = (void*)((u32_t)import->tls_entry_table + addend);
-    IF_VERBOSE LOG ("Modifying import table entries offsets for 0x%08X", (u32_t)import);
-    for (i = 0; i < import->num_functions; i++)
-    {
-        import->func_entry_table[i] = (void*)((u32_t)import->func_entry_table[i] + addend);
-    }
-    for (i = 0; i < import->num_vars; i++)
-    {
-        import->var_entry_table[i] = (void*)((u32_t)import->var_entry_table[i] + addend);
-    }
-    for (i = 0; i < import->num_tls_vars; i++)
-    {
-        import->tls_entry_table[i] = (void*)((u32_t)import->tls_entry_table[i] + addend);
-    }
-}
-
-/********************************************//**
  *  \brief Loads an ELF file
  *  
  *  Performs both loading and resolving NIDs

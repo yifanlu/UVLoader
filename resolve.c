@@ -486,6 +486,7 @@ uvl_resolve_add_imports (module_info_t    *mod_info,         ///< Module with im
         }
     }
     // get TLS
+    /*
     // TODO: Find out how this works
     res_entry.type = RESOLVE_TYPE_VARIABLE;
     IF_VERBOSE LOG ("Found %u resolved tls imports to copy.", imp_table->num_tls_vars);
@@ -499,6 +500,7 @@ uvl_resolve_add_imports (module_info_t    *mod_info,         ///< Module with im
             return -1;
         }
     }
+    */
     return 0;
 }
 
@@ -852,6 +854,7 @@ uvl_resolve_imports (module_imports_t *import)   ///< Import table
             return -1;
         }
     }
+    /*
     for (i = 0; i < import->num_tls_vars; i++)
     {
         IF_VERBOSE LOG ("Trying to resolve tls NID: 0x%08X found in %s", import->tls_nid_table[i], import->lib_name);
@@ -869,6 +872,7 @@ uvl_resolve_imports (module_imports_t *import)   ///< Import table
             return -1;
         }
     }
+    */
     return 0;
 }
 
