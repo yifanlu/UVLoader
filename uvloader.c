@@ -129,10 +129,10 @@ uvl_flush_icache (void *addr, unsigned int len)
 int
 uvl_debug_log (const char *line)
 {
-    if (g_context->dbglog)
-        return g_context->dbglog (line);
+    if (g_context->logline)
+        return g_context->logline (line);
     else
-        return 0;
+        return -1;
 }
 
 /********************************************//**
