@@ -70,6 +70,7 @@ uvl_scefuncs_resolve_loader (void *anchor)  ///< Import table entry pointing to 
     RESOLVE_STUB(sceKernelCreateThread, 0xC5C11EE7);
     RESOLVE_STUB(sceKernelLoadModule, 0xBBE82155);
     RESOLVE_STUB(sceKernelUnloadModule, 0x1987920E);
+    RESOLVE_STUB(sceClibVsnprintf, 0xFA6BE467);
 
     #undef RESOLVE_STUB
 }

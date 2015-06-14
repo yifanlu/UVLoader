@@ -136,6 +136,62 @@ uvl_debug_log (const char *line)
 }
 
 /********************************************//**
+ *  \brief printf proxy
+ *  
+ *  Used for exporting debug logging
+ ***********************************************/
+static int
+printf (const char *format, ...)
+{
+    char buffer[MAX_LOG_LENGTH];
+    va_list arg;
+
+    va_start (arg, format);
+    sceClibVsnprintf (buffer, MAX_LOG_LENGTH, format, arg);
+    va_end (arg);
+
+    uvl_debug_log (buffer);
+    return 0;
+}
+
+/********************************************//**
+ *  \brief Add custom NID entries for UVL
+ ***********************************************/
+void
+uvl_add_uvl_exports (void)
+{
+    resolve_entry_t entry;
+    entry.nid = UVL_EXIT_NID;
+    entry.type = RESOLVE_TYPE_FUNCTION;
+    entry.value.func_ptr = uvl_exit;
+    uvl_resolve_table_add (&entry);
+    entry.nid = UVL_CODE_ALLOC_NID;
+    entry.type = RESOLVE_TYPE_FUNCTION;
+    entry.value.func_ptr = uvl_alloc_code_mem;
+    uvl_resolve_table_add (&entry);
+    entry.nid = UVL_CODE_UNLOCK_NID;
+    entry.type = RESOLVE_TYPE_FUNCTION;
+    entry.value.func_ptr = uvl_unlock_mem;
+    uvl_resolve_table_add (&entry);
+    entry.nid = UVL_CODE_LOCK_NID;
+    entry.type = RESOLVE_TYPE_FUNCTION;
+    entry.value.func_ptr = uvl_lock_mem;
+    uvl_resolve_table_add (&entry);
+    entry.nid = UVL_CODE_FLUSH_NID;
+    entry.type = RESOLVE_TYPE_FUNCTION;
+    entry.value.func_ptr = uvl_flush_icache;
+    uvl_resolve_table_add (&entry);
+    entry.nid = UVL_DEBUG_LOG_NID;
+    entry.type = RESOLVE_TYPE_FUNCTION;
+    entry.value.func_ptr = uvl_debug_log;
+    uvl_resolve_table_add (&entry);
+    entry.nid = UVL_PRINTF_NID;
+    entry.type = RESOLVE_TYPE_FUNCTION;
+    entry.value.func_ptr = printf;
+    uvl_resolve_table_add (&entry);
+}
+
+/********************************************//**
  *  \brief Entry point of UVLoader
  *  
  *  \returns Zero on success, otherwise error
@@ -158,14 +214,8 @@ uvl_entry ()
         LOG ("Cannot cache all loaded entries.");
         return -1;
     }
-    IF_DEBUG LOG ("Adding custom exit() hook.");
-    resolve_entry_t exit_resolve = { EXIT_NID, RESOLVE_TYPE_FUNCTION, 0, uvl_exit };
-    if (uvl_resolve_table_add (&exit_resolve) < 0)
-    {
-        LOG ("Cannot add resolve for exit().");
-        return -1;
-    }
-    IF_DEBUG LOG ("Exit at 0x%08X", exit_resolve.value.value);
+    IF_DEBUG LOG ("Adding UVL imports.");
+    uvl_add_uvl_exports ();
     IF_DEBUG LOG ("Loading homebrew.");
     if (uvl_load_exe (UVL_HOMEBREW_PATH, (void**)&start) < 0)
     {

@@ -75,6 +75,7 @@ STUB_FUNCTION(int, sceKernelStartThread);
 STUB_FUNCTION(PsvUID, sceKernelCreateThread);
 STUB_FUNCTION(PsvUID, sceKernelLoadModule);
 STUB_FUNCTION(int, sceKernelUnloadModule);
+STUB_FUNCTION(int, sceClibVsnprintf);
 
 void uvl_scefuncs_resolve_loader (void *anchor);
 
