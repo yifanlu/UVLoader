@@ -44,7 +44,7 @@ int START_SECTION
 uvl_start (uvl_context_t *ctx)    ///< Pass in context information
 {
     uvl_init_from_context (ctx);
-    uvl_scefuncs_resolve_loader (ctx->libkernel_anchor); // must be first
+    uvl_scefuncs_resolve_loader (ctx->libkernel_anchor);
     vita_init_log ();
     LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
 #ifdef UVL_NEW_THREAD
@@ -112,6 +112,15 @@ void
 uvl_lock_mem (void)
 {
     g_context->psvLockMem ();
+}
+
+/********************************************//**
+ *  \brief From context buffer
+ ***********************************************/
+void
+uvl_flush_icache (void *addr, unsigned int len)
+{
+    g_context->psvFlushIcache (addr, len);
 }
 
 /********************************************//**

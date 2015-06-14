@@ -50,7 +50,7 @@ uvl_scefuncs_resolve_loader (void *anchor)  ///< Import table entry pointing to 
     // unfortunally, we can't do error checks yet so let's pray
     // it doesn't crash
     uvl_resolve_import_stub_to_entry (anchor, 0, &kernel_base);
-    kernel_base.value.value &= (~0 - 1); // unset first bit (entry is thumb code)
+    kernel_base.value.value &= ~1u; // unset first bit (entry is thumb code)
     #define RESOLVE_STUB(_stub, _nid) uvl_resolve_loader (_nid, kernel_base.value.ptr, _stub);
 
     RESOLVE_STUB(sceKernelStopUnloadModule, 0x2415F8A4);

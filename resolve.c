@@ -940,6 +940,7 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
                 ((u32_t*)stub)[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)((u32_t)exports->entry_table[i] >> 16), 12);
                 ((u32_t*)stub)[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 12);
                 uvl_lock_mem ();
+                uvl_flush_icache (stub, STUB_FUNC_SIZE);
                 return 0;
             }
         }
@@ -958,6 +959,7 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
                 uvl_unlock_mem ();
                 memcpy (stub, IMP_GET_FUNC_ENTRIES (imports)[i], STUB_FUNC_SIZE);
                 uvl_lock_mem ();
+                uvl_flush_icache (stub, STUB_FUNC_SIZE);
                 return 0;
             }
         }

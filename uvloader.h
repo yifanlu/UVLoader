@@ -32,6 +32,7 @@ typedef struct uvl_context
     void (*psvUnlockMem)(void);                    ///< Unlock code block
     void (*psvLockMem)(void);                      ///< Relock code block
     int (*dbglog)(const char *);                   ///< Debug logging (optional)
+    void (*psvFlushIcache)(void *, unsigned int);  ///< Flush Icache
     void *libkernel_anchor;                        ///< Any imported SceLibKernel function
 } uvl_context_t;
 
@@ -42,6 +43,7 @@ int uvl_exit (int status);
 void *uvl_alloc_code_mem (unsigned int *p_len);
 void uvl_unlock_mem ();
 void uvl_lock_mem ();
+void uvl_flush_icache (void *addr, unsigned int len);
 int uvl_debug_log (const char *line);
 
 #endif
