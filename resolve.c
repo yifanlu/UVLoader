@@ -790,7 +790,7 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
         if (type & RESOLVE_RELOAD_MOD)
         {
             opt = sizeof (opt);
-            IF_DEBUG LOG ("Attempting to reload: %s", m_mod_info.file_path);
+            IF_VERBOSE LOG ("Attempting to reload: %s", m_mod_info.file_path);
             reload_mod = sceKernelLoadModule (m_mod_info.file_path, 0, &opt);
             m_reload_mod_info.size = sizeof (loaded_module_info_t);
             if (sceKernelGetModuleInfo (reload_mod, &m_reload_mod_info) >= 0)
