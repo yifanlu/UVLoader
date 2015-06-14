@@ -44,7 +44,7 @@ More information will be available when the time comes...
 First of all, be aware that it is impossible to use UVL without an exploit, 
 but once you have that and need a payload, all you need to do is modify 
 the Makefile to point to your ARM toolchain and run "make". The toolchain 
-that is tested with is <http://www.yagarto.de/>.
+that is tested with is <https://launchpad.net/gcc-arm-embedded/+download>.
 
 ## Who's responsible for this?
 
@@ -59,6 +59,7 @@ forgotten.)
 ### Thanks To
 
 * Davee for many ideas and help
+* Proxima for module reloading NID antidote method
 * naehrwert for some code snippets and programming help
 * roxfan for finding structures
 * anyone in #vitadev who answered my stupid questions
