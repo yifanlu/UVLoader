@@ -214,10 +214,14 @@ uvl_resolve_import_stub_to_entry (void *stub,  ///< Stub function to read
             case INSTRUCTION_BRANCH:
                 entry->type = RESOLVE_TYPE_FUNCTION; // value's meaning changed to function ptr
                 break;
+            case INSTRUCTION_ADR:
+                entry->type = RESOLVE_TYPE_RELATIVE;
+                entry->value.value = 0;
+                break; // TODO: Support this kind of relocation
             case INSTRUCTION_UNKNOWN: // we should have already breaked!
             default:
                 IF_DEBUG LOG ("Invalid instruction: 0x%08X found at 0x%08X for NID 0x%08X", *(u32_t*)stub, (u32_t)stub, nid);
-                break;
+                return -1;
         }
         if (entry->type != RESOLVE_TYPE_UNKNOWN)
         {
@@ -317,36 +321,54 @@ uvl_decode_arm_inst (u32_t cur_inst, ///< ARMv7 instruction
     else if (!BIT_SET (cur_inst, 26) && BIT_SET (cur_inst, 25))
     {
         // Bits 24-23 should be 10
-        if (!(BIT_SET (cur_inst, 24) && !BIT_SET (cur_inst, 23)))
+        if (BIT_SET (cur_inst, 24) && !BIT_SET (cur_inst, 23))
         {
-            // Not an valid ARM MOV instruction.
-            return -1;
+            // MOV instruction
+            // Bits 21-20 should be 00
+            if (!(!BIT_SET (cur_inst, 21) && !BIT_SET (cur_inst, 20)))
+            {
+                // Invalid ARM MOV instruction.
+                return -1;
+            }
+            // Bits 15-12 should be 1100 for R12 load
+            if (!(BIT_SET (cur_inst, 15) && BIT_SET (cur_inst, 14) && !BIT_SET (cur_inst, 13) && !BIT_SET (cur_inst, 12)))
+            {
+                // Not R12, unsupported
+                return -1;
+            }
+            // Bit 22 is 1 for top load 0 for bottom load
+            if (BIT_SET (cur_inst, 22)) // top load
+            {
+                *type = INSTRUCTION_MOVT;
+            }
+            else
+            {
+                *type = INSTRUCTION_MOVW;
+            }
+            // Immediate value at 19-16 and 11-0
+            // discard bytes 31-20
+            // discard bytes 15-0
+            return (((cur_inst << 12) >> 28) << 12) | ((cur_inst << 20) >> 20);
         }
-        // Bits 21-20 should be 00
-        if (!(!BIT_SET (cur_inst, 21) && !BIT_SET (cur_inst, 20)))
+        // Bits 24-23 should be 00
+        else if (!BIT_SET (cur_inst, 24) && !BIT_SET (cur_inst, 23))
         {
-            // Invalid ARM MOV instruction.
-            return -1;
+            // ADR instruction
+            // Bits 22-16 should be 1001111
+            if (!(BIT_SET (cur_inst, 22) && !BIT_SET (cur_inst, 21) && !BIT_SET (cur_inst, 20) && BIT_SET (cur_inst, 19) && BIT_SET (cur_inst, 18) && BIT_SET (cur_inst, 17) && BIT_SET (cur_inst, 16)))
+            {
+                // Invalid ARM ADR instruction
+                return -1;
+            }
+            // Bits 15-12 should be 1100 for R12 load
+            if (!(BIT_SET (cur_inst, 15) && BIT_SET (cur_inst, 14) && !BIT_SET (cur_inst, 13) && !BIT_SET (cur_inst, 12)))
+            {
+                // Not R12, unsupported
+                return -1;
+            }
+            *type = INSTRUCTION_ADR;
+            return cur_inst & 0xFFF;
         }
-        // Bits 15-12 should be 1100 for R12 load
-        if (!(BIT_SET (cur_inst, 15) && BIT_SET (cur_inst, 14) && !BIT_SET (cur_inst, 13) && !BIT_SET (cur_inst, 12)))
-        {
-            // Not R12, unsupported
-            return -1;
-        }
-        // Bit 22 is 1 for top load 0 for bottom load
-        if (BIT_SET (cur_inst, 22)) // top load
-        {
-            *type = INSTRUCTION_MOVT;
-        }
-        else
-        {
-            *type = INSTRUCTION_MOVW;
-        }
-        // Immediate value at 19-16 and 11-0
-        // discard bytes 31-20
-        // discard bytes 15-0
-        return (((cur_inst << 12) >> 28) << 12) | ((cur_inst << 20) >> 20);
     }
     // Bits 27-25 should be 000 for jump instructions
     else if (!BIT_SET (cur_inst, 26) && !BIT_SET (cur_inst, 25))
@@ -657,6 +679,7 @@ uvl_resolve_add_all_modules (int type) ///< An OR combination of flags (see defi
             continue;
         }
     }
+    IF_DEBUG LOG ("Added %u NID entries to resolve database.", g_resolve_table->length);
     return 0;
 }
 
@@ -737,7 +760,7 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
         LOG ("Error getting info for mod 0x%08X", modid);
         return -1;
     }
-    IF_VERBOSE LOG ("Module: %s, file: %s", m_mod_info.module_name, m_mod_info.file_path);
+    IF_DEBUG LOG ("Module: %s, at: 0x%08X", m_mod_info.module_name, m_mod_info.segments[0].vaddr);
     if ((mod_info = uvl_find_module_info (&m_mod_info)) == NULL)
     {
         LOG ("Can't get module information for %s.", m_mod_info.module_name);
