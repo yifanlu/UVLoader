@@ -809,14 +809,14 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
             (u32_t)imports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->stub_end); imports = IMP_GET_NEXT (imports))
         {
             IF_VERBOSE LOG ("Adding imports for %s", IMP_GET_NAME (imports));
-            if (reload_imports)
-            {
-                reload_imports = IMP_GET_NEXT (reload_imports);
-            }
             if (uvl_resolve_add_imports (mod_info, reload_imports, imports, type & RESOLVE_IMPS_SVC_ONLY) < 0)
             {
                 LOG ("Unable to resolve imports at 0x%08X. Continuing.", (u32_t)imports);
                 continue;
+            }
+            if (reload_imports)
+            {
+                reload_imports = IMP_GET_NEXT (reload_imports);
             }
         }
 
