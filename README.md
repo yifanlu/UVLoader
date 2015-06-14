@@ -8,7 +8,8 @@ Userland Vita Loader 1.0.0
 * Relocatable ELF (ET_SCE_RELEXEC) support
 * ARM relocation resolving
 * SceLibKernel NID cache database (for NID poison bypass)
-* Library reloading (another NID poison bypass technique)
+* Library reloading (another NID antidote technique)
+* UVL custom exports (code alloc, icache flush, logging via USB)
 
 ### Version 0.1.0
 
