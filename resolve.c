@@ -850,7 +850,7 @@ uvl_resolve_imports (module_imports_t *import)   ///< Import table
         IF_VERBOSE LOG ("Stub located at: 0x%08X", (u32_t)stub);
         if (resolve == NULL)
         {
-            LOG ("Cannot resolve NID: 0x%08X. Continuing.", IMP_GET_FUNC_ENTRIES (import)[i]);
+            LOG ("Cannot resolve NID: 0x%08X. Continuing.", IMP_GET_FUNC_TABLE (import)[i]);
             continue;
         }
         if (uvl_resolve_entry_to_import_stub (resolve, stub) < 0)
