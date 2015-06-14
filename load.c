@@ -386,18 +386,6 @@ uvl_elf_check_header (Elf32_Ehdr_t *hdr) ///< ELF header to check
         LOG ("Unsupported ELF version.");
         return -1;
     }
-    // contains headers
-    if (!(hdr->e_shoff > 0 && hdr->e_phoff > 0))
-    {
-        LOG ("Missing table header(s).");
-        return -1;
-    }
-    // contains strings
-    if (!(hdr->e_shstrndx > 0))
-    {
-        LOG ("Missing strings table.");
-        return -1;
-    }
     return 0;
 }
 
