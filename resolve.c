@@ -937,7 +937,7 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
     u32_t i;
     const u32_t *func_nid_table;
 
-    //LOG ("Resolving 0x%08X for 0x%08X", nid, (u32_t)stub);
+    IF_VERBOSE LOG ("Resolving 0x%08X for 0x%08X", nid, (u32_t)stub);
 
     // Should always be first occurance of string
     result = memstr (libkernel, UVL_LIBKERN_MAX_SIZE, "SceLibKernel", strlen ("SceLibKernel"));
@@ -952,7 +952,7 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
         {
             if (exports->nid_table[i] == nid)
             {
-                //LOG ("Resolved at export 0x%08X", (u32_t)exports->entry_table[i]);
+                IF_VERBOSE LOG ("Resolved at export 0x%08X", (u32_t)exports->entry_table[i]);
                 uvl_unlock_mem ();
                 ((u32_t*)stub)[0] = uvl_encode_arm_inst (INSTRUCTION_MOVW, (u16_t)(u32_t)exports->entry_table[i], 12);
                 ((u32_t*)stub)[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)((u32_t)exports->entry_table[i] >> 16), 12);
@@ -973,7 +973,7 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
         {
             if (func_nid_table[i] == nid)
             {
-                //LOG ("Resolved at import 0x%08X", (u32_t)imports->func_entry_table[i]);
+                IF_VERBOSE LOG ("Resolved at import 0x%08X", (u32_t)imports->func_entry_table[i]);
                 uvl_unlock_mem ();
                 memcpy (stub, IMP_GET_FUNC_ENTRIES (imports)[i], STUB_FUNC_SIZE);
                 uvl_lock_mem ();
@@ -983,7 +983,7 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
         }
     }
 
-    //LOG ("Cannot resolve.");
+    LOG ("Cannot resolve 0x%08X for loader, UVL will not work properly.", nid);
 
     return -1;
 }
