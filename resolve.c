@@ -146,7 +146,7 @@ uvl_get_import_fnid_cache (module_info_t *mod_info, ///< Module containing impor
     const u32_t *func_nid_table;
 
     func_nid_table = NULL;
-    if (mod_info->module_nid == LIBKERNEL_LIB_NID) // SceLibKernel
+    //if (mod_info->module_nid == LIBKERNEL_LIB_NID) // SceLibKernel
     {
         off = 0;
         for (header = &libkernel_nid_cache_header[0]; header->module_nid; header++)
