@@ -12,6 +12,8 @@ typedef struct {
 #include "nidcache-318.h"
 #elif defined(FW_315)
 #include "nidcache-315.h"
+#elif defined(FW_351)
+#include "nidcache-351.h"
 #elif defined(FW_169)
 #include "nidcache-169.h"
 #else
