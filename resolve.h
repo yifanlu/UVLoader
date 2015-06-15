@@ -18,6 +18,7 @@
 #define RESOLVE_TYPE_SYSCALL    2       ///< Syscall
 #define RESOLVE_TYPE_VARIABLE   3       ///< Imported variable
 #define RESOLVE_TYPE_RELATIVE   4       ///< PC relative import
+#define RESOLVE_TYPE_UNRESOLVED 5       ///< No resolve
 /** @}*/
 
 /** \name Supported ARM instruction types
@@ -29,6 +30,7 @@
 #define INSTRUCTION_SYSCALL     3       ///< SVC \#imm instruction
 #define INSTRUCTION_BRANCH      4       ///< BX Rn instruction
 #define INSTRUCTION_ADR         5       ///< Relative addressing
+#define INSTRUCTION_MVN         6       ///< MVN 0 (always invalid)
 /** @}*/
 
 #define STUB_FUNC_MAX_LEN       16      ///< Max size for a stub function in bytes

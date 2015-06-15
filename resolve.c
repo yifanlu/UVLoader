@@ -218,6 +218,10 @@ uvl_resolve_import_stub_to_entry (void *stub,  ///< Stub function to read
                 entry->type = RESOLVE_TYPE_RELATIVE;
                 entry->value.value = 0;
                 break; // TODO: Support this kind of relocation
+            case INSTRUCTION_MVN:
+                entry->type = RESOLVE_TYPE_UNRESOLVED;
+                entry->value.value = 0;
+                break;
             case INSTRUCTION_UNKNOWN: // we should have already breaked!
             default:
                 IF_DEBUG LOG ("Invalid instruction: 0x%08X found at 0x%08X for NID 0x%08X", *(u32_t*)stub, (u32_t)stub, nid);
@@ -368,6 +372,20 @@ uvl_decode_arm_inst (u32_t cur_inst, ///< ARMv7 instruction
             }
             *type = INSTRUCTION_ADR;
             return cur_inst & 0xFFF;
+        }
+        // Bits 24-23 should be 11
+        else if (BIT_SET (cur_inst, 24) && BIT_SET (cur_inst, 23))
+        {
+            // ADR instruction
+            // Bits 22-21 should be 11
+            if (!(BIT_SET (cur_inst, 22) && BIT_SET (cur_inst, 21)))
+            {
+                // Invalid ARM MVN instruction
+                return -1;
+            }
+            // MVN is always invalid
+            *type = INSTRUCTION_MVN;
+            return 0;
         }
     }
     // Bits 27-25 should be 000 for jump instructions
