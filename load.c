@@ -21,8 +21,6 @@
 #include "utils.h"
 #include "uvloader.h"
 
-#define BLOCK_SIZE 0x10000
-
 /********************************************//**
  *  \brief Loads file to memory
  *  
@@ -66,7 +64,7 @@ uvl_load_file (const char *filename,    ///< File to load
     }
     base = (char *)(((u32_t)base + 0xFFF) & ~0xFFF); // align memory base
     nbytes = 0;
-    while ((nread = sceIoRead (fd, base+nbytes, BLOCK_SIZE)) > 0)
+    while ((nread = sceIoRead (fd, base+nbytes, filesz)) < filesz-nbytes)
     {
         nbytes += nread;
     }
