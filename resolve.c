@@ -973,7 +973,7 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
         {
             if (func_nid_table[i] == nid)
             {
-                IF_VERBOSE LOG ("Resolved at import 0x%08X", (u32_t)imports->func_entry_table[i]);
+                IF_VERBOSE LOG ("Resolved at import 0x%08X", (u32_t)IMP_GET_FUNC_ENTRIES (imports)[i]);
                 uvl_unlock_mem ();
                 memcpy (stub, IMP_GET_FUNC_ENTRIES (imports)[i], STUB_FUNC_SIZE);
                 uvl_lock_mem ();
