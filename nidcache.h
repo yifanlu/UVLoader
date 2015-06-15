@@ -8,7 +8,9 @@ typedef struct {
     u32_t entries;
 } nid_cache_db;
 
-#if defined(FW_315)
+#if defined(FW_318)
+#include "nidcache-318.h"
+#elif defined(FW_315)
 #include "nidcache-315.h"
 #elif defined(FW_169)
 #include "nidcache-169.h"
