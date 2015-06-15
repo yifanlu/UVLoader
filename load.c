@@ -35,7 +35,7 @@ uvl_load_file (const char *filename,    ///< File to load
 {
     PsvUID fd;
     PsvUID memblock;
-    void *base;
+    char *base;
     PsvOff filesz;
     PsvOff nread;
     PsvSSize nbytes;
@@ -64,6 +64,7 @@ uvl_load_file (const char *filename,    ///< File to load
         LOG ("Failed to locate base for block 0x%08X.", memblock);
         return -1;
     }
+    base = (char *)(((u32_t)base + 0xFFF) & ~0xFFF); // align memory base
     nbytes = 0;
     while ((nread = sceIoRead (fd, base+nbytes, BLOCK_SIZE)) > 0)
     {
