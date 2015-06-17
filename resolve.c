@@ -23,6 +23,9 @@
 /** Checks if a bit is set in a given member */
 #define BIT_SET(i, b) (i & (0x1 << b))
 
+/** Remember SceLibKernel NID so we can resolve with caching */
+int g_libkenel_nid = 0;
+
 /** Stores resolve entries */
 struct resolve_table {
     PsvUID             block_uid;   ///< UID of the memory block for freeing
@@ -146,7 +149,7 @@ uvl_get_import_fnid_cache (module_info_t *mod_info, ///< Module containing impor
     const u32_t *func_nid_table;
 
     func_nid_table = NULL;
-    if (mod_info->module_nid == LIBKERNEL_LIB_NID) // SceLibKernel
+    if (mod_info->module_nid == g_libkenel_nid) // SceLibKernel
     {
         off = 0;
         for (header = &libkernel_nid_cache_header[0]; header->module_nid; header++)
@@ -943,6 +946,15 @@ uvl_resolve_loader (u32_t nid, void *libkernel, void *stub)
     result = memstr (libkernel, UVL_LIBKERN_MAX_SIZE, "SceLibKernel", strlen ("SceLibKernel"));
     mod_info = (module_info_t*)((u32_t)result - 4);
     base = (char *)mod_info - mod_info->ent_top + sizeof (module_info_t);
+
+    // remember libkernel nid if needed
+    if (!g_libkenel_nid)
+    {
+        uvl_unlock_mem ();
+        g_libkenel_nid = mod_info->module_nid;
+        uvl_lock_mem ();
+        IF_VERBOSE LOG ("SceLibKernel NID: 0x%08X", g_libkenel_nid);
+    }
 
     // look in exports
     for (exports = (module_exports_t*)((u32_t)base + mod_info->ent_top); 

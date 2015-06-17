@@ -1,5 +1,3 @@
-#define LIBKERNEL_LIB_NID 0xC9FDFAA
-
 const nid_cache_db libkernel_nid_cache_header[] = {
     {0x37FE725A, 4},  // SceSysmem
     {0x859A24B1, 160}, // SceThreadmgr

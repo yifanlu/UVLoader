@@ -1,5 +1,5 @@
 CC=arm-none-eabi-gcc
-CFLAGS=-fPIE -fno-zero-initialized-in-bss -std=c99 -mcpu=cortex-a9 -D DEBUG -D FW_318 -mthumb-interwork
+CFLAGS=-fPIE -fno-zero-initialized-in-bss -std=c99 -mcpu=cortex-a9 -D DEBUG -D FW_3XX -mthumb-interwork
 CFLAGS_THUMB=-mthumb
 LD=arm-none-eabi-gcc
 LDFLAGS=-T linker.x -nodefaultlibs -nostdlib -pie
