@@ -26,6 +26,47 @@
 /** Remember SceLibKernel NID so we can resolve with caching */
 int g_libkenel_nid = 0;
 
+/** Functions which are always hooked */
+const resolve_entry_t forced_hooks[] = {
+    {
+        .nid = UVL_EXIT_NID,
+        .type = RESOLVE_TYPE_FUNCTION,
+        .value.func_ptr = uvl_exit
+    }, {
+        .nid = UVL_CODE_ALLOC_NID,
+        .type = RESOLVE_TYPE_FUNCTION,
+        .value.func_ptr = uvl_alloc_code_mem
+    }, {
+        .nid = UVL_CODE_UNLOCK_NID,
+        .type = RESOLVE_TYPE_FUNCTION,
+        .value.func_ptr = uvl_unlock_mem
+    }, {
+        .nid = UVL_CODE_LOCK_NID,
+        .type = RESOLVE_TYPE_FUNCTION,
+        .value.func_ptr = uvl_lock_mem
+    }, {
+        .nid = UVL_CODE_FLUSH_NID,
+        .type = RESOLVE_TYPE_FUNCTION,
+        .value.func_ptr = uvl_flush_icache
+    }, {
+        .nid = UVL_DEBUG_LOG_NID,
+        .type = RESOLVE_TYPE_FUNCTION,
+        .value.func_ptr = uvl_debug_log
+    }, {
+        .nid = UVL_PRINTF_NID,
+        .type = RESOLVE_TYPE_FUNCTION,
+        .value.func_ptr = printf
+    }, {
+        .nid = UVL_SET_HOOK_NID,
+        .type = RESOLVE_TYPE_FUNCTION,
+        .value.func_ptr = uvl_set_hook
+    }, {
+        .nid = UVL_LOAD_NID,
+        .type = RESOLVE_TYPE_FUNCTION,
+        .value.func_ptr = uvl_load
+    }
+};
+
 /** Stores resolve entries */
 struct resolve_table {
     PsvUID             block_uid;   ///< UID of the memory block for freeing
@@ -63,7 +104,8 @@ uvl_resolve_table_initialize ()
     g_resolve_table = base;
     uvl_lock_mem ();
     g_resolve_table->block_uid = block;
-    g_resolve_table->length = 0;
+    memcpy(g_resolve_table->table, forced_hooks, sizeof(forced_hooks));
+    g_resolve_table->length = sizeof(forced_hooks) / sizeof(resolve_entry_t);
     return 0;
 }
 
@@ -117,7 +159,7 @@ uvl_resolve_table_add (resolve_entry_t *entry) ///< Entry to add
 /********************************************//**
  *  \brief Gets a resolve entry
  *  
- *  This function returns the last entry in the 
+ *  This function returns the first entry in the 
  *  table that has the given NID.
  *  \returns Entry on success, NULL on error
  ***********************************************/
@@ -125,7 +167,7 @@ resolve_entry_t *
 uvl_resolve_table_get (u32_t nid)               ///< NID to resolve
 {
     int i;
-    for (i = g_resolve_table->length - 1; i >= 0; i--)
+    for (i = 0; i < g_resolve_table->length; i++)
     {
         if (g_resolve_table->table[i].nid == nid)
         {

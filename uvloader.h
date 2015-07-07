@@ -84,6 +84,7 @@ int uvl_debug_log (const char *line);
 int uvl_load (const char *path);
 int uvl_set_hook (uvl_exit_cb_t callback);
 void uvl_exit (int status);
+int printf (const char *format, ...);
 /** @}*/
 
 #endif

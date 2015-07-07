@@ -143,7 +143,7 @@ uvl_debug_log (const char *line)
  *  
  *  Used for exporting debug logging
  ***********************************************/
-static int
+int
 printf (const char *format, ...)
 {
     char buffer[MAX_LOG_LENGTH];
@@ -155,51 +155,6 @@ printf (const char *format, ...)
 
     uvl_debug_log (buffer);
     return 0;
-}
-
-/********************************************//**
- *  \brief Add custom NID entries for UVL
- ***********************************************/
-void
-uvl_add_uvl_exports (void)
-{
-    resolve_entry_t entry;
-    entry.nid = UVL_EXIT_NID;
-    entry.type = RESOLVE_TYPE_FUNCTION;
-    entry.value.func_ptr = uvl_exit;
-    uvl_resolve_table_add (&entry);
-    entry.nid = UVL_CODE_ALLOC_NID;
-    entry.type = RESOLVE_TYPE_FUNCTION;
-    entry.value.func_ptr = uvl_alloc_code_mem;
-    uvl_resolve_table_add (&entry);
-    entry.nid = UVL_CODE_UNLOCK_NID;
-    entry.type = RESOLVE_TYPE_FUNCTION;
-    entry.value.func_ptr = uvl_unlock_mem;
-    uvl_resolve_table_add (&entry);
-    entry.nid = UVL_CODE_LOCK_NID;
-    entry.type = RESOLVE_TYPE_FUNCTION;
-    entry.value.func_ptr = uvl_lock_mem;
-    uvl_resolve_table_add (&entry);
-    entry.nid = UVL_CODE_FLUSH_NID;
-    entry.type = RESOLVE_TYPE_FUNCTION;
-    entry.value.func_ptr = uvl_flush_icache;
-    uvl_resolve_table_add (&entry);
-    entry.nid = UVL_DEBUG_LOG_NID;
-    entry.type = RESOLVE_TYPE_FUNCTION;
-    entry.value.func_ptr = uvl_debug_log;
-    uvl_resolve_table_add (&entry);
-    entry.nid = UVL_PRINTF_NID;
-    entry.type = RESOLVE_TYPE_FUNCTION;
-    entry.value.func_ptr = printf;
-    uvl_resolve_table_add (&entry);
-    entry.nid = UVL_SET_HOOK_NID;
-    entry.type = RESOLVE_TYPE_FUNCTION;
-    entry.value.func_ptr = uvl_set_hook;
-    uvl_resolve_table_add (&entry);
-    entry.nid = UVL_LOAD_NID;
-    entry.type = RESOLVE_TYPE_FUNCTION;
-    entry.value.func_ptr = uvl_load;
-    uvl_resolve_table_add (&entry);
 }
 
 /********************************************//**
@@ -222,8 +177,6 @@ uvl_start_load ()
         LOG ("Cannot cache all loaded entries.");
         return -1;
     }
-    IF_DEBUG LOG ("Adding UVL imports.");
-    uvl_add_uvl_exports ();
     IF_DEBUG LOG ("Loading homebrew.");
     if (uvl_load (UVL_HOMEBREW_PATH) < 0)
     {
