@@ -200,6 +200,8 @@ uvl_start_load ()
     {
         return -1;
     }
+    IF_DEBUG LOG ("Cleaning up.");
+    uvl_resolve_table_destroy ();
     return 0;
 }
 
@@ -269,18 +271,4 @@ void
 uvl_exit (int status)
 {
     sceKernelExitDeleteThread (0);
-}
-
-/********************************************//**
- *  \brief Finalize UVLoader, freeing resources.
- *  Call this if uvl_load will never be called
- *  again.
- *  
- *  \returns Zero on success
- ***********************************************/
-void
-uvl_final ()
-{
-    IF_DEBUG LOG ("Freeing resolve table.");
-    uvl_resolve_table_destroy ();
 }

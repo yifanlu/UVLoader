@@ -19,7 +19,6 @@
 #define UVL_CODE_FLUSH_NID      0xC85B400C      ///< uvl_flush_icache
 #define UVL_DEBUG_LOG_NID       0xD4F59028      ///< uvl_debug_log
 #define UVL_LOAD_NID            0xE8E92954      ///< uvl_load
-#define UVL_FINAL_NID           0x57FC7C6A      ///< uvl_final
 
 #define LOADED_INFO_SIZE        0x1000          ///< Must be page aligned
 
@@ -61,6 +60,8 @@ typedef void (*uvl_exit_cb_t)(int status);
 typedef struct uvl_loaded
 {
     PsvUID tid;                 ///< UID of running thread
+    int stack_size;             ///< Stack size of loaded application
+    int thread_priority;        ///< Priority of loaded application
     int numsegs;                ///< Number of elements in array below
     PsvUID segs[0];             ///< Array of memory segments allocated
 } uvl_loaded_t;
@@ -78,7 +79,6 @@ void uvl_flush_icache (void *addr, unsigned int len);
 int uvl_debug_log (const char *line);
 int uvl_load (const char *path);
 void uvl_exit (int status);
-void uvl_final ();
 /** @}*/
 
 #endif
