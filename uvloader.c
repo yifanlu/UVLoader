@@ -167,10 +167,6 @@ uvl_add_uvl_exports (void)
     entry.type = RESOLVE_TYPE_FUNCTION;
     entry.value.func_ptr = uvl_load;
     uvl_resolve_table_add (&entry);
-    entry.nid = UVL_FINAL_NID;
-    entry.type = RESOLVE_TYPE_FUNCTION;
-    entry.value.func_ptr = uvl_final;
-    uvl_resolve_table_add (&entry);
 }
 
 /********************************************//**
