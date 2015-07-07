@@ -119,7 +119,8 @@ uvl_free_data (void *data)      ///< Data allocated by @c uvl_load_file
  ***********************************************/
 int
 uvl_load_exe (const char *filename, ///< Absolute path to executable
-                    void **entry)   ///< Returned pointer to entry pointer
+                    void **entry,   ///< Returned pointer to entry pointer
+            uvl_loaded_t *loaded)   ///< Pointer to loaded info
 {
     void *data;
     PsvSSize size;
@@ -142,7 +143,7 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
         if (magic[1] == ELFMAG1 && magic[2] == ELFMAG2 && magic[3] == ELFMAG3)
         {
             IF_DEBUG LOG ("Found a ELF, loading.");
-            if (uvl_load_elf (data, entry) < 0)
+            if (uvl_load_elf (data, entry, loaded) < 0)
             {
                 LOG ("Cannot load ELF.");
                 return -1;
@@ -155,7 +156,7 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
         {
             offset = ((u32_t*)data)[4];
             IF_DEBUG LOG ("Loading FSELF. ELF offset at 0x%08X", offset);
-            if (uvl_load_elf ((void*)((u32_t)data + offset), entry) < 0)
+            if (uvl_load_elf ((void*)((u32_t)data + offset), entry, loaded) < 0)
             {
                 LOG ("Cannot load FSELF.");
                 return -1;
@@ -185,7 +186,8 @@ uvl_load_exe (const char *filename, ///< Absolute path to executable
  ***********************************************/
 int 
 uvl_load_elf (void *data,           ///< ELF data start
-              void **entry)         ///< Returned pointer to entry pointer
+              void **entry,         ///< Returned pointer to entry pointer
+            uvl_loaded_t *loaded)   ///< Pointer to loaded info
 {
     Elf32_Ehdr_t *elf_hdr;
     u32_t i;
@@ -206,16 +208,12 @@ uvl_load_elf (void *data,           ///< ELF data start
     Elf32_Phdr_t *prog_hdrs;
     IF_VERBOSE LOG ("Reading program headers.");
     prog_hdrs = (void*)((u32_t)data + elf_hdr->e_phoff);
-
-    /* No longer needed
-    // free memory
-    IF_DEBUG LOG ("Cleaning up memory.");
-    if (uvl_elf_free_memory (prog_hdrs, elf_hdr->e_phnum) < 0)
+    loaded->numsegs = elf_hdr->e_phnum;
+    if (sizeof (PsvUID) * loaded->numsegs + sizeof (*loaded) > LOADED_INFO_SIZE)
     {
-        LOG ("Error freeing memory.");
+        LOG ("Too many segments: %d", elf_hdr->e_phnum);
         return -1;
     }
-    */
 
     // actually load the ELF
     PsvUID memblock;
@@ -226,7 +224,7 @@ uvl_load_elf (void *data,           ///< ELF data start
         LOG ("No program sections to load!");
         return -1;
     }
-    IF_DEBUG LOG ("Loading %u program sections.", elf_hdr->e_phnum);
+    IF_DEBUG LOG ("Loading %u program segments.", elf_hdr->e_phnum);
     for (i = 0; i < elf_hdr->e_phnum; i++)
     {
         if (prog_hdrs[i].p_type == PT_LOAD)
@@ -252,6 +250,7 @@ uvl_load_elf (void *data,           ///< ELF data start
             }
 
             // remember where we're loaded
+            loaded->segs[i] = memblock;
             prog_hdrs[i].p_vaddr = blockaddr;
 
             IF_DEBUG LOG ("Allocated memory at 0x%08X, attempting to load segment %u.", (u32_t)blockaddr, i);

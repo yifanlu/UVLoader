@@ -141,14 +141,15 @@ typedef struct Elf32_Phdr
  *  @{
  */
 typedef struct module_info module_info_t;
+typedef struct uvl_loaded uvl_loaded_t;
 /** @}*/
 
 /** \name Functions to load code
  *  @{
  */
 int uvl_load_file (const char *filename, void **data, PsvSSize *size);
-int uvl_load_exe (const char *filename, void **entry);
-int uvl_load_elf (void *data, void **entry);
+int uvl_load_exe (const char *filename, void **entry, uvl_loaded_t *loaded);
+int uvl_load_elf (void *data, void **entry, uvl_loaded_t *loaded);
 int uvl_load_module_for_lib (char *lib_name);
 /** @}*/
 /** \name Helper functions

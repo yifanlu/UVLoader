@@ -28,6 +28,8 @@
 #endif
 
 static uvl_context_t *g_context;
+static uvl_exit_cb_t g_exit_cb;
+static uvl_loaded_t *g_loaded;
 
 static void uvl_init_from_context (uvl_context_t *ctx);
 
@@ -72,7 +74,7 @@ uvl_start (uvl_context_t *ctx)    ///< Pass in context information
     IF_DEBUG LOG ("Error removing thread.");
     return -1;
 #else
-    return uvl_entry ();
+    return uvl_start_load ();
 #endif
 }
 
@@ -84,6 +86,7 @@ uvl_init_from_context (uvl_context_t *ctx)  ///< Context buffer
 {
     ctx->psvUnlockMem ();
     g_context = ctx;
+    g_exit_cb = uvl_final; // default exit callback
     ctx->psvLockMem ();
 }
 
@@ -189,19 +192,24 @@ uvl_add_uvl_exports (void)
     entry.type = RESOLVE_TYPE_FUNCTION;
     entry.value.func_ptr = printf;
     uvl_resolve_table_add (&entry);
+    entry.nid = UVL_SET_HOOK_NID;
+    entry.type = RESOLVE_TYPE_FUNCTION;
+    entry.value.func_ptr = uvl_set_hook;
+    uvl_resolve_table_add (&entry);
+    entry.nid = UVL_LOAD_NID;
+    entry.type = RESOLVE_TYPE_FUNCTION;
+    entry.value.func_ptr = uvl_load;
+    uvl_resolve_table_add (&entry);
 }
 
 /********************************************//**
- *  \brief Entry point of UVLoader
+ *  \brief Main function. Builds resolves and load. 
  *  
  *  \returns Zero on success, otherwise error
  ***********************************************/
 int 
-uvl_entry ()
+uvl_start_load ()
 {
-    int (*start)(int argc, char* argv);
-    int ret_value;
-
     IF_DEBUG LOG ("Initializing resolve table.");
     if (uvl_resolve_table_initialize () < 0)
     {
@@ -217,22 +225,102 @@ uvl_entry ()
     IF_DEBUG LOG ("Adding UVL imports.");
     uvl_add_uvl_exports ();
     IF_DEBUG LOG ("Loading homebrew.");
-    if (uvl_load_exe (UVL_HOMEBREW_PATH, (void**)&start) < 0)
+    if (uvl_load (UVL_HOMEBREW_PATH) < 0)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+/********************************************//**
+ *  \brief Loads a executable at path
+ *  
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int 
+uvl_load (const char *path)
+{
+    PsvUID block;
+    uvl_loaded_t *loaded;
+    int (*start)(int argc, char* argv);
+    int ret_value;
+
+    IF_DEBUG LOG ("Creating application context");
+    block = sceKernelAllocMemBlock ("UVLAppInfo", 0xC20D060, LOADED_INFO_SIZE, NULL);
+    if (block < 0)
+    {
+        LOG ("Error allocating resolve table. 0x%08X", block);
+        return -1;
+    }
+    if (sceKernelGetMemBlockBase (block, (void *)&loaded) < 0)
+    {
+        LOG ("Error getting block base.");
+        return -1;
+    }
+    IF_DEBUG LOG ("Loading homebrew");
+    if (uvl_load_exe (path, (void**)&start, loaded) < 0)
     {
         LOG ("Cannot load homebrew.");
         return -1;
     }
-    IF_DEBUG LOG ("Freeing resolve table.");
-    if (uvl_resolve_table_destroy () < 0)
-    {
-        LOG ("Cannot destroy resolve table.");
-        return -1;
-    }
+    IF_DEBUG LOG ("Saving application context");
+    loaded->next = g_loaded;
+    loaded->callback = g_exit_cb;
+    asm ("mov %0,sp" : "=r" (loaded->saved_sp));
+    g_context->psvUnlockMem ();
+    g_loaded = loaded;
+    g_context->psvLockMem ();
     IF_DEBUG LOG ("Running the homebrew: entry at 0x%08X", start);
     ret_value = start (0, NULL);
-    // should not reach here
     IF_DEBUG LOG ("Homebrew exited with value 0x%08X", ret_value);
+    uvl_exit (0);
+}
+
+/********************************************//**
+ *  \brief Sets exit hook. Calls function on exit.
+ *  
+ *  This hooks on to exit() call and cleans up 
+ *  after the application is unloaded.
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
+int
+uvl_set_hook (uvl_exit_cb_t callback)
+{
+    g_context->psvUnlockMem ();
+    g_exit_cb = callback;
+    g_context->psvLockMem ();
     return 0;
+}
+
+/********************************************//**
+ *  \brief Cleans up memory and make callback
+ ***********************************************/
+static int
+uvl_exit_callback (int status)
+{
+    struct uvl_loaded *next;
+    uvl_exit_cb_t callback;
+    int i;
+
+    // save data
+    next = g_loaded->next;
+    callback = g_loaded->callback;
+
+    // free segments
+    for (i = 0; i < g_loaded->numsegs; i++)
+    {
+        sceKernelFreeMemBlock (g_loaded->segs[i]);
+    }
+
+    // free loaded info block
+    sceKernelFreeMemBlock (g_loaded->self_uid);
+
+    // set context to last loaded application
+    g_context->psvUnlockMem ();
+    g_loaded = next;
+    g_context->psvLockMem ();
+
+    callback (status);
 }
 
 /********************************************//**
@@ -242,17 +330,29 @@ uvl_entry ()
  *  after the application is unloaded.
  *  \returns Zero on success, otherwise error
  ***********************************************/
-int
+NAKED void
 uvl_exit (int status)
 {
-    IF_DEBUG LOG ("Exit called with status: 0x%08X", status);
+    asm ("mov sp, %0\t\n"
+         "mov r0, %1\t\n"
+         "mov r1, %2\t\n"
+         "bx r1\t\n" :: "r" (g_loaded->saved_sp), "r" (status), "r" (uvl_exit_callback));
+}
+
+/********************************************//**
+ *  \brief Finalize UVLoader, freeing resources
+ *  
+ *  \returns Zero on success
+ ***********************************************/
+void
+uvl_final (int status)
+{
+    IF_DEBUG LOG ("Freeing resolve table.");
+    uvl_resolve_table_destroy ();
+    IF_DEBUG LOG ("Freeing application context.");
+    sceKernelFreeMemBlock (g_loaded->self_uid);
+#ifdef UVL_NEW_THREAD
     IF_DEBUG LOG ("Removing application thread.");
-    if (sceKernelExitDeleteThread (0) < 0)
-    {
-        LOG ("Cannot delete application thread.");
-        return -1;
-    }
-    // should not reach here
-    IF_DEBUG LOG ("Error removing thread.");
-    return 0;
+    sceKernelExitDeleteThread (0);
+#endif
 }

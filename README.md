@@ -3,6 +3,10 @@ Userland Vita Loader 1.0.0
 
 ## What's new?
 
+### Version 1.0.1
+
+* Added support for multiple loads (stacked homebrew loading)
+
 ### Version 1.0.0
 
 * Relocatable ELF (ET_SCE_RELEXEC) support
@@ -32,6 +36,11 @@ UVL is designed to work with any userland exploit with little configuration.
 However, you should check with the developer of the exploit who ported UVL 
 to see how to use it. UVL cannot do anything by itself, it is simply a 
 payload that is executed by an exploit to run homebrews unmodified.
+
+## How can I call UVL API functions from my homebrew?
+
+Import uvloader.h into your project and you'll have access to the exported 
+functions.
 
 ## How do I port UVL?
 
