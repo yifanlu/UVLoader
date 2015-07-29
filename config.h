@@ -6,8 +6,8 @@
 #ifndef UVL_CONFIG
 #define UVL_CONFIG
 
-#define UVL_HOMEBREW_PATH               "pss0:/top/Documents/homebrew.self"     ///< Where to load the homebrew.
-#define UVL_LOG_PATH                    "pss0:/top/Documents/uvloader.log"      ///< Where to print the log
+#define UVL_HOMEBREW_PATH               "cache0:/VitaDefilerClient/Documents/homebrew.self"     ///< Where to load the homebrew.
+#define UVL_LOG_PATH                    "cache0:/VitaDefilerClient/Documents/uvloader.log"      ///< Where to print the log
 
 #endif
 /// @}

@@ -191,6 +191,9 @@ uvl_start_load ()
     }
     IF_DEBUG LOG ("Adding UVL imports.");
     uvl_add_uvl_exports ();
+    
+    uvl_pre_clean();
+    
     IF_DEBUG LOG ("Loading homebrew.");
     if (uvl_load (UVL_HOMEBREW_PATH) < 0)
     {

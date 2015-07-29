@@ -14,10 +14,158 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "uvloader.h"
 #include "cleanup.h"
 #include "resolve.h"
 #include "scefuncs.h"
 #include "utils.h"
+
+static u32_t unity_player_seg1 = 0x0;
+static int unity_version = 0x0;
+
+typedef u32_t (*cleanup_graphics_func)(void*);
+static cleanup_graphics_func cleanup_graphics;
+static int graphics_finished_cleaning = 0;
+
+void
+uvl_add_func_by_offset(u32_t nid, u16_t type,
+void* func_ptr)
+{
+    resolve_entry_t resolve_entry;
+    resolve_entry.nid = nid;
+    resolve_entry.type = type;
+    resolve_entry.value.func_ptr = func_ptr;
+
+    uvl_resolve_table_add(&resolve_entry);
+}
+
+int
+uvl_cleanup_check_module(PsvUID modid, ///< UID of the module
+int index)  ///< An OR combination of flags (see defined "Search flags for importing loaded modules") directing the search
+{
+    loaded_module_info_t m_mod_info;
+    m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
+
+    if (sceKernelGetModuleInfo(modid, &m_mod_info) < 0)
+    {
+        LOG("Error getting info for mod 0x%08X", modid);
+        return -1;
+    }
+    
+    if (strcmp(m_mod_info.module_name, "UnityPlayer") == 0)
+    {
+        uvl_unlock_mem();
+        unity_version = 0x105;    // For now, it is assumed that this is version 1.05 since 1.06 has a different module name for UnityPlayer...
+        unity_player_seg1 = (u32_t)m_mod_info.segments[1].vaddr;
+        uvl_lock_mem();
+
+        u32_t unitybaseseg0 = (u32_t)m_mod_info.segments[0].vaddr;
+        
+        uvl_add_func_by_offset(0x5795E898, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EEC6C)); // sceDisplayWaitVblankStart
+        uvl_add_func_by_offset(0xA9C3CED6, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EEC8C)); // sceCtrlPeekBufferPositive
+        uvl_add_func_by_offset(0xFF082DF0, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EECCC)); // sceTouchPeek
+        
+    }
+    else if (strcmp(m_mod_info.module_name, "UnityPlayer_4370_Develop") == 0)
+    {
+        uvl_unlock_mem();
+        unity_version = 0x106;
+        unity_player_seg1 = (u32_t)m_mod_info.segments[1].vaddr;
+        uvl_lock_mem();
+        
+        u32_t unitybaseseg0 = (u32_t)m_mod_info.segments[0].vaddr;
+
+        uvl_add_func_by_offset(0x5795E898, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9E91BC)); // sceDisplayWaitVblankStart
+        uvl_add_func_by_offset(0xA9C3CED6, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9E91CC)); // sceCtrlPeekBufferPositive
+        uvl_add_func_by_offset(0xFF082DF0, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9E922C)); // sceTouchPeek
+    }
+
+    return 0;
+}
+
+void
+uvl_cleanup_graphics_thread_hook(void* r0)
+{
+    IF_DEBUG LOG("Hooked the Unity graphics thread.");
+
+    cleanup_graphics(r0);
+    
+    uvl_unlock_mem();
+    graphics_finished_cleaning = 1;
+    uvl_lock_mem();
+
+    sceKernelExitDeleteThread(0);
+}
+
+/********************************************//**
+ *  \brief Clean up Unity
+ *  
+ *  Check if Unity PSM is running and cleans it.
+ ***********************************************/
+void
+uvl_clean_unity()
+{
+    PsvUID mod_list[MAX_LOADED_MODS];
+    u32_t num_loaded = MAX_LOADED_MODS;
+
+    if (sceKernelGetModuleList(0xFF, mod_list, &num_loaded) < 0)
+    {
+        LOG("Failed to get module list.");
+        return;
+    }
+
+    int i;
+    for (i = 0; i < num_loaded; i++)
+    {
+        if (uvl_cleanup_check_module(mod_list[i], i) < 0)
+        {
+            LOG("Failed to add module %u: 0x%08X. Continuing.", i, mod_list[i]);
+            continue;
+        }
+    }
+    
+    if (unity_version != 0x0)
+    {
+        IF_DEBUG LOG("Unity Version: 0x%x", unity_version);
+
+        u32_t cleanup_hook_ptr = (u32_t) &uvl_cleanup_graphics_thread_hook;
+        u32_t new_graphics_class_vtable[250];
+
+        int i;
+        for (i = 0; i < 250; ++i)
+        {
+            new_graphics_class_vtable[i] = cleanup_hook_ptr;
+        }
+
+        u32_t* graphics_class = *(u32_t**) (unity_player_seg1 + 0xEB8);
+        u32_t* graphics_class_vtable = (u32_t*) *graphics_class;
+        
+        uvl_unlock_mem();
+        cleanup_graphics = (cleanup_graphics_func) (*(graphics_class_vtable + 1));
+        uvl_lock_mem();
+
+        // Overwrite the graphics class vtable. At some point after doing this, the graphics thread will call 'cleanup_graphics'.
+        *graphics_class = (u32_t)new_graphics_class_vtable;
+
+        // Give the graphics thread time to be hooked and exit.
+        while (graphics_finished_cleaning == 0)
+        {
+            // sceKernelDelayThread should be used here, but it doesn't seem to work.
+        }
+
+        IF_DEBUG LOG("Finished cleaning Unity");
+    }
+}
+
+/********************************************//**
+ *  \brief Clean up used resources.
+ ***********************************************/
+void
+uvl_pre_clean ()
+{
+    uvl_clean_unity();
+}
 
 /********************************************//**
  *  \brief Free up the RAM
