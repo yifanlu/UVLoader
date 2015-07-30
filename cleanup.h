@@ -11,7 +11,8 @@
 #include "types.h"
 
 int uvl_cleanup_memory ();
-int uvl_unload_all_modules ();
+int uvl_unload_all_modules();
+void uvl_pre_clean();
 
 #endif
 /// @}
