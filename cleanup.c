@@ -28,8 +28,30 @@ typedef u32_t (*cleanup_graphics_func)(void*);
 static cleanup_graphics_func cleanup_graphics;
 static int graphics_finished_cleaning = 0;
 
+typedef u32_t (*sceCtrlPeekBufferPositive_func)(int, u32_t*, int);
+static sceCtrlPeekBufferPositive_func sceCtrlPeekBufferPositive_syscall;
+
+/********************************************//**
+ *  \brief Convert L and R button values to what is expected..
+ ***********************************************/
+u32_t
+uvl_wrapper_sceCtrlPeekBufferPositive(int port,
+u32_t *pad_data,
+int count)
+{
+    int res = sceCtrlPeekBufferPositive_syscall(port, pad_data, count);
+    pad_data[2] |= (pad_data[2] & 0xF00) >> 2; // 0x400 (L) becomes 0x100 and 0x800 (R) becomes 0x200.
+    pad_data[2] &= ~0xC00;
+
+    return res;
+}
+
+/********************************************//**
+ *  \brief Add the resolved function to the table.
+ ***********************************************/
 void
-uvl_add_func_by_offset(u32_t nid, u16_t type,
+uvl_add_func_by_ptr(u32_t nid,
+u16_t type,
 void* func_ptr)
 {
     resolve_entry_t resolve_entry;
@@ -40,6 +62,12 @@ void* func_ptr)
     uvl_resolve_table_add(&resolve_entry);
 }
 
+
+/********************************************//**
+ *  \brief Check the Unity modules.
+ *  
+ *  Manually resolve functions from the modules.
+ ***********************************************/
 int
 uvl_cleanup_check_module(PsvUID modid, ///< UID of the module
 int index)  ///< An OR combination of flags (see defined "Search flags for importing loaded modules") directing the search
@@ -56,34 +84,48 @@ int index)  ///< An OR combination of flags (see defined "Search flags for impor
     if (strcmp(m_mod_info.module_name, "UnityPlayer") == 0)
     {
         uvl_unlock_mem();
+
         unity_version = 0x105;    // For now, it is assumed that this is version 1.05 since 1.06 has a different module name for UnityPlayer...
         unity_player_seg1 = (u32_t)m_mod_info.segments[1].vaddr;
-        uvl_lock_mem();
 
-        u32_t unitybaseseg0 = (u32_t)m_mod_info.segments[0].vaddr;
-        
-        uvl_add_func_by_offset(0x5795E898, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EEC6C)); // sceDisplayWaitVblankStart
-        uvl_add_func_by_offset(0xA9C3CED6, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EEC8C)); // sceCtrlPeekBufferPositive
-        uvl_add_func_by_offset(0xFF082DF0, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EECCC)); // sceTouchPeek
-        
+        u32_t unitybaseseg0 = (u32_t) m_mod_info.segments[0].vaddr;
+
+        uvl_add_func_by_ptr(0x5795E898, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EEC6C)); // sceDisplayWaitVblankStart
+        uvl_add_func_by_ptr(0xFF082DF0, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EECCC)); // sceTouchPeek
+
+        void* sceCtrlPeekBufferPositive_ptr = &uvl_wrapper_sceCtrlPeekBufferPositive;
+        uvl_add_func_by_ptr(0xA9C3CED6, RESOLVE_TYPE_FUNCTION, (void*) (sceCtrlPeekBufferPositive_ptr)); // sceCtrlPeekBufferPositive
+        sceCtrlPeekBufferPositive_syscall = (sceCtrlPeekBufferPositive_func) (unitybaseseg0 + 0x9EEC8C);
+
+        uvl_lock_mem();
     }
     else if (strcmp(m_mod_info.module_name, "UnityPlayer_4370_Develop") == 0)
     {
         uvl_unlock_mem();
+
         unity_version = 0x106;
         unity_player_seg1 = (u32_t)m_mod_info.segments[1].vaddr;
-        uvl_lock_mem();
-        
-        u32_t unitybaseseg0 = (u32_t)m_mod_info.segments[0].vaddr;
 
-        uvl_add_func_by_offset(0x5795E898, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9E91BC)); // sceDisplayWaitVblankStart
-        uvl_add_func_by_offset(0xA9C3CED6, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9E91CC)); // sceCtrlPeekBufferPositive
-        uvl_add_func_by_offset(0xFF082DF0, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9E922C)); // sceTouchPeek
+        u32_t unitybaseseg0 = (u32_t) m_mod_info.segments[0].vaddr;
+
+        uvl_add_func_by_ptr(0x5795E898, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9E91BC)); // sceDisplayWaitVblankStart
+        uvl_add_func_by_ptr(0xFF082DF0, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9E922C)); // sceTouchPeek
+
+        void* sceCtrlPeekBufferPositive_ptr = &uvl_wrapper_sceCtrlPeekBufferPositive;
+        uvl_add_func_by_ptr(0xA9C3CED6, RESOLVE_TYPE_FUNCTION, (void*) (sceCtrlPeekBufferPositive_ptr)); // sceCtrlPeekBufferPositive
+        sceCtrlPeekBufferPositive_syscall = (sceCtrlPeekBufferPositive_func) (unitybaseseg0 + 0x9E91CC);
+
+        uvl_lock_mem();
     }
 
     return 0;
 }
 
+/********************************************//**
+ *  \brief Hook for the Unity graphics thread
+ *  
+ *  Call the Unity graphics class destructor.
+ ***********************************************/
 void
 uvl_cleanup_graphics_thread_hook(void* r0)
 {
