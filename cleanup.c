@@ -32,7 +32,7 @@ typedef u32_t (*sceCtrlPeekBufferPositive_func)(int, u32_t*, int);
 static sceCtrlPeekBufferPositive_func sceCtrlPeekBufferPositive_syscall;
 
 /********************************************//**
- *  \brief Convert L and R button values to what is expected..
+ *  \brief Convert L and R button values to what is expected.
  ***********************************************/
 u32_t
 uvl_wrapper_sceCtrlPeekBufferPositive(int port,
@@ -92,10 +92,7 @@ int index)  ///< An OR combination of flags (see defined "Search flags for impor
 
         uvl_add_func_by_ptr(0x5795E898, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EEC6C)); // sceDisplayWaitVblankStart
         uvl_add_func_by_ptr(0xFF082DF0, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EECCC)); // sceTouchPeek
-
-        void* sceCtrlPeekBufferPositive_ptr = &uvl_wrapper_sceCtrlPeekBufferPositive;
-        uvl_add_func_by_ptr(0xA9C3CED6, RESOLVE_TYPE_FUNCTION, (void*) (sceCtrlPeekBufferPositive_ptr)); // sceCtrlPeekBufferPositive
-        sceCtrlPeekBufferPositive_syscall = (sceCtrlPeekBufferPositive_func) (unitybaseseg0 + 0x9EEC8C);
+        uvl_add_func_by_ptr(0xA9C3CED6, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EEC8C)); // sceCtrlPeekBufferPositive
 
         uvl_lock_mem();
     }
