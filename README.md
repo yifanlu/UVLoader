@@ -1,7 +1,11 @@
-Userland Vita Loader 1.0.0
+Userland Vita Loader 1.1.0
 ===============================================================================
 
 ## What's new?
+
+### Version 1.1.0
+
+* Added Unity PSM cleanup code (thanks Netrix)
 
 ### Version 1.0.1
 
@@ -72,4 +76,5 @@ forgotten.)
 * Proxima for module reloading NID antidote method
 * naehrwert for some code snippets and programming help
 * roxfan for finding structures
+* Netrix for Unity cleanup code
 * anyone in #vitadev who answered my stupid questions
