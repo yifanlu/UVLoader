@@ -813,7 +813,26 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
         {
             opt = sizeof (opt);
             IF_VERBOSE LOG ("Attempting to reload: %s", m_mod_info.file_path);
-            reload_mod = sceKernelLoadModule (m_mod_info.file_path, 0, &opt);
+
+            char* mod_path = m_mod_info.file_path;
+
+            if (strcmp(m_mod_info.file_path, "ux0:/patch/PCSI00009/4.3.4.2_UnityDevelopmentPlayer.self") == 0)
+            {
+                mod_path = "app0:/4.3.4.2_UnityDevelopmentPlayer.self";
+            }
+
+            if (strcmp(m_mod_info.file_path, "ux0:/patch/PCSI00009/4.3.7.0_UnityDevelopmentPlayer.self") == 0)
+            {
+                mod_path = "app0:/4.3.7.0_UnityDevelopmentPlayer.self";
+            }
+
+            if (strcmp(m_mod_info.file_path, "ux0:/patch/PCSI00007/eboot.bin") == 0)
+            {
+                mod_path = "app0:/eboot.bin";
+            }
+
+            reload_mod = sceKernelLoadModule(mod_path, 0, &opt);
+
             m_reload_mod_info.size = sizeof (loaded_module_info_t);
             if (sceKernelGetModuleInfo (reload_mod, &m_reload_mod_info) >= 0)
             {
