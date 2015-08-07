@@ -820,13 +820,11 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
             {
                 mod_path = "app0:/4.3.4.2_UnityDevelopmentPlayer.self";
             }
-
-            if (strcmp(m_mod_info.file_path, "ux0:/patch/PCSI00009/4.3.7.0_UnityDevelopmentPlayer.self") == 0)
+            else if (strcmp(m_mod_info.file_path, "ux0:/patch/PCSI00009/4.3.7.0_UnityDevelopmentPlayer.self") == 0)
             {
                 mod_path = "app0:/4.3.7.0_UnityDevelopmentPlayer.self";
             }
-
-            if (strcmp(m_mod_info.file_path, "ux0:/patch/PCSI00007/eboot.bin") == 0)
+            else if (strcmp(m_mod_info.file_path, "ux0:/patch/PCSI00007/eboot.bin") == 0)
             {
                 mod_path = "app0:/eboot.bin";
             }
