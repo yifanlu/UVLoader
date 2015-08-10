@@ -90,6 +90,8 @@ int strcmp (const char *str1, const char *str2);
 int strncmp (const char *str1, const char *str2, u32_t num);
 void* memset (void *ptr, int value, u32_t num);
 u32_t strlen (const char *str);
+char* strchr(const char *str, int c);
+
 /** @}*/
 
 /** \name stdio.h functions
