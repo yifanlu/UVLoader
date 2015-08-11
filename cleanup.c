@@ -62,6 +62,27 @@ void* func_ptr)
     uvl_resolve_table_add(&resolve_entry);
 }
 
+void
+uvl_add_syscall_relative(u32_t nid,
+u32_t base_nid,
+int delta)
+{
+    resolve_entry_t new_entry;
+    new_entry.type = RESOLVE_TYPE_SYSCALL;
+
+    // First make sure that the NID has not already been resolved.
+    resolve_entry_t* entry = uvl_resolve_table_get(nid);
+    if (entry == NULL)
+    {
+        resolve_entry_t* entry = uvl_resolve_table_get(base_nid);
+        if (entry != NULL)
+        {
+            new_entry.nid = nid;
+            new_entry.value.syscall = entry->value.syscall + delta;
+            uvl_resolve_table_add(&new_entry);
+        }
+    }
+}
 
 /********************************************//**
  *  \brief Check the Unity modules.
@@ -88,12 +109,6 @@ int index)  ///< An OR combination of flags (see defined "Search flags for impor
         unity_version = 0x105;    // For now, it is assumed that this is version 1.05 since 1.06 has a different module name for UnityPlayer...
         unity_player_seg1 = (u32_t)m_mod_info.segments[1].vaddr;
 
-        u32_t unitybaseseg0 = (u32_t) m_mod_info.segments[0].vaddr;
-
-        uvl_add_func_by_ptr(0x5795E898, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EEC6C)); // sceDisplayWaitVblankStart
-        uvl_add_func_by_ptr(0xFF082DF0, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EECCC)); // sceTouchPeek
-        uvl_add_func_by_ptr(0xA9C3CED6, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9EEC8C)); // sceCtrlPeekBufferPositive
-
         uvl_lock_mem();
     }
     else if (strcmp(m_mod_info.module_name, "UnityPlayer_4370_Develop") == 0)
@@ -104,9 +119,6 @@ int index)  ///< An OR combination of flags (see defined "Search flags for impor
         unity_player_seg1 = (u32_t)m_mod_info.segments[1].vaddr;
 
         u32_t unitybaseseg0 = (u32_t) m_mod_info.segments[0].vaddr;
-
-        uvl_add_func_by_ptr(0x5795E898, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9E91BC)); // sceDisplayWaitVblankStart
-        uvl_add_func_by_ptr(0xFF082DF0, RESOLVE_TYPE_FUNCTION, (void*) (unitybaseseg0 + 0x9E922C)); // sceTouchPeek
 
         void* sceCtrlPeekBufferPositive_ptr = &uvl_wrapper_sceCtrlPeekBufferPositive;
         uvl_add_func_by_ptr(0xA9C3CED6, RESOLVE_TYPE_FUNCTION, (void*) (sceCtrlPeekBufferPositive_ptr)); // sceCtrlPeekBufferPositive
@@ -167,6 +179,13 @@ uvl_clean_unity()
     if (unity_version != 0x0)
     {
         IF_DEBUG LOG("Unity Version: 0x%x", unity_version);
+
+        uvl_unlock_mem();
+
+        uvl_add_syscall_relative(0x5795E898, 0x7D9864A8, -0x5); // sceDisplayWaitVblankStart
+        uvl_add_syscall_relative(0x64167F11, 0x5BC341E4, 0x2);  // sceAudioOutSetVolume
+
+        uvl_lock_mem();
 
         u32_t cleanup_hook_ptr = (u32_t) &uvl_cleanup_graphics_thread_hook;
         u32_t new_graphics_class_vtable[250];

@@ -774,6 +774,7 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
     loaded_module_info_t m_reload_mod_info;
     module_info_t *reload_mod_info;
     module_imports_t *reload_imports;
+    char reload_mod_path[64];
 
     m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
     IF_VERBOSE LOG ("Getting information for module UID: 0x%X.", modid);
@@ -813,7 +814,22 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
         {
             opt = sizeof (opt);
             IF_VERBOSE LOG ("Attempting to reload: %s", m_mod_info.file_path);
-            reload_mod = sceKernelLoadModule (m_mod_info.file_path, 0, &opt);
+
+            if (strncmp(m_mod_info.file_path, "ux0:/patch/", 11) == 0)
+            {
+                char* mod_filename = strchr(m_mod_info.file_path + 11, '/');
+                strcpy(reload_mod_path, "app0:");
+                strcpy(reload_mod_path + 5, mod_filename);
+
+                IF_DEBUG LOG("Module path for reloading changed to: %s", reload_mod_path);
+
+                reload_mod = sceKernelLoadModule(reload_mod_path, 0, &opt);
+            }
+            else
+            {
+                reload_mod = sceKernelLoadModule(m_mod_info.file_path, 0, &opt);
+            }
+
             m_reload_mod_info.size = sizeof (loaded_module_info_t);
             if (sceKernelGetModuleInfo (reload_mod, &m_reload_mod_info) >= 0)
             {

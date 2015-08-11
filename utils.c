@@ -216,6 +216,17 @@ strlen(const char *str)
     return (s - str);
 }
 
+char *
+strchr(const char *str, int c)
+{
+    const char ch = c;
+
+    for (; *str != ch; str++)
+        if (*str == '\0')
+            return 0;
+    return (char *) str;
+}
+
 // Below is stolen from http://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string_search_algorithm
 
 #define ALPHABET_LEN 255
