@@ -413,7 +413,7 @@ uvl_elf_get_module_info (Elf32_Ehdr_t *elf_hdr, ///< ELF header
 
     *mod_info = (module_info_t *)((char *)elf_phdrs[index].p_vaddr + offset);
 
-    return 0;
+    return index;
 }
 
 // No longer needed for relocatable ELFs
