@@ -185,6 +185,21 @@ uvl_clean_unity()
         uvl_add_syscall_relative(0x5795E898, 0x7D9864A8, -0x5); // sceDisplayWaitVblankStart
         uvl_add_syscall_relative(0x64167F11, 0x5BC341E4, 0x2);  // sceAudioOutSetVolume
 
+        u32_t setConfigModeNid = 0x3ce187b6;
+
+        uvl_add_syscall_relative(0x2085d15d, setConfigModeNid, -0x4); // scePowerGetBatteryLifePercent
+        uvl_add_syscall_relative(0x87440F5E, setConfigModeNid, 0xB);  // scePowerIsPowerOnline
+
+        if (unity_version == 0x106)
+        {
+            uvl_add_syscall_relative(0x74db5ae5, setConfigModeNid, 0x7);  // scePowerSetArmClockFrequency
+            uvl_add_syscall_relative(0xabc6f88f, setConfigModeNid, 0x11); // scePowerGetArmClockFrequency
+            uvl_add_syscall_relative(0xb8d7b3fb, setConfigModeNid, 0x6);  // scePowerSetBusClockFrequency
+            uvl_add_syscall_relative(0x478fe6f5, setConfigModeNid, -0x7); // scePowerGetBusClockFrequency
+            uvl_add_syscall_relative(0x717db06c, setConfigModeNid, 0x15); // scePowerSetGpuClockFrequency
+            uvl_add_syscall_relative(0x1b04a1d6, setConfigModeNid, 0x2);  // scePowerGetGpuClockFrequency
+        }
+
         uvl_lock_mem();
 
         u32_t cleanup_hook_ptr = (u32_t) &uvl_cleanup_graphics_thread_hook;
