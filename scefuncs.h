@@ -78,6 +78,9 @@ STUB_FUNCTION(int, sceKernelUnloadModule);
 STUB_FUNCTION(int, sceClibVsnprintf);
 STUB_FUNCTION(int, sceKernelWaitThreadEnd);
 
+STUB_FUNCTION(int, sceAppMgrGetVs0UserModuleDrive);
+
 void uvl_scefuncs_resolve_loader (void *anchor);
+int uvl_resolve_appmgruser();
 
 #endif

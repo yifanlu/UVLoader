@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #include "nidcache.h"
+#include "load.h"
 #include "resolve.h"
 #include "scefuncs.h"
 #include "utils.h"
@@ -22,6 +23,9 @@
 
 /** Checks if a bit is set in a given member */
 #define BIT_SET(i, b) (i & (0x1 << b))
+
+static u32_t sceSysmoduleLoadModule_stub[3];
+static int (* sceSysmoduleLoadModule)(u16_t id);
 
 /** Remember SceLibKernel NID so we can resolve with caching */
 int g_libkenel_nid = 0;
@@ -248,6 +252,54 @@ uvl_resolve_import_stub_to_entry (void *stub,  ///< Stub function to read
     return 0;
 }
 
+int
+sceSysmoduleLoadModulePatched(u16_t id)
+{
+    PsvUID mod_list_old[MAX_LOADED_MODS];
+    u32_t num_loaded_old = MAX_LOADED_MODS;
+
+    PsvUID mod_list_new[MAX_LOADED_MODS];
+    u32_t num_loaded_new = MAX_LOADED_MODS;
+
+    sceKernelGetModuleList(0xFF, mod_list_old, &num_loaded_old);
+
+    int res = sceSysmoduleLoadModule(id);
+    if (res == 0)
+    {
+        if (sceKernelGetModuleList(0xFF, mod_list_new, &num_loaded_new) >= 0)
+        {
+            int i;
+            for (i = 0; i < (num_loaded_new - num_loaded_old); i++)
+            {
+                uvl_resolve_add_module (mod_list_new[i], RESOLVE_MOD_EXPS);
+
+                loaded_module_info_t m_mod_info;
+                module_info_t *mod_info;
+                module_exports_t *exports;
+
+                m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
+                if (sceKernelGetModuleInfo (mod_list_new[i], &m_mod_info) < 0)
+                {
+                    continue;
+                }
+                if ((mod_info = uvl_find_module_info (&m_mod_info)) == NULL)
+                {
+                    continue;
+                }
+                for (exports = (module_exports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_top); 
+                    (u32_t)exports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_end); exports++)
+                {
+                    if (exports->lib_name != NULL)
+                    {
+                        uvl_resolve_import_by_name(exports->lib_name);
+                    }
+                }
+            }
+        }
+    }
+    return res;
+}
+
 /********************************************//**
  *  \brief Fills a stub with resolve entry
  *  
@@ -273,6 +325,25 @@ uvl_resolve_entry_to_import_stub (resolve_entry_t *entry,   ///< Entry to read f
             memloc[1] = uvl_encode_arm_inst (INSTRUCTION_SYSCALL, 0, 0);
             memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 14);
             uvl_lock_mem ();
+
+            if (entry->nid == 0x79a0160a)
+            {
+                u32_t value = (u32_t)sceSysmoduleLoadModulePatched;
+
+                uvl_unlock_mem ();
+
+                sceSysmoduleLoadModule_stub[0] = uvl_encode_arm_inst (INSTRUCTION_MOVW, (u16_t)entry->value.value, 12);
+                sceSysmoduleLoadModule_stub[1] = uvl_encode_arm_inst (INSTRUCTION_SYSCALL, 0, 0);
+                sceSysmoduleLoadModule_stub[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 14);
+                sceSysmoduleLoadModule = (void *)sceSysmoduleLoadModule_stub;
+
+                memloc[0] = uvl_encode_arm_inst (INSTRUCTION_MOVW, (u16_t)value, 12);
+                memloc[1] = uvl_encode_arm_inst (INSTRUCTION_MOVT, (u16_t)(value >> 16), 12);
+                memloc[2] = uvl_encode_arm_inst (INSTRUCTION_BRANCH, 0, 12);
+
+                uvl_lock_mem ();
+            }
+
             break;
         case RESOLVE_TYPE_VARIABLE:
             uvl_unlock_mem ();
@@ -710,7 +781,7 @@ uvl_resolve_add_all_modules (int type) ///< An OR combination of flags (see defi
  *  
  *  \returns module_info_t, NULL on error
  ***********************************************/
-static module_info_t *
+module_info_t *
 uvl_find_module_info (loaded_module_info_t *m_mod_info) ///< Loaded module information
 {
     module_info_t *mod_info;
@@ -825,6 +896,15 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
 
                 reload_mod = sceKernelLoadModule(reload_mod_path, 0, &opt);
             }
+            else if (strncmp(m_mod_info.file_path, "vs0:sys/external/", 17) == 0)
+            {
+                sceAppMgrGetVs0UserModuleDrive(reload_mod_path);
+                strcpy(reload_mod_path + 15, m_mod_info.file_path + 17);
+
+                IF_DEBUG LOG("Module path for reloading changed to: %s", reload_mod_path);
+
+                reload_mod = sceKernelLoadModule(reload_mod_path, 0, &opt);
+            }
             else
             {
                 reload_mod = sceKernelLoadModule(m_mod_info.file_path, 0, &opt);
@@ -861,7 +941,7 @@ uvl_resolve_add_module (PsvUID modid, ///< UID of the module
         if (reload_mod_info)
         {
             IF_VERBOSE LOG ("Closing reloaded module.");
-            sceKernelUnloadModule (reload_mod);
+            sceKernelUnloadModule (reload_mod, 0, NULL);
         }
     }
     return 0;

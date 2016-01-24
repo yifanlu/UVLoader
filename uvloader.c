@@ -45,6 +45,7 @@ uvl_start (uvl_context_t *ctx)    ///< Pass in context information
 {
     uvl_init_from_context (ctx);
     uvl_scefuncs_resolve_loader (ctx->libkernel_anchor);
+    uvl_resolve_appmgruser();
     vita_init_log ();
     LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
     return uvl_start_load ();
