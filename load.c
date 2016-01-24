@@ -21,6 +21,9 @@
 #include "utils.h"
 #include "uvloader.h"
 
+static module_imports_t *g_import_start;
+static void *g_import_end;
+
 /********************************************//**
  *  \brief Loads file to memory
  *  
@@ -282,18 +285,16 @@ uvl_load_elf (void *data,           ///< ELF data start
     IF_DEBUG LOG ("Module name: %s, export table offset: 0x%08X, import table offset: 0x%08X", mod_info->modname, mod_info->ent_top, mod_info->stub_top);
 
     // resolve NIDs
-    module_imports_t *import;
-    void  *end;
-    import = (void*)(prog_hdrs[idx].p_vaddr + mod_info->stub_top);
-    end = (void*)(prog_hdrs[idx].p_vaddr + mod_info->stub_end);
+    uvl_unlock_mem ();
+    g_import_start = (void*)(prog_hdrs[idx].p_vaddr + mod_info->stub_top);
+    g_import_end = (void*)(prog_hdrs[idx].p_vaddr + mod_info->stub_end);
+    uvl_lock_mem ();
+    
+    module_imports_t *import = g_import_start;
+    void *end = g_import_end;
+
     for (; (void *)import < end; import = IMP_GET_NEXT (import))
     {
-        IF_DEBUG LOG ("Loading module for %s", IMP_GET_NAME (import));
-        if (uvl_load_module_for_lib (IMP_GET_NAME (import)) < 0)
-        {
-            LOG ("Cannot load required module for %s. May still be possible to resolve with cached entries. Continuing.", IMP_GET_NAME (import));
-            continue;
-        }
         IF_DEBUG LOG ("Resolving imports for %s", IMP_GET_NAME (import));
         if (uvl_resolve_imports (import) < 0)
         {
@@ -313,21 +314,27 @@ uvl_load_elf (void *data,           ///< ELF data start
     return 0;
 }
 
-/********************************************//**
- *  \brief Loads a system module by requested 
- *  library.
- *  
- *  All modules contain one or more library. 
- *  This will load the correct module given 
- *  the library name.
- *  \returns Zero on success, otherwise error
- ***********************************************/
-int 
-uvl_load_module_for_lib (char *lib_name) ///< Name of library for the module to load
+int
+uvl_resolve_import_by_name(const char *name)
 {
-    // TODO: Get filename for mod name and load module
-    // First unload module if loaded 
-    return 0;
+    module_imports_t *import = g_import_start;
+    void *end = g_import_end;
+
+    for (; (void *)import < end; import = IMP_GET_NEXT (import))
+    {
+        if (strcmp(name, IMP_GET_NAME (import)) == 0) {
+            IF_DEBUG LOG ("Resolving imports for %s", IMP_GET_NAME (import));
+            if (uvl_resolve_imports (import) < 0)
+            {
+                LOG ("Failed to resolve imports for %s", IMP_GET_NAME (import));
+                return -1;
+            }
+
+            return 0;
+        }
+    }
+
+    return -1;
 }
 
 /********************************************//**

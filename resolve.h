@@ -292,6 +292,8 @@ int uvl_resolve_imports (module_imports_t *import);
 int uvl_resolve_loader (u32_t nid, void *libkernel_base, void *stub);
 /** @}*/
 
+module_info_t *uvl_find_module_info (loaded_module_info_t *m_mod_info);
+
 // live resolving too slow
 #if 0
 /** \name Resolving entries

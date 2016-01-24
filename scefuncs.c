@@ -18,6 +18,7 @@
 #include "config.h"
 #include "resolve.h"
 #include "scefuncs.h"
+#include "utils.h"
 #include "uvloader.h"
 
 /********************************************//**
@@ -74,4 +75,56 @@ uvl_scefuncs_resolve_loader (void *anchor)  ///< Import table entry pointing to 
     RESOLVE_STUB(sceKernelWaitThreadEnd, 0xDDB395A9);
 
     #undef RESOLVE_STUB
+}
+
+int
+uvl_resolve_appmgruser()
+{
+    PsvUID mod_list[MAX_LOADED_MODS];
+    u32_t num_loaded = MAX_LOADED_MODS;
+    int i;
+
+    if (sceKernelGetModuleList (0xFF, mod_list, &num_loaded) < 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < num_loaded; i++)
+    {
+        loaded_module_info_t m_mod_info;
+        module_info_t *mod_info;
+        module_exports_t *exports;
+
+        m_mod_info.size = sizeof (loaded_module_info_t); // should be 440
+        if (sceKernelGetModuleInfo (mod_list[i], &m_mod_info) < 0)
+        {
+            continue;
+        }
+        if (strcmp(m_mod_info.module_name, "SceDriverUser") != 0)
+        {
+            continue;
+        }
+        if ((mod_info = uvl_find_module_info (&m_mod_info)) == NULL)
+        {
+            continue;
+        }
+        for (exports = (module_exports_t*)((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_top); 
+            (u32_t)exports < ((u32_t)m_mod_info.segments[0].vaddr + mod_info->ent_end); exports++)
+        {
+            int j;
+            int offset = 0;
+
+            for(j = 0; j < exports->num_functions; j++, offset++)
+            {
+                if (exports->nid_table[offset] == 0x906154de) {
+                    resolve_entry_t res_entry;
+                    res_entry.type = RESOLVE_TYPE_FUNCTION;
+                    res_entry.nid = exports->nid_table[offset];
+                    res_entry.value.func_ptr = exports->entry_table[offset];
+                    uvl_resolve_entry_to_import_stub(&res_entry, &sceAppMgrGetVs0UserModuleDrive);
+                    return 0;
+                }
+            }
+        }
+    }
+    return -1;
 }

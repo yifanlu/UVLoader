@@ -150,11 +150,11 @@ typedef struct uvl_loaded uvl_loaded_t;
 int uvl_load_file (const char *filename, void **data, PsvSSize *size);
 int uvl_load_exe (const char *filename, void **entry, uvl_loaded_t *loaded);
 int uvl_load_elf (void *data, void **entry, uvl_loaded_t *loaded);
-int uvl_load_module_for_lib (char *lib_name);
 /** @}*/
 /** \name Helper functions
  *  @{
  */
+int uvl_resolve_import_by_name(const char *name);
 int uvl_elf_check_header (Elf32_Ehdr_t *hdr);
 int uvl_elf_get_module_info (Elf32_Ehdr_t *elf_hdr, Elf32_Phdr_t *elf_phdrs, module_info_t **mod_info);
 //int uvl_elf_free_memory (Elf32_Phdr_t *prog_hdrs, int count);

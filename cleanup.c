@@ -192,12 +192,12 @@ uvl_clean_unity()
 
         if (unity_version == 0x106)
         {
+            uvl_add_syscall_relative(0x1b04a1d6, setConfigModeNid, -0x7); // scePowerGetGpuClockFrequency
+            uvl_add_syscall_relative(0x478fe6f5, setConfigModeNid, 0x2);  // scePowerGetBusClockFrequency
+            uvl_add_syscall_relative(0xb8d7b3fb, setConfigModeNid, 0x6);  // scePowerSetGpuClockFrequency
             uvl_add_syscall_relative(0x74db5ae5, setConfigModeNid, 0x7);  // scePowerSetArmClockFrequency
             uvl_add_syscall_relative(0xabc6f88f, setConfigModeNid, 0x11); // scePowerGetArmClockFrequency
-            uvl_add_syscall_relative(0xb8d7b3fb, setConfigModeNid, 0x6);  // scePowerSetBusClockFrequency
-            uvl_add_syscall_relative(0x478fe6f5, setConfigModeNid, -0x7); // scePowerGetBusClockFrequency
-            uvl_add_syscall_relative(0x717db06c, setConfigModeNid, 0x15); // scePowerSetGpuClockFrequency
-            uvl_add_syscall_relative(0x1b04a1d6, setConfigModeNid, 0x2);  // scePowerGetGpuClockFrequency
+            uvl_add_syscall_relative(0x717db06c, setConfigModeNid, 0x15); // scePowerSetBusClockFrequency
         }
 
         uvl_lock_mem();
