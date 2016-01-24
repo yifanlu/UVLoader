@@ -12,7 +12,7 @@
 
 #define START_SECTION __attribute__ ((section (".text.start")))
 #define UVL_EXIT_NID            0x826BBBAF      ///< NID of C exit() call
-#define UVL_PRINTF_NID            0x9A004680      ///< NID of C printf() call
+#define UVL_PRINTF_NID          0x9A004680      ///< NID of C printf() call
 #define UVL_CODE_ALLOC_NID      0xBCEAB831      ///< uvl_alloc_code_mem
 #define UVL_CODE_UNLOCK_NID     0x98D1C91D      ///< uvl_unlock_mem
 #define UVL_CODE_LOCK_NID       0xEEC99826      ///< uvl_lock_mem
