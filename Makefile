@@ -6,7 +6,7 @@ LDFLAGS=-T linker.x -nodefaultlibs -nostdlib -pie
 OBJCOPY=arm-none-eabi-objcopy
 OBJCOPYFLAGS=
 
-OBJ=uvloader.o cleanup.o load.o relocate.o resolve.o utils.o scefuncs.o
+OBJ=uvloader.o cleanup.o load.o relocate.o resolve.o utils.o scefuncs.o debugnet.o
 
 all: uvloader
 

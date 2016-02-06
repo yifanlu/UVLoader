@@ -78,7 +78,7 @@ uvl_scefuncs_resolve_loader (void *anchor)  ///< Import table entry pointing to 
 }
 
 int
-uvl_resolve_appmgruser()
+uvl_scefuncs_resolve_appmgruser(void)
 {
     PsvUID mod_list[MAX_LOADED_MODS];
     u32_t num_loaded = MAX_LOADED_MODS;
@@ -127,4 +127,32 @@ uvl_resolve_appmgruser()
         }
     }
     return -1;
+}
+
+int
+uvl_resolve_stub_by_nid(void* stub,
+u32_t nid)
+{
+    resolve_entry_t* entry = uvl_resolve_table_get(nid);
+
+    if (uvl_resolve_entry_to_import_stub(entry, stub) < 0)
+    {
+        return -1;
+    }
+}
+
+void
+uvl_scefuncs_resolve_debugnet(void)
+{
+    uvl_resolve_stub_by_nid(&sceNetSendto, 0x52db31d5);
+    uvl_resolve_stub_by_nid(&sceNetShowNetstat, 0x338edc2e);
+    uvl_resolve_stub_by_nid(&sceNetInit, 0xeb03e265);
+    uvl_resolve_stub_by_nid(&sceNetCtlInit, 0x495ca1db);
+    uvl_resolve_stub_by_nid(&sceNetCtlInetGetInfo, 0xb26d07f3);
+    uvl_resolve_stub_by_nid(&sceNetInetPton, 0xd5eeb048);
+    uvl_resolve_stub_by_nid(&sceNetSocket, 0xf084fce3);
+    uvl_resolve_stub_by_nid(&sceNetSetsockopt, 0x065505ca);
+    uvl_resolve_stub_by_nid(&sceNetHtons, 0x9fa3207b);
+    uvl_resolve_stub_by_nid(&sceNetCtlTerm, 0xcd188648);
+    uvl_resolve_stub_by_nid(&sceNetTerm, 0xea3cc286);
 }

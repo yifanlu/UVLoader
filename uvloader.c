@@ -22,12 +22,15 @@
 #include "utils.h"
 #include "uvloader.h"
 
+#include "debugnet.h"
+
 // make sure code is PIE
 #ifndef __PIE__
 #error "Must compile with -fPIE"
 #endif
 
 static uvl_context_t *g_context;
+static debug_log_func g_debug_log;
 
 static void uvl_init_from_context (uvl_context_t *ctx);
 
@@ -45,7 +48,7 @@ uvl_start (uvl_context_t *ctx)    ///< Pass in context information
 {
     uvl_init_from_context (ctx);
     uvl_scefuncs_resolve_loader (ctx->libkernel_anchor);
-    uvl_resolve_appmgruser();
+    uvl_scefuncs_resolve_appmgruser();
     vita_init_log ();
     LOG ("UVLoader %u.%u.%u started.", UVL_VER_MAJOR, UVL_VER_MINOR, UVL_VER_REV);
     return uvl_start_load ();
@@ -59,6 +62,7 @@ uvl_init_from_context (uvl_context_t *ctx)  ///< Context buffer
 {
     ctx->psvUnlockMem ();
     g_context = ctx;
+    g_debug_log = &uvl_debug_log_psm;
     ctx->psvLockMem ();
 }
 
@@ -102,12 +106,26 @@ uvl_flush_icache (void *addr, unsigned int len)
  *  \brief From context buffer
  ***********************************************/
 int
-uvl_debug_log (const char *line)
+uvl_debug_log_psm (const char *line)
 {
     if (g_context->logline)
         return g_context->logline (line);
     else
         return -1;
+}
+
+void
+uvl_set_debug_log_func(debug_log_func func)
+{
+    uvl_unlock_mem();
+    g_debug_log = func;
+    uvl_lock_mem();
+}
+
+int
+uvl_debug_log (const char *line)
+{
+    return g_debug_log(line);
 }
 
 /********************************************//**
@@ -125,7 +143,7 @@ printf (const char *format, ...)
     sceClibVsnprintf (buffer, MAX_LOG_LENGTH, format, arg);
     va_end (arg);
 
-    uvl_debug_log (buffer);
+    g_debug_log(buffer);
     return 0;
 }
 
@@ -168,6 +186,11 @@ uvl_add_uvl_exports (void)
     entry.type = RESOLVE_TYPE_FUNCTION;
     entry.value.func_ptr = uvl_load;
     uvl_resolve_table_add (&entry);
+	
+    entry.nid = UVL_LOG_WRITE_NID;
+    entry.type = RESOLVE_TYPE_FUNCTION;
+    entry.value.func_ptr = uvl_log_write;
+    uvl_resolve_table_add(&entry);
 }
 
 /********************************************//**
@@ -192,6 +215,15 @@ uvl_start_load ()
     }
     IF_DEBUG LOG ("Adding UVL imports.");
     uvl_add_uvl_exports ();
+    
+    if (g_context->use_debugnet)
+    {
+        IF_DEBUG LOG("Initializing DebugNet logging...");
+        if (debugNetSetup() < 0)
+        {
+            LOG("Failed to set up DebugNet.");
+        }
+    }
     
     uvl_pre_clean();
     
@@ -271,4 +303,10 @@ void
 uvl_exit (int status)
 {
     sceKernelExitDeleteThread (0);
+}
+
+int
+uvl_log_write(const void* buffer, u32_t size)
+{
+    return debugNetSend(buffer, size);
 }
