@@ -20,6 +20,8 @@
 #define UVL_DEBUG_LOG_NID       0xD4F59028      ///< uvl_debug_log
 #define UVL_LOAD_NID            0xE8E92954      ///< uvl_load
 
+#define UVL_LOG_WRITE_NID       0xC1EE36CE      ///< uvl_log_write
+
 #define LOADED_INFO_SIZE        0x1000          ///< Must be page aligned
 
 /** \name UVLoader version information
@@ -45,6 +47,7 @@ typedef struct uvl_context
     void (*psvFlushIcache)(void *, unsigned int);  ///< Flush Icache
     int (*logline)(const char *);                  ///< Debug logging (optional)
     void *libkernel_anchor;                        ///< Any imported SceLibKernel function
+    int use_debugnet;                              ///< Use debugnet logging
 } uvl_context_t;
 
 /**
@@ -76,9 +79,15 @@ void *uvl_alloc_code_mem (unsigned int *p_len);
 void uvl_unlock_mem ();
 void uvl_lock_mem ();
 void uvl_flush_icache (void *addr, unsigned int len);
+int uvl_debug_log_psm (const char *line);
 int uvl_debug_log (const char *line);
 int uvl_load (const char *path);
 void uvl_exit (int status);
+
+int uvl_log_write(const void* buffer, u32_t size);
+
+typedef int(*debug_log_func)(const char* line);
+void uvl_set_debug_log_func(debug_log_func func);
 /** @}*/
 
 #endif
