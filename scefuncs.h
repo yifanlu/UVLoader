@@ -80,7 +80,20 @@ STUB_FUNCTION(int, sceKernelWaitThreadEnd);
 
 STUB_FUNCTION(int, sceAppMgrGetVs0UserModuleDrive);
 
-void uvl_scefuncs_resolve_loader (void *anchor);
-int uvl_resolve_appmgruser();
+STUB_FUNCTION(int, sceNetSendto);
+STUB_FUNCTION(int, sceNetShowNetstat);
+STUB_FUNCTION(int, sceNetInit);
+STUB_FUNCTION(int, sceNetCtlInit);
+STUB_FUNCTION(int, sceNetCtlInetGetInfo);
+STUB_FUNCTION(int, sceNetInetPton);
+STUB_FUNCTION(int, sceNetSocket);
+STUB_FUNCTION(int, sceNetSetsockopt);
+STUB_FUNCTION(u16_t, sceNetHtons);
+STUB_FUNCTION(void, sceNetCtlTerm);
+STUB_FUNCTION(int, sceNetTerm);
+
+void uvl_scefuncs_resolve_loader(void *anchor);
+int uvl_scefuncs_resolve_appmgruser(void);
+void uvl_scefuncs_resolve_debugnet(void);
 
 #endif
