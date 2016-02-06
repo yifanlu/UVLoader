@@ -93,7 +93,7 @@ STUB_FUNCTION(void, sceNetCtlTerm);
 STUB_FUNCTION(int, sceNetTerm);
 
 void uvl_scefuncs_resolve_loader(void *anchor);
-int uvl_scefuncs_resolve_appmgruser();
-void uvl_scefuncs_resolve_debugnet();
+int uvl_scefuncs_resolve_appmgruser(void);
+void uvl_scefuncs_resolve_debugnet(void);
 
 #endif

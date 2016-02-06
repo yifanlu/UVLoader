@@ -78,7 +78,7 @@ uvl_scefuncs_resolve_loader (void *anchor)  ///< Import table entry pointing to 
 }
 
 int
-uvl_scefuncs_resolve_appmgruser()
+uvl_scefuncs_resolve_appmgruser(void)
 {
     PsvUID mod_list[MAX_LOADED_MODS];
     u32_t num_loaded = MAX_LOADED_MODS;
@@ -142,7 +142,7 @@ u32_t nid)
 }
 
 void
-uvl_scefuncs_resolve_debugnet()
+uvl_scefuncs_resolve_debugnet(void)
 {
     uvl_resolve_stub_by_nid(&sceNetSendto, 0x52db31d5);
     uvl_resolve_stub_by_nid(&sceNetShowNetstat, 0x338edc2e);

@@ -216,14 +216,14 @@ uvl_start_load ()
     IF_DEBUG LOG ("Adding UVL imports.");
     uvl_add_uvl_exports ();
     
-	if (g_context->use_debugnet)
-	{
-	    IF_DEBUG LOG("Initializing DebugNet logging...");
-	    if (debugNetSetup() < 0)
-	    {
-		    LOG("Failed to set up DebugNet.");
-	    }
-	}
+    if (g_context->use_debugnet)
+    {
+        IF_DEBUG LOG("Initializing DebugNet logging...");
+        if (debugNetSetup() < 0)
+        {
+            LOG("Failed to set up DebugNet.");
+        }
+    }
     
     uvl_pre_clean();
     

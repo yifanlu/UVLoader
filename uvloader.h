@@ -20,7 +20,7 @@
 #define UVL_DEBUG_LOG_NID       0xD4F59028      ///< uvl_debug_log
 #define UVL_LOAD_NID            0xE8E92954      ///< uvl_load
 
-#define UVL_LOG_WRITE_NID       0x10000001      ///< uvl_log_write
+#define UVL_LOG_WRITE_NID       0xC1EE36CE      ///< uvl_log_write
 
 #define LOADED_INFO_SIZE        0x1000          ///< Must be page aligned
 
