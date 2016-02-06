@@ -355,7 +355,7 @@ uvl_resolve_entry_to_import_stub (resolve_entry_t *entry,   ///< Entry to read f
             LOG ("Invalid resolve entry 0x%08X", (u32_t)entry);
             return -1;
     }
-	uvl_flush_icache (memloc, STUB_FUNC_SIZE);
+    uvl_flush_icache (memloc, STUB_FUNC_SIZE);
     IF_VERBOSE LOG ("Resolved NID 0x%08X to 0x%08X of type %u", entry->nid, entry->value.value, entry->type);
     return 0;
 }
