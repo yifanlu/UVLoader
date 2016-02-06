@@ -355,6 +355,7 @@ uvl_resolve_entry_to_import_stub (resolve_entry_t *entry,   ///< Entry to read f
             LOG ("Invalid resolve entry 0x%08X", (u32_t)entry);
             return -1;
     }
+	uvl_flush_icache (memloc, STUB_FUNC_SIZE);
     IF_VERBOSE LOG ("Resolved NID 0x%08X to 0x%08X of type %u", entry->nid, entry->value.value, entry->type);
     return 0;
 }
@@ -803,8 +804,8 @@ uvl_find_module_info (loaded_module_info_t *m_mod_info) ///< Loaded module infor
         // try making this the one
         mod_info = (module_info_t*)((u32_t)result - 4);
         IF_VERBOSE LOG("Possible module info struct at 0x%X", (u32_t) mod_info);
-        if (mod_info->modattribute == MOD_INFO_VALID_ATTR && (mod_info->modversion == MOD_INFO_VALID_VER
-        || mod_info->modversion == 0x0403 || mod_info->modversion == 0x0)) // TODO: Better check
+        if (mod_info->ent_top < segment_size && mod_info->ent_end < segment_size &&
+            mod_info->stub_top < segment_size && mod_info->stub_end < segment_size)
         {
             IF_VERBOSE LOG ("Module export start at 0x%X import start at 0x%X", (u32_t)mod_info->ent_top + (u32_t)m_mod_info->segments[0].vaddr, (u32_t)mod_info->stub_top + (u32_t)m_mod_info->segments[0].vaddr);
             break; // we found it
