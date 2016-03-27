@@ -229,7 +229,7 @@ strchr(const char *str, int c)
 
 // Below is stolen from http://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string_search_algorithm
 
-#define ALPHABET_LEN 255
+#define ALPHABET_LEN 256
 #define NOT_FOUND patlen
 #define max(a, b) ((a < b) ? b : a)
 
