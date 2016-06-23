@@ -43,8 +43,11 @@ payload that is executed by an exploit to run homebrews unmodified.
 
 ## How can I call UVL API functions from my homebrew?
 
-Import uvloader.h into your project and you'll have access to the exported 
-functions.
+Use `vita-libs-gen uvloader.json outdir` to generate the static library that 
+[vita-toolchain](https://github.com/vitasdk/vita-toolchain) links with. Then 
+you can import uvloader.h into your project. See the documentation for details 
+on the exported functions and when to use them. The library exposes functions 
+for logging and dynamic code generation that is otherwise missing from the SDK.
 
 ## How do I port UVL?
 

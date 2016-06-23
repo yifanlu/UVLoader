@@ -295,8 +295,11 @@ uvl_load (const char *path)
 /********************************************//**
  *  \brief Exiting point for loaded application
  *  
- *  This hooks on to exit() call and cleans up 
- *  after the application is unloaded.
+ *  This is hooked by the loaded application to 
+ *  terminate the process early. The call is 
+ *  not needed in normal operations.
+ *  For this reason, you should not add any 
+ *  cleanup code here.
  *  \returns Zero on success, otherwise error
  ***********************************************/
 void
