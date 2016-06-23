@@ -43,11 +43,14 @@ payload that is executed by an exploit to run homebrews unmodified.
 
 ## How can I call UVL API functions from my homebrew?
 
-Use `vita-libs-gen uvloader.json outdir` to generate the static library that 
-[vita-toolchain](https://github.com/vitasdk/vita-toolchain) links with. Then 
-you can import uvloader.h into your project. See the documentation for details 
-on the exported functions and when to use them. The library exposes functions 
-for logging and dynamic code generation that is otherwise missing from the SDK.
+Make sure `$VITASDK` points to where the toolchain is installed. Then run 
+`make install_lib` to install the UVL stub library to the right place. Then you 
+can include `psp2/uvl.h` into your project and build with `-lUVLoader_stub`.
+Finally to create the resulting VELF, you need to pass the UVL JSON database 
+as the parameter to `vita-elf-create` (`$(VITASDK)/share/uvloader.json`).
+See the documentation for details on the exported functions and when to use 
+them. The library exposes functions for logging and dynamic code generation 
+that is otherwise missing from the SDK.
 
 ## How do I port UVL?
 

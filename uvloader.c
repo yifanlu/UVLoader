@@ -308,8 +308,13 @@ uvl_exit (int status)
     sceKernelExitDeleteThread (0);
 }
 
+/********************************************//**
+ *  \brief Write to UVL log
+ *  
+ *  \returns Zero on success, otherwise error
+ ***********************************************/
 int
-uvl_log_write(const void* buffer, u32_t size)
+uvl_log_write(const void* buffer, unsigned int size)
 {
     return debugNetSend(buffer, size);
 }

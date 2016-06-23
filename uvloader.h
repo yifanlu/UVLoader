@@ -8,6 +8,7 @@
 #ifndef UVL_MAIN
 #define UVL_MAIN
 
+#ifdef UVLOADER
 #include "types.h"
 
 #define START_SECTION __attribute__ ((section (".text.start")))
@@ -72,6 +73,8 @@ typedef struct uvl_loaded
 int START_SECTION uvl_start (uvl_context_t *ctx);
 int uvl_start_load ();
 
+#endif
+
 /** \name UVLoader API Exports
  *  @{
  */
@@ -84,7 +87,7 @@ int uvl_debug_log (const char *line);
 int uvl_load (const char *path);
 void uvl_exit (int status);
 
-int uvl_log_write(const void* buffer, u32_t size);
+int uvl_log_write(const void* buffer, unsigned int size);
 
 typedef int(*debug_log_func)(const char* line);
 void uvl_set_debug_log_func(debug_log_func func);
